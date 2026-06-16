@@ -1,0 +1,38 @@
+# ── Raw data ── large files, don't version
+data/raw/
+
+# ── But DO keep the clean processed table ──
+!data/processed/
+!data/processed/*.csv
+
+# ── Source PDFs ── keep locally, back up in Drive
+sources/
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.env
+venv/
+*.egg-info/
+
+# ── R (if you switch to R later) ──
+.Rhistory
+.Rdata
+.Rproj.user/
+
+# ── VS Code ──
+.vscode/
+
+# ── Mac OS ──
+.DS_Store
+*.DS_Store
+
+# ── Excel/Office temp files ──
+~$*.xlsx
+~$*.docx
+*.tmp
+
+# ── Figures (optional — commit these if you want plots versioned) ──
+# figures/
+# If you want figures tracked, leave the line above commented out
