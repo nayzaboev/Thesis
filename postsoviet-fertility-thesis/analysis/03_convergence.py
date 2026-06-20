@@ -15,3 +15,8 @@ print("\n=== Peak year per country ===")
 print(peaks.to_string(index=False))
 cv_all.to_csv("data/processed/cv_all.csv")
 peaks.to_csv("data/processed/peaks.csv", index=False)
+# CV within each bloc, per year
+cv_by_bloc = df.groupby(["bloc", "year"])["tfr"].apply(cv).unstack(0)
+cv_by_bloc.to_csv("data/processed/cv_by_bloc.csv")
+print("\n=== CV within blocs ===")
+print(cv_by_bloc.round(3).loc[[2000, 2010, 2020, 2023]])
