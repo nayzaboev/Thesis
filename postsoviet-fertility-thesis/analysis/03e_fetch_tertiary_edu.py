@@ -2,7 +2,7 @@ import os
 import wbgapi as wb
 import pandas as pd
 
-INDICATOR = "SE.SEC.ENRR.FE"
+INDICATOR = "SE.TER.ENRR.FE"
 COUNTRIES = ['ARM', 'AZE', 'BLR', 'EST', 'GEO', 'KAZ', 'KGZ', 'LVA', 'LTU',
              'MDA', 'RUS', 'TJK', 'UKR', 'UZB']
 YEARS = range(2000, 2024)
@@ -14,12 +14,13 @@ name_map = {'ARM': 'Armenia', 'AZE': 'Azerbaijan', 'BLR': 'Belarus', 'EST': 'Est
 
 raw = wb.data.DataFrame(INDICATOR, economy=COUNTRIES, time=YEARS, labels=False)
 
-df = raw.reset_index().melt(id_vars="economy", var_name="year", value_name="female_sec_educ_pct")
+df = raw.reset_index().melt(id_vars="economy", var_name="year", value_name="female_tert_educ_pct")
 df["year"] = df["year"].str.replace("YR", "", regex=False).astype(int)
 df["country"] = df["economy"].map(name_map)
-df = df[["country", "year", "female_sec_educ_pct"]]
+df = df[["country", "year", "female_tert_educ_pct"]]
 df = df.sort_values(["country", "year"]).reset_index(drop=True)
 
 os.makedirs("data/raw", exist_ok=True)
-df.to_csv("data/raw/raw_wb_education.csv", index=False)
-print(f"Saved {len(df)} rows to data/raw/raw_wb_education.csv")
+df.to_csv("data/raw/raw_wb_tertiary_edu.csv", index=False)
+print(f"Saved {len(df)} rows to data/raw/raw_wb_tertiary_edu.csv")
+print(df.head())
