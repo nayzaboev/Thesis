@@ -1,0 +1,104 @@
+URBANISATION × CENTRAL ASIA:
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                    tfr   R-squared:                       0.904
+Model:                            OLS   Adj. R-squared:                  0.902
+Method:                 Least Squares   F-statistic:                     1467.
+Date:                Mon, 29 Jun 2026   Prob (F-statistic):           8.47e-18
+Time:                        16:02:51   Log-Likelihood:                 51.365
+No. Observations:                 336   AIC:                            -86.73
+Df Residuals:                     328   BIC:                            -56.19
+Df Model:                           7                                         
+Covariance Type:              cluster                                         
+========================================================================================
+                           coef    std err          z      P>|z|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+Intercept                0.5402      0.247      2.187      0.029       0.056       1.024
+urban_pop_pct           -0.0064      0.003     -1.956      0.050      -0.013    1.17e-05
+female_tert_educ_pct    -0.0055      0.001     -4.098      0.000      -0.008      -0.003
+log_gdp                  0.1763      0.026      6.676      0.000       0.125       0.228
+flfp_pct                 0.0052      0.002      2.238      0.025       0.001       0.010
+remittances_gdp_pct      0.0045      0.005      0.980      0.327      -0.004       0.013
+ca                       2.2976      0.358      6.410      0.000       1.595       3.000
+urban_pop_pct:ca        -0.0256      0.007     -3.775      0.000      -0.039      -0.012
+==============================================================================
+Omnibus:                       46.742   Durbin-Watson:                   0.321
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               96.941
+Skew:                           0.736   Prob(JB):                     8.90e-22
+Kurtosis:                       5.181   Cond. No.                     2.69e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are robust to cluster correlation (cluster)
+[2] The condition number is large, 2.69e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+
+FLFP × CENTRAL ASIA:
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                    tfr   R-squared:                       0.890
+Model:                            OLS   Adj. R-squared:                  0.888
+Method:                 Least Squares   F-statistic:                     271.8
+Date:                Mon, 29 Jun 2026   Prob (F-statistic):           4.63e-13
+Time:                        16:02:51   Log-Likelihood:                 29.132
+No. Observations:                 336   AIC:                            -42.26
+Df Residuals:                     328   BIC:                            -11.73
+Df Model:                           7                                         
+Covariance Type:              cluster                                         
+========================================================================================
+                           coef    std err          z      P>|z|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+Intercept                1.0999      0.877      1.254      0.210      -0.619       2.819
+urban_pop_pct           -0.0145      0.007     -2.120      0.034      -0.028      -0.001
+female_tert_educ_pct    -0.0017      0.002     -0.784      0.433      -0.006       0.003
+log_gdp                  0.1300      0.034      3.808      0.000       0.063       0.197
+flfp_pct                 0.0067      0.009      0.790      0.430      -0.010       0.023
+remittances_gdp_pct      0.0030      0.007      0.455      0.649      -0.010       0.016
+ca                       1.8736      0.591      3.170      0.002       0.715       3.032
+flfp_pct:ca             -0.0155      0.009     -1.717      0.086      -0.033       0.002
+==============================================================================
+Omnibus:                        9.089   Durbin-Watson:                   0.222
+Prob(Omnibus):                  0.011   Jarque-Bera (JB):               10.128
+Skew:                           0.298   Prob(JB):                      0.00632
+Kurtosis:                       3.607   Cond. No.                     3.40e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are robust to cluster correlation (cluster)
+[2] The condition number is large, 3.4e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+
+GDP × CENTRAL ASIA:
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                    tfr   R-squared:                       0.888
+Model:                            OLS   Adj. R-squared:                  0.886
+Method:                 Least Squares   F-statistic:                     229.9
+Date:                Mon, 29 Jun 2026   Prob (F-statistic):           1.36e-12
+Time:                        16:02:51   Log-Likelihood:                 26.040
+No. Observations:                 336   AIC:                            -36.08
+Df Residuals:                     328   BIC:                            -5.542
+Df Model:                           7                                         
+Covariance Type:              cluster                                         
+========================================================================================
+                           coef    std err          z      P>|z|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+Intercept                1.4558      0.515      2.827      0.005       0.446       2.465
+urban_pop_pct           -0.0154      0.006     -2.633      0.008      -0.027      -0.004
+female_tert_educ_pct    -0.0031      0.002     -1.529      0.126      -0.007       0.001
+log_gdp                  0.1658      0.026      6.416      0.000       0.115       0.216
+flfp_pct                -0.0025      0.005     -0.523      0.601      -0.012       0.007
+remittances_gdp_pct      0.0047      0.005      0.897      0.370      -0.006       0.015
+ca                       1.5408      0.750      2.055      0.040       0.071       3.010
+log_gdp:ca              -0.0715      0.089     -0.804      0.421      -0.246       0.103
+==============================================================================
+Omnibus:                        8.801   Durbin-Watson:                   0.241
+Prob(Omnibus):                  0.012   Jarque-Bera (JB):               11.121
+Skew:                           0.238   Prob(JB):                      0.00385
+Kurtosis:                       3.753   Cond. No.                     3.10e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are robust to cluster correlation (cluster)
+[2] The condition number is large, 3.1e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
