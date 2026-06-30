@@ -1,0 +1,29 @@
+DIAGNOSTICS — VIF, Hausman (FE vs RE), few-cluster caveat.
+
+================================================================
+(A) Variance Inflation Factors (lagged covariates)
+================================================================
+Rule of thumb: VIF > 5 concerning, > 10 serious.
+
+  log_gdp_ppp_lag1            :  5.60  <- CONCERNING
+  urban_pop_pct_lag1          :  4.87  <- OK
+  remittances_gdp_pct_lag1    :  4.13  <- OK
+  under5_mortality_lag1       :  3.94  <- OK
+
+================================================================
+(B) Hausman test — fixed effects vs random effects
+================================================================
+  Hausman chi2(4) = 15.18   p = 0.0044
+  => Reject H0: random effects is inconsistent. FIXED EFFECTS preferred.
+  (We use FE on substantive grounds regardless: strong country heterogeneity,
+   and the research question concerns between-country differences handled in Layer A.)
+
+================================================================
+(C) Few-cluster caveat
+================================================================
+  Standard errors throughout Part 2 are clustered on country (14 clusters).
+  14 clusters is below the commonly cited safe threshold (~30-50). With few
+  clusters, cluster-robust SEs can be anti-conservative (too small), so
+  p-values near 0.05 should be read with caution. Recommended robustness
+  follow-up: wild-cluster bootstrap (Stata 'boottest', R 'fwildclusterboot').
+  This is a known small-N limitation of the post-Soviet sample, not a coding issue.

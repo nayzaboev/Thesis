@@ -1,0 +1,60 @@
+LAYER A RESULTS — Central Asia fertility premium
+Pooled OLS, year fixed effects, SE clustered by country (14 clusters).
+Controls lagged 1 year. Caution: few-cluster SEs may be anti-conservative.
+
+===== M1: raw Central Asia premium (year FE) (N=315) =====
+  ca coefficient: +1.314  (cluster SE 0.164, p=0.000)
+  R-squared: 0.842
+  Interpretation: Central Asia averages ~1.31 more children per woman, unconditional on economics.
+
+===== M2: controlled premium (CA + lagged economics + year FE)  (N=315) =====
+============================================================================================
+                               coef    std err          z      P>|z|      [0.025      0.975]
+--------------------------------------------------------------------------------------------
+Intercept                    1.7997      1.241      1.450      0.147      -0.632       4.232
+C(year)[T.2002]              0.0177      0.013      1.391      0.164      -0.007       0.043
+C(year)[T.2003]              0.0991      0.044      2.233      0.026       0.012       0.186
+C(year)[T.2004]              0.1756      0.067      2.630      0.009       0.045       0.307
+C(year)[T.2005]              0.1952      0.075      2.615      0.009       0.049       0.341
+C(year)[T.2006]              0.2278      0.089      2.568      0.010       0.054       0.402
+C(year)[T.2007]              0.2961      0.099      2.977      0.003       0.101       0.491
+C(year)[T.2008]              0.3638      0.111      3.286      0.001       0.147       0.581
+C(year)[T.2009]              0.3902      0.123      3.174      0.002       0.149       0.631
+C(year)[T.2010]              0.4047      0.118      3.439      0.001       0.174       0.635
+C(year)[T.2011]              0.4067      0.129      3.158      0.002       0.154       0.659
+C(year)[T.2012]              0.4566      0.139      3.283      0.001       0.184       0.729
+C(year)[T.2013]              0.4814      0.141      3.419      0.001       0.205       0.757
+C(year)[T.2014]              0.5476      0.151      3.617      0.000       0.251       0.844
+C(year)[T.2015]              0.5669      0.151      3.756      0.000       0.271       0.863
+C(year)[T.2016]              0.5632      0.145      3.879      0.000       0.279       0.848
+C(year)[T.2017]              0.4945      0.143      3.450      0.001       0.214       0.775
+C(year)[T.2018]              0.5112      0.148      3.449      0.001       0.221       0.802
+C(year)[T.2019]              0.5094      0.147      3.457      0.001       0.221       0.798
+C(year)[T.2020]              0.4913      0.155      3.178      0.001       0.188       0.794
+C(year)[T.2021]              0.5010      0.158      3.166      0.002       0.191       0.811
+C(year)[T.2022]              0.4176      0.163      2.560      0.010       0.098       0.737
+C(year)[T.2023]              0.3989      0.167      2.391      0.017       0.072       0.726
+ca                           0.9707      0.118      8.255      0.000       0.740       1.201
+log_gdp_ppp_lag1             0.0093      0.129      0.072      0.943      -0.244       0.263
+urban_pop_pct_lag1          -0.0121      0.007     -1.665      0.096      -0.026       0.002
+remittances_gdp_pct_lag1     0.0008      0.006      0.124      0.901      -0.011       0.013
+under5_mortality_lag1        0.0055      0.004      1.300      0.194      -0.003       0.014
+============================================================================================
+R-squared: 0.908   Adj: 0.899
+  --> Surviving CA premium after economic controls: +0.971 (SE 0.118, p=0.000)
+  This residual gap is what economic variables do NOT explain.
+
+===== M3: interaction CA x urbanisation (year FE) (N=315) =====
+  ca:urban_pop_pct_lag1: -0.0119  (SE 0.0062, p=0.054)
+  ca main: +1.551   R-squared: 0.915
+  Reading: the effect of urbanisation on TFR differs in Central Asia by -0.0119 per unit relative to the rest.
+
+===== M3: interaction CA x remittances (year FE) (N=315) =====
+  ca:remittances_gdp_pct_lag1: +0.0157  (SE 0.0046, p=0.001)
+  ca main: +0.785   R-squared: 0.920
+  Reading: the effect of remittances on TFR differs in Central Asia by +0.0157 per unit relative to the rest.
+
+===== M3: interaction CA x log GDP-PPP (year FE) (N=315) =====
+  ca:log_gdp_ppp_lag1: -0.0898  (SE 0.1201, p=0.455)
+  ca main: +1.814   R-squared: 0.910
+  Reading: the effect of log GDP-PPP on TFR differs in Central Asia by -0.0898 per unit relative to the rest.
