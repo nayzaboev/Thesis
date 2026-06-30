@@ -5,6 +5,10 @@ data/raw/
 !data/processed/
 !data/processed/*.csv
 
+# ── And the manually-entered cultural variables ──
+!data/manual/
+!data/manual/*.csv
+
 # ── Source PDFs ── keep locally, back up in Drive
 sources/
 
