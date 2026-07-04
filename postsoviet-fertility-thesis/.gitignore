@@ -1,5 +1,6 @@
 # ── Raw data ── large files, don't version
-data/raw/
+data/raw/ 
+!data/raw/README.md
 
 # ── But DO keep the clean processed table ──
 !data/processed/
