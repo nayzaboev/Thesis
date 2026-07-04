@@ -13,4 +13,4 @@
 | R² type | R² (overall) | R² (overall) | R² (within) | R² (within) |
 
 *Cluster-robust standard errors (country) in parentheses. \*\*\* p<0.01, \*\* p<0.05, \* p<0.10.*  
-*All four columns estimated on the controls-complete sample (N=315). In M4 (two-way FE) the Central Asia dummy is absorbed by country effects; in the first-difference column it is differenced away — both by design. Cluster count is 14; few-cluster fragility is documented in the diagnostics appendix. Given AR(1) ≈ 0.95 in M4 residuals, the first-difference column is treated as the credible within-country estimator; M4 is reported for transparency.*
+*All four columns estimated on the controls-complete sample (N=315). In M4 (two-way FE) the Central Asia dummy is absorbed by country effects; in the first-difference column it is differenced away — both by design. Cluster count is 14; few-cluster fragility is documented in the diagnostics appendix. Given AR(1) ≈ 0.95 in M4 residuals, the first-difference column is treated as an additional within-country robustness check; M4 is reported for transparency.*

@@ -1,4 +1,4 @@
-"""Part 2 scaffold."""
+
 # Layer A (gap): Models 1-3, pooled OLS + year FE, clustered standard errors.
 """
 15_layerA_gap.py
@@ -66,15 +66,35 @@ def report(title, res, n):
     print(text)
     lines.append(text)
 
-# ----- Model 1: raw premium (CA + year effects) -----
+# ----- Model 1a: raw premium, ALL available TFR observations (year FE) -----
+# This is the true unconditional Central Asia gap, using every country-year in the
+# panel where TFR is observed — not restricted to the controls-complete sample.
+m1a, n1a = fit("tfr ~ ca + C(year)", p)  # fit() already drops NaN in used vars only
+# But fit() also drops on CONTROLS-list even if not in the formula, so recompute directly:
+d1a = p.dropna(subset=["tfr", "ca", "year"]).copy()
+import statsmodels.formula.api as _smf
+m1a = _smf.ols("tfr ~ ca + C(year)", data=d1a).fit(
+    cov_type="cluster", cov_kwds={"groups": d1a["country"]})
+n1a = int(m1a.nobs)
+ca_a = m1a.params["ca"]; se_a = m1a.bse["ca"]; p_a = m1a.pvalues["ca"]
+msg_a = (f"\n===== M1a: raw Central Asia premium — FULL TFR sample (year FE) (N={n1a}) =====\n"
+         f"  ca coefficient: {ca_a:+.3f}  (cluster SE {se_a:.3f}, p={p_a:.3f})\n"
+         f"  R-squared: {m1a.rsquared:.3f}\n"
+         f"  Interpretation: unconditional cross-country gap using every observed TFR row.")
+print(msg_a); lines.append(msg_a)
+
+# ----- Model 1b: raw premium, ESTIMATION sample (matches M2/M3) -----
+# Restricted to rows where all Layer-A controls are present, so N is directly
+# comparable to M2 and M3.
 m1, n1 = fit("tfr ~ ca + C(year)", p)
 # print only the CA row + a note (year dummies clutter the table)
 ca_coef = m1.params["ca"]; ca_se = m1.bse["ca"]; ca_p = m1.pvalues["ca"]
-msg = (f"\n===== M1: raw Central Asia premium (year FE) (N={n1}) =====\n"
+msg = (f"\n===== M1b: raw Central Asia premium — estimation sample (year FE) (N={n1}) =====\n"
        f"  ca coefficient: {ca_coef:+.3f}  (cluster SE {ca_se:.3f}, p={ca_p:.3f})\n"
        f"  R-squared: {m1.rsquared:.3f}\n"
-       f"  Interpretation: Central Asia averages ~{ca_coef:.2f} more children per woman, "
-       f"unconditional on economics.")
+       f"  Interpretation: same specification as M1a, restricted to the rows M2/M3\n"
+       f"  use (controls-complete sample); the small drop from N={n1a} to N={n1} reflects\n"
+       f"  lagged-covariate coverage, not a change in the underlying gap.")
 print(msg); lines.append(msg)
 
 # ----- Model 2: controlled premium -----
@@ -84,7 +104,10 @@ ca2 = m2.params["ca"]; se2 = m2.bse["ca"]; p2 = m2.pvalues["ca"]
 report("M2: controlled premium (CA + lagged economics + year FE)", m2, n2)
 note = (f"  --> Surviving CA premium after economic controls: {ca2:+.3f} "
         f"(SE {se2:.3f}, p={p2:.3f})\n"
-        f"  This residual gap is what economic variables do NOT explain.")
+        f"  Interpretation: a large Central Asia premium remains after controlling for\n"
+        f"  the selected macro-level economic and development indicators. This residual\n"
+        f"  cross-country gap motivates the cross-section analysis of cultural factors\n"
+        f"  (script 18); it should not, by itself, be labelled 'cultural'.")
 print(note); lines.append(note)
 
 # ----- Model 3: interactions, ONE AT A TIME -----

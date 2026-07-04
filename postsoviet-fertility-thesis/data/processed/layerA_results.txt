@@ -2,10 +2,17 @@ LAYER A RESULTS — Central Asia fertility premium
 Pooled OLS, year fixed effects, SE clustered by country (14 clusters).
 Controls lagged 1 year. Caution: few-cluster SEs may be anti-conservative.
 
-===== M1: raw Central Asia premium (year FE) (N=315) =====
+===== M1a: raw Central Asia premium — FULL TFR sample (year FE) (N=336) =====
+  ca coefficient: +1.324  (cluster SE 0.174, p=0.000)
+  R-squared: 0.834
+  Interpretation: unconditional cross-country gap using every observed TFR row.
+
+===== M1b: raw Central Asia premium — estimation sample (year FE) (N=315) =====
   ca coefficient: +1.314  (cluster SE 0.164, p=0.000)
   R-squared: 0.842
-  Interpretation: Central Asia averages ~1.31 more children per woman, unconditional on economics.
+  Interpretation: same specification as M1a, restricted to the rows M2/M3
+  use (controls-complete sample); the small drop from N=336 to N=315 reflects
+  lagged-covariate coverage, not a change in the underlying gap.
 
 ===== M2: controlled premium (CA + lagged economics + year FE)  (N=315) =====
 ============================================================================================
@@ -42,7 +49,10 @@ under5_mortality_lag1        0.0055      0.004      1.300      0.194      -0.003
 ============================================================================================
 R-squared: 0.908   Adj: 0.899
   --> Surviving CA premium after economic controls: +0.971 (SE 0.118, p=0.000)
-  This residual gap is what economic variables do NOT explain.
+  Interpretation: a large Central Asia premium remains after controlling for
+  the selected macro-level economic and development indicators. This residual
+  cross-country gap motivates the cross-section analysis of cultural factors
+  (script 18); it should not, by itself, be labelled 'cultural'.
 
 ===== M3: interaction CA x urbanisation (year FE) (N=315) =====
   ca:urban_pop_pct_lag1: -0.0119  (SE 0.0062, p=0.054)

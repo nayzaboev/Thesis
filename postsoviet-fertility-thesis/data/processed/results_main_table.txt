@@ -24,5 +24,6 @@ M4: 'ca' is absorbed by country FE — that is by design; the between-country
 question lives in Layer A (M1–M2), the within-country question in Layer B (M4, FD).
 FD model: 'ca' is time-invariant and differenced away — same logic.
 Cluster count = 14. Few-cluster fragility flagged in diagnostics (17_diagnostics).
-Given residual AR(1) ≈ 0.95 in M4, the first-difference column is the credible
-within-country estimator; M4 is reported alongside for transparency.
+Because the two-way FE residuals show strong serial correlation (AR(1)≈0.95), the
+first-difference column is reported as an additional robustness check; it should be
+interpreted cautiously as a short-run within-country association.

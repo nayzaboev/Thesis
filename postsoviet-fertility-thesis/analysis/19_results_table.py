@@ -1,4 +1,4 @@
-"""Part 2 scaffold."""
+
 # Assembled M1-M4 results table.
 """
 19_results_table.py
@@ -102,7 +102,7 @@ m4 = PanelOLS(s_idx["tfr"], exog,
               entity_effects=True, time_effects=True, drop_absorbed=True
               ).fit(cov_type="clustered", cluster_entity=True)
 
-# --- M4-FD: first-difference (the credible within estimator given AR(1)=0.948) ---
+# --- M4-FD: first-difference (additional within-country robustness check) ---
 fd = FirstDifferenceOLS(s_idx["tfr"], s_idx[CONTROLS]
                         ).fit(cov_type="clustered", cluster_entity=True)
 
@@ -206,8 +206,9 @@ lines.append("M4: 'ca' is absorbed by country FE — that is by design; the betw
 lines.append("question lives in Layer A (M1–M2), the within-country question in Layer B (M4, FD).")
 lines.append("FD model: 'ca' is time-invariant and differenced away — same logic.")
 lines.append("Cluster count = 14. Few-cluster fragility flagged in diagnostics (17_diagnostics).")
-lines.append("Given residual AR(1) ≈ 0.95 in M4, the first-difference column is the credible")
-lines.append("within-country estimator; M4 is reported alongside for transparency.")
+lines.append("Because the two-way FE residuals show strong serial correlation (AR(1)≈0.95), the")
+lines.append("first-difference column is reported as an additional robustness check; it should be")
+lines.append("interpreted cautiously as a short-run within-country association.")
 
 text_table = "\n".join(lines)
 print(text_table)
@@ -243,7 +244,7 @@ md_footer = (
     "in the first-difference column it is differenced away — both by design. "
     "Cluster count is 14; few-cluster fragility is documented in the diagnostics "
     "appendix. Given AR(1) ≈ 0.95 in M4 residuals, the first-difference column "
-    "is treated as the credible within-country estimator; M4 is reported for "
+    "is treated as an additional within-country robustness check; M4 is reported for "
     "transparency.*\n"
 )
 
