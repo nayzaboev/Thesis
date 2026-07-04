@@ -40,4 +40,4 @@ venv/
 
 # ── Figures (optional — commit these if you want plots versioned) ──
 # figures/
-# If you want figures tracked, leave the line above commented out
+# If you want figures tracked, leave the line above commented out.DS_Store
