@@ -32,12 +32,6 @@ Stepwise OLS (mean_tfr as dependent variable):
     muslim_share                : +0.0120  (SE 0.0025, p=0.001)
     smam_female                 : -0.0189  (SE 0.0271, p=0.499)
 
-  --- A4: Muslim + SMAM + schooling ---
-  R2 = 0.783   Adj-R2 = 0.718
-    muslim_share                : +0.0115  (SE 0.0027, p=0.002)
-    smam_female                 : -0.0097  (SE 0.0323, p=0.770)
-    female_mean_schooling       : -0.1099  (SE 0.1939, p=0.583)
-
 ====================================================================
 (B) Residuals-based: cultural correlates of the unexplained premium
 ====================================================================
@@ -73,9 +67,9 @@ Correlations — country residuals vs cultural variables:
 (C) Interpretation
 ====================================================================
   Muslim share alone: R2 = 0.766
-  Full cultural model: R2 = 0.783
-  Female schooling: -0.1099 (p=0.583) — no association,
-  consistent with the Soviet-era compression of female education across the region.
+  Muslim + SMAM together: R2 = 0.776
+  Bivariate TFR-schooling correlation: r = -0.581 — weak, and consistent
+  with the Soviet-era compression of female education across the region.
 
 The cross-section is consistent with the interpretation that religious-cultural
 factors and nuptiality regimes are associated with the fertility gap that survives

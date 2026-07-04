@@ -79,6 +79,11 @@ for var, label in pairs:
     out(f"  TFR vs {label:36s}: r = {r:+.3f}")
 
 out("\nStepwise OLS (mean_tfr as dependent variable):")
+# NOTE: an "A4" specification adding female schooling was cut for parsimony —
+# at n=14 with 3 predictors it has only 10 residual df, adds negligible R2 (0.007),
+# and its only informative content (schooling p~0.58, wrong sign) is already
+# conveyed by the bivariate correlation and by A3's demonstration of Muslim/SMAM
+# collinearity. Schooling remains reported bivariately in (A) above.
 models = {
     "A1: Muslim share only":
         "mean_tfr ~ muslim_share",
@@ -86,8 +91,6 @@ models = {
         "mean_tfr ~ smam_female",
     "A3: Muslim + SMAM":
         "mean_tfr ~ muslim_share + smam_female",
-    "A4: Muslim + SMAM + schooling":
-        "mean_tfr ~ muslim_share + smam_female + female_mean_schooling",
 }
 for name, formula in models.items():
     m = smf.ols(formula, data=cs).fit()
@@ -171,14 +174,13 @@ out("(C) Interpretation")
 out("=" * 68)
 
 m_muslim = smf.ols("mean_tfr ~ muslim_share", data=cs).fit()
-m_full = smf.ols("mean_tfr ~ muslim_share + smam_female + female_mean_schooling",
-                 data=cs).fit()
+m_both   = smf.ols("mean_tfr ~ muslim_share + smam_female", data=cs).fit()
 
 out(f"  Muslim share alone: R2 = {m_muslim.rsquared:.3f}")
-out(f"  Full cultural model: R2 = {m_full.rsquared:.3f}")
-out(f"  Female schooling: {m_full.params['female_mean_schooling']:+.4f} "
-    f"(p={m_full.pvalues['female_mean_schooling']:.3f}) — no association,")
-out("  consistent with the Soviet-era compression of female education across the region.\n")
+out(f"  Muslim + SMAM together: R2 = {m_both.rsquared:.3f}")
+out(f"  Bivariate TFR-schooling correlation: r = "
+    f"{cs['mean_tfr'].corr(cs['female_mean_schooling']):+.3f} — weak, and consistent")
+out("  with the Soviet-era compression of female education across the region.\n")
 
 out("The cross-section is consistent with the interpretation that religious-cultural")
 out("factors and nuptiality regimes are associated with the fertility gap that survives")

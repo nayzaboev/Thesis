@@ -1,4 +1,3 @@
-"""Part 2 scaffold."""
 # Layer B (within): Model 4, two-way FE + first-difference + IPS unit root test.
 """
 16_layerB_within.py
@@ -151,8 +150,17 @@ out("(C2) Wooldridge-style AR(1) serial-correlation check on FE residuals")
 out("="*70)
 out(f"  AR(1) coefficient on lagged residual: {ar1.params['resid_lag']:+.3f} "
     f"(p={ar1.pvalues['resid_lag']:.3f})")
-out("  Significant positive coefficient => residual serial correlation present;")
-out("  this is why clustered SEs (which we use) are the appropriate correction.")
+out("  An AR(1) coefficient this close to 1 indicates the FE-in-levels residuals")
+out("  are essentially non-stationary — consistent with the IPS finding that TFR")
+out("  in levels is I(1) but TFR in first differences is stationary (see C1). The")
+out("  levels-based FE model is therefore reported for transparency but should not")
+out("  be treated as the primary within-country estimate. The FIRST-DIFFERENCE model")
+out("  (B) is the more credible within-country estimator here, since differencing")
+out("  removes the near-integrated component that clustered standard errors alone")
+out("  cannot correct. This is a robustness limitation, not a specification error:")
+out("  both estimators point in the same direction on the covariates that matter")
+out("  (mortality negative and significant under FD; other economic controls small")
+out("  and insignificant in both).")
 
 # ----------------------------------------------------------------------------
 # Save
