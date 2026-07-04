@@ -1,47 +1,87 @@
 CROSS-SECTION ANALYSIS — cultural correlates of the CA fertility premium (n=14)
 
-================================================================
-(A) Bivariate correlations (n=14)
-================================================================
+====================================================================
+Cross-section n=14 — cultural correlates of the fertility premium
+====================================================================
+
+Upfront caveat: corr(CA dummy, Muslim share) = +0.827.
+Cultural variables largely re-describe the CA / non-CA split;
+they cannot uniquely identify religion vs ethnicity vs family norms.
+
+====================================================================
+(A) Direct: TFR ~ cultural variables
+====================================================================
+
+Bivariate correlations:
   TFR vs Muslim share (%)                    : r = +0.875
   TFR vs Female SMAM (years)                 : r = -0.568
   TFR vs Female mean schooling (years)       : r = -0.581
 
-  Saved -> figures/crosssection_scatter.png
+Stepwise OLS (mean_tfr as dependent variable):
 
-================================================================
-(B) Cross-section OLS regressions (n=14)
-================================================================
-CAUTION: n=14 limits statistical power. These are descriptive
-associations, not causal estimates. Report as illustrative.
-
-  --- B1: Muslim share only ---
+  --- A1: Muslim share only ---
   R2 = 0.766   Adj-R2 = 0.746
     muslim_share                : +0.0130  (SE 0.0021, p=0.000)
 
-  --- B2: SMAM only ---
+  --- A2: SMAM only ---
   R2 = 0.323   Adj-R2 = 0.267
     smam_female                 : -0.0897  (SE 0.0375, p=0.034)
 
-  --- B3: Muslim + SMAM ---
+  --- A3: Muslim + SMAM ---
   R2 = 0.776   Adj-R2 = 0.735
     muslim_share                : +0.0120  (SE 0.0025, p=0.001)
     smam_female                 : -0.0189  (SE 0.0271, p=0.499)
 
-  --- B4: Muslim + SMAM + schooling ---
+  --- A4: Muslim + SMAM + schooling ---
   R2 = 0.783   Adj-R2 = 0.718
     muslim_share                : +0.0115  (SE 0.0027, p=0.002)
     smam_female                 : -0.0097  (SE 0.0323, p=0.770)
     female_mean_schooling       : -0.1099  (SE 0.1939, p=0.583)
 
-================================================================
-(C) Key findings
-================================================================
-  Muslim share alone explains R2 = 0.766 of cross-country TFR variation.
-  Full cultural model (Muslim + SMAM + schooling) explains R2 = 0.783.
-  Female schooling coefficient: -0.1099 (p=0.583) — weak, as expected
-  given Soviet-era compression of female education across the region.
+====================================================================
+(B) Residuals-based: cultural correlates of the unexplained premium
+====================================================================
+Step 1: fit TFR ~ lagged economic controls + year FE (NO CA dummy).
+Step 2: country-average the residuals.
+Step 3: correlate country residuals with cultural variables.
+Interpretation: what the economic model cannot explain — does culture track it?
 
-  Interpretation: the ~0.97 CA premium surviving economic controls in
-  Layer A is largely attributable to religious/cultural factors (Muslim share)
-  and nuptiality patterns (earlier female marriage age).
+Country residuals (unexplained TFR after economics + year FE):
+  Kazakhstan     (Central Asia          ): +0.591
+  Tajikistan     (Central Asia          ): +0.290
+  Uzbekistan     (Central Asia          ): +0.205
+  Russia         (Rest of post-Soviet   ): +0.204
+  Kyrgyzstan     (Central Asia          ): +0.192
+  Estonia        (Rest of post-Soviet   ): +0.076
+  Belarus        (Rest of post-Soviet   ): +0.046
+  Latvia         (Rest of post-Soviet   ): -0.010
+  Armenia        (Rest of post-Soviet   ): -0.030
+  Lithuania      (Rest of post-Soviet   ): -0.073
+  Georgia        (Rest of post-Soviet   ): -0.153
+  Ukraine        (Rest of post-Soviet   ): -0.290
+  Azerbaijan     (Rest of post-Soviet   ): -0.303
+  Moldova        (Rest of post-Soviet   ): -0.676
+
+Correlations — country residuals vs cultural variables:
+  Muslim share (%)                    : r(mean_TFR)=+0.875  |  r(residual)=+0.452
+  Female SMAM (years)                 : r(mean_TFR)=-0.568  |  r(residual)=-0.176
+  Female mean schooling (years)       : r(mean_TFR)=-0.581  |  r(residual)=+0.192
+
+  Saved -> figures/crosssection_scatter.png
+
+====================================================================
+(C) Interpretation
+====================================================================
+  Muslim share alone: R2 = 0.766
+  Full cultural model: R2 = 0.783
+  Female schooling: -0.1099 (p=0.583) — no association,
+  consistent with the Soviet-era compression of female education across the region.
+
+The cross-section is consistent with the interpretation that religious-cultural
+factors and nuptiality regimes are associated with the fertility gap that survives
+economic controls in Layer A. It cannot identify these factors causally: n=14 is
+too small, cultural variables are collinear with Central Asia status, and cross-
+sectional averages cannot distinguish religion from ethnicity, family norms, or
+historical legacy. Azerbaijan (95% Muslim, mean TFR 1.88) also shows that Muslim
+share alone does not determine fertility — the story involves religion INTERACTING
+with nuptiality patterns and demographic history, not religion by itself.

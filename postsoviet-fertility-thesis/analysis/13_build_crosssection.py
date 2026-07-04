@@ -1,5 +1,3 @@
-"""Part 2 scaffold."""
-# Build n=14 country-average cross-section + cultural variables.
 """
 13_build_crosssection.py
 ------------------------
@@ -17,6 +15,12 @@ import pandas as pd
 p = pd.read_csv("data/processed/panel.csv")
 cv = pd.read_csv("data/manual/cultural_vars.csv")
 
+# --- Validation on cultural variables (catch the merge-conflict class of bugs) ---
+assert cv["country"].is_unique, \
+    "Duplicate country rows in cultural_vars.csv — check for unresolved merge markers."
+assert cv.notna().all().all(), \
+    f"Missing values in cultural_vars.csv:\n{cv.isna().sum()}"
+
 # Country-level means of TFR and economic variables
 agg = p.groupby("country").agg(
     mean_tfr=("tfr", "mean"),
@@ -29,12 +33,21 @@ agg = p.groupby("country").agg(
 agg["ca"] = (agg["bloc"] == "Central Asia").astype(int)
 agg["mean_tfr"] = agg["mean_tfr"].round(3)
 
+# --- Validation on the panel/cultural country-set match ---
+panel_countries = set(agg["country"])
+cv_countries = set(cv["country"])
+assert panel_countries == cv_countries, (
+    f"Country mismatch between panel and cultural_vars.csv:\n"
+    f"  In panel but not cultural: {panel_countries - cv_countries}\n"
+    f"  In cultural but not panel: {cv_countries - panel_countries}"
+)
+
 # Merge cultural variables
 cs = agg.merge(cv, on="country", how="left")
 
-# Verify
+# --- Final validation ---
 assert len(cs) == 14, f"Expected 14 rows, got {len(cs)}"
-assert cs.isnull().sum().sum() == 0, f"Missing values:\n{cs.isnull().sum()}"
+assert cs.isnull().sum().sum() == 0, f"Missing values after merge:\n{cs.isnull().sum()}"
 
 os.makedirs("data/processed", exist_ok=True)
 cs.to_csv("data/processed/crosssection.csv", index=False)
