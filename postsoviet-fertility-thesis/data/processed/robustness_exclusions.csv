@@ -1,0 +1,6 @@
+specification,ca_coefficient,ca_se,ca_pvalue,n_obs
+Baseline (all data),0.9707,0.1176,0.0,315
+Excl. Ukraine 2022-2023 (war),0.9651,0.1137,0.0,313
+Excl. Uzbekistan 2018-2023 (surge),0.9379,0.1261,0.0,309
+Excl. Tajikistan entirely,0.9512,0.1173,0.0,294
+Excl. Azerbaijan entirely,1.0542,0.1341,0.0,292

@@ -1,0 +1,15 @@
+excluded_country,ca_coefficient,ca_pvalue,n_obs,significant_001
+Armenia,0.9716,0.0,292,True
+Azerbaijan,1.0542,0.0,292,True
+Belarus,0.9707,0.0,292,True
+Estonia,0.9681,0.0,292,True
+Georgia,1.0409,0.0,292,True
+Kazakhstan,1.0807,0.0,292,True
+Kyrgyzstan,0.9628,0.0,292,True
+Latvia,0.9691,0.0,292,True
+Lithuania,0.9678,0.0,292,True
+Moldova,0.7777,0.0,292,True
+Russia,0.9588,0.0,292,True
+Tajikistan,0.9512,0.0,294,True
+Ukraine,0.9549,0.0,292,True
+Uzbekistan,1.0036,0.0,297,True
