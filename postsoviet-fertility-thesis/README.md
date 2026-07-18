@@ -21,7 +21,7 @@ Turkmenistan is excluded due to data-quality concerns.
 
 ## Headline Result
 
-The Central Asia fertility premium (average of 2.89 vs 1.57 children per woman elsewhere) is a raw gap of **+1.31**. Under lagged economic controls (log GDP-PPP, urbanisation, remittances, under-5 mortality) with year fixed effects and country-clustered standard errors, the premium narrows to **+0.97** and remains highly significant. Economics explains about a quarter of the gap; the remaining three quarters correspond to cross-country cultural variation, where Muslim population share alone explains **77%** of TFR variation across the 14 countries (r = +0.88).
+The Central Asia fertility premium (average of 2.89 vs 1.57 children per woman elsewhere) is a raw gap of **+1.31**. Under lagged economic controls (log GDP-PPP, urbanisation, remittances, under-5 mortality) with year fixed effects and country-clustered standard errors, the premium narrows to **+0.97** and remains highly significant. Selected economic controls account for roughly a quarter of the raw gap; the surviving premium is strongly associated with cross-country cultural and nuptiality indicators, especially Muslim population share (r = +0.88 with mean TFR; r = +0.45 with country-level residuals after stripping economic controls). These associations are descriptive, not causal.
 
 ## Project Structure
 
@@ -88,6 +88,7 @@ python analysis/16_layerB_within.py
 python analysis/17_diagnostics.py
 python analysis/18_crosssection.py
 python analysis/19_results_table.py
+python analysis/20_robustness.py
 
 # SMAM primary-data computations (order-independent; each updates cultural_vars.csv)
 python analysis/compute_blr_smam.py
