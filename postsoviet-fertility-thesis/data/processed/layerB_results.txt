@@ -1,4 +1,4 @@
-LAYER B RESULTS — within-country (two-way FE), first-difference, and stationarity/serial-correlation diagnostics.
+LAYER B RESULTS — within-country (two-way FE), first-difference (with and without year effects), and stationarity/serial-correlation diagnostics.
 
 ======================================================================
 (A) TWO-WAY FIXED EFFECTS  (country + year, clustered SE by country)
@@ -12,16 +12,30 @@ Note: CA dummy and time-invariant vars are absorbed by country effects (expected
   under5_mortality_lag1       : -0.0040  (SE 0.0085, p=0.642)
 
 ======================================================================
-(B) FIRST-DIFFERENCE model  (delta-TFR on delta-controls)
+(B1) FIRST-DIFFERENCE model — NO year effects
 ======================================================================
-N = 301   within-ish R2 = 0.056
+N = 301   R2 = 0.056
 
   log_gdp_ppp_lag1            : +0.1253  (SE 0.0708, p=0.078)
   urban_pop_pct_lag1          : -0.0043  (SE 0.0131, p=0.742)
   remittances_gdp_pct_lag1    : +0.0005  (SE 0.0022, p=0.818)
   under5_mortality_lag1       : -0.0083  (SE 0.0033, p=0.013)
 
-  Compare signs/magnitudes to (A). Broad agreement => within story is robust.
+======================================================================
+(B2) FIRST-DIFFERENCE model — WITH year effects
+======================================================================
+N = 301   R2 = 0.257
+
+  d_log_gdp_ppp_lag1          : +0.0541  (SE 0.1349, p=0.688)
+  d_urban_pop_pct_lag1        : +0.0251  (SE 0.0166, p=0.129)
+  d_remittances_gdp_pct_lag1  : +0.0005  (SE 0.0022, p=0.808)
+  d_under5_mortality_lag1     : -0.0001  (SE 0.0035, p=0.968)
+
+  SENSITIVITY CHECK: compare B1 (no year FE) vs B2 (with year FE).
+  If a coefficient is significant in B1 but not in B2, the result was
+  driven by common time shocks rather than within-country variation.
+  Coefficients that survive in both B1 and B2 are more credible.
+  ** under5_mortality_lag1: significant in B1 (p=0.013) but NOT in B2 (p=0.968). This result is SENSITIVE to year effects.
 
 ======================================================================
 (C1) Im-Pesaran-Shin panel unit-root (t-bar = mean of per-country ADF stats)
@@ -47,13 +61,16 @@ Approx IPS 5% critical t-bar for these dims is around -1.7 to -2.3 (indicative o
 ======================================================================
   AR(1) coefficient on lagged residual: +0.948 (p=0.000)
   An AR(1) coefficient this close to 1 indicates the FE-in-levels residuals
-  are essentially non-stationary — consistent with the IPS finding that TFR
-  in levels is I(1) but TFR in first differences is stationary (see C1). The
-  levels-based FE model is therefore reported for transparency but should not
-  be treated as the primary within-country estimate. The FIRST-DIFFERENCE model
-  (B) is the more credible within-country estimator here, since differencing
-  removes the near-integrated component that clustered standard errors alone
-  cannot correct. This is a robustness limitation, not a specification error:
-  both estimators point in the same direction on the covariates that matter
-  (mortality negative and significant under FD; other economic controls small
-  and insignificant in both).
+  are near-integrated — consistent with the IPS finding that TFR in levels
+  is I(1) but stationary in first differences (see C1 above).
+
+  INTERPRETATION OF LAYER B:
+  The levels-based FE model (A) is reported for transparency but should
+  not be treated as the primary within-country estimate. The first-
+  difference models (B1/B2) remove the near-integrated component. However,
+  the FD results are themselves sensitive to whether year effects are
+  included (see B1 vs B2). Therefore, Layer B as a whole is best treated
+  as a robustness exercise confirming that within-country economic effects
+  are small and fragile — consistent with Layer A's finding that the
+  fertility gap is structural and between-country, not driven by year-to-
+  year economic fluctuations within individual countries.
