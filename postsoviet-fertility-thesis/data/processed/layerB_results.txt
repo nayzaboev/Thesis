@@ -1,4 +1,4 @@
-LAYER B RESULTS — within-country (two-way FE), first-difference (with and without year effects), and stationarity/serial-correlation diagnostics.
+LAYER B RESULTS — within-country (two-way FE), first-difference (with and without year effects), and descriptive persistence checks (NOT formal panel unit-root or serial-correlation tests).
 
 ======================================================================
 (A) TWO-WAY FIXED EFFECTS  (country + year, clustered SE by country)
@@ -32,45 +32,57 @@ N = 301   R2 = 0.257
   d_under5_mortality_lag1     : -0.0001  (SE 0.0035, p=0.968)
 
   SENSITIVITY CHECK: compare B1 (no year FE) vs B2 (with year FE).
-  If a coefficient is significant in B1 but not in B2, the result was
-  sensitive to the inclusion of year effects, suggesting common time
-  Coefficients that survive in both B1 and B2 are more credible.
-  ** under5_mortality_lag1: significant in B1 (p=0.013) but NOT in B2 (p=0.968). This result is SENSITIVE to year effects.
+  If a coefficient is significant in B1 but not in B2, the estimate is
+  SENSITIVE to the inclusion of common year effects. This is a statement
+  about specification sensitivity — it does not by itself prove the B1
+  result was caused by common time shocks (loss of within-country
+  variation, multicollinearity, measurement error and over-control are
+  alternative explanations). Coefficients stable across B1 and B2 are more
+  credible.
+  ** under5_mortality_lag1: significant in B1 (p=0.013) but NOT in B2 (p=0.968). This estimate is SENSITIVE to year effects.
 
 ======================================================================
-(C1) Average ADF t-bar — panel unit-root check (mean of per-country ADF stats)
+(C1) Descriptive persistence summary — average per-country ADF t-statistic
 ======================================================================
-IMPLEMENTATION NOTE: this is the DESCRIPTIVE t-bar
-form — the simple average of per-country ADF(1) t-statistics. It is
-NOT the formal Im-Pesaran-Shin (IPS) W-statistic with exact p-values. It is
-directionally informative and adequate for a robustness section, but for
-formal IPS p-values use Stata (xtunitroot ips) or R (plm::purtest). Do not
-present the numbers below as formal IPS test results.
-More negative t-bar => stronger rejection of the unit-root null (=> stationary).
-A more negative t-bar suggests stationarity. Critical values are approximate and indicative only.
+IMPORTANT: this is a DESCRIPTIVE persistence summary — the simple average of
+per-country ADF(1) t-statistics. It is NOT the formal Im-Pesaran-Shin (IPS)
+panel unit-root test, it produces no valid p-values, and it does NOT
+establish that any series is I(1) or I(0). For a formal panel unit-root
+test use Stata (xtunitroot ips / xtunitroot fisher) or R (plm::purtest).
+A more negative average t-statistic indicates weaker persistence (values
+further from a unit root); this is reported only as descriptive context.
 
-  tfr                         : t-bar = -1.585  (from 14 countries)  <- unit root not rejected
-  log_gdp_ppp_lag1            : t-bar = -2.114  (from 14 countries)  <- likely stationary
-  urban_pop_pct_lag1          : t-bar = -1.394  (from 14 countries)  <- unit root not rejected
-  remittances_gdp_pct_lag1    : t-bar = -1.571  (from 14 countries)  <- unit root not rejected
-  under5_mortality_lag1       : t-bar = -3.933  (from 14 countries)  <- likely stationary
-  d_tfr (first difference)    : t-bar = -2.504  (from 14 countries)  <- stationary
+  tfr                         : avg ADF t = -1.585  (from 14 countries)  <- high persistence
+  log_gdp_ppp_lag1            : avg ADF t = -2.114  (from 14 countries)  <- lower persistence
+  urban_pop_pct_lag1          : avg ADF t = -1.394  (from 14 countries)  <- high persistence
+  remittances_gdp_pct_lag1    : avg ADF t = -1.571  (from 14 countries)  <- high persistence
+  under5_mortality_lag1       : avg ADF t = -3.933  (from 14 countries)  <- lower persistence
+  d_tfr (first difference)    : avg ADF t = -2.504  (from 14 countries)  <- lower persistence after differencing
 
 ======================================================================
-(C2) Residual AR(1) check on FE residuals
+(C2) Descriptive residual persistence check — AR(1) on FE residuals
 ======================================================================
+IMPORTANT: this is a DESCRIPTIVE AR(1) check on the fixed-effects residuals.
+It is NOT the Wooldridge-Drukker panel serial-correlation test. A high AR(1)
+coefficient indicates the FE-in-levels residuals are persistent, but it does
+NOT establish that the residuals contain a unit root, that TFR is I(1), or
+that the levels regression is spurious.
+
   AR(1) coefficient on lagged residual: +0.948 (p=0.000)
-  An AR(1) coefficient this close to 1 indicates the FE-in-levels residuals
-  are strongly persistent — consistent with the IPS finding that TFR in levels
-  is I(1) but stationary in first differences (see C1 above).
+  The FE-in-levels residuals are strongly persistent. Because of this
+  persistence, the first-difference models (B1/B2) are the more cautious
+  within-country specification and the levels FE model (A) should be read
+  as descriptive rather than as the primary within-country estimate.
 
   INTERPRETATION OF LAYER B:
-  The levels-based FE model (A) is reported for transparency but should
-  not be treated as the primary within-country estimate. The first-
-  difference models (B1/B2) remove the persistent trend component. However,
-  the FD results are themselves sensitive to whether year effects are
-  included (see B1 vs B2). Therefore, Layer B as a whole is best treated
-  as a robustness exercise confirming that within-country economic effects
-  are small and fragile — consistent with Layer A's finding that the
-  fertility gap is structural and between-country, not driven by year-to-
-  year economic fluctuations within individual countries.
+  Within the available annual panel, the associations between TFR and the
+  four selected macroeconomic indicators are generally imprecise and
+  sensitive to the treatment of common year effects (see B1 vs B2). Layer B
+  is therefore best read as a robustness exercise showing that these
+  particular within-country economic associations are small and fragile in
+  this sample. This does NOT establish that economic factors in general have
+  small effects, and it does not rule out other economic, policy or
+  demographic mechanisms. Consistent with Layer A, most of the Central
+  Asia-rest fertility difference is between-country rather than year-to-year
+  within-country variation, but the present design cannot identify the
+  mechanisms behind that between-country difference.

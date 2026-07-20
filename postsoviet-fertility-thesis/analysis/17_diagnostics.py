@@ -1,4 +1,3 @@
-
 # VIF, Mundlak FE-vs-RE test, few-cluster caveat.
 """
 17_diagnostics.py
@@ -29,7 +28,6 @@ import numpy as np
 import pandas as pd
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.tools.tools import add_constant
-from linearmodels.panel import PanelOLS, RandomEffects
 
 CONTROLS = ["log_gdp_ppp_lag1", "urban_pop_pct_lag1",
             "remittances_gdp_pct_lag1", "under5_mortality_lag1"]
@@ -66,9 +64,26 @@ for i, col in enumerate(X.columns):
 #   version of this script did) returns a number, but that number is not a
 #   valid chi-square statistic and must not be reported.
 #
-#   The Mundlak (1978) auxiliary-regression test is the robust alternative and
-#   is valid with clustered standard errors. Add the country means of the
-#   regressors to a pooled model; H0: all mean coefficients = 0 (RE consistent).
+# CORRECT MUNDLAK RESTRICTION:
+#   We estimate a hybrid (correlated random effects) model that includes BOTH
+#   the country means of the regressors (between component) and the deviations
+#   from those means (within component):
+#
+#       tfr = a + b_ca*CA + sum_j beta_between_j * xbar_j
+#                        + sum_j beta_within_j  * (x_j - xbar_j) + year FE
+#
+#   The Mundlak / Hausman equivalence test asks whether the between and within
+#   slopes are EQUAL. If they are equal, pooling them (i.e. random effects) is
+#   consistent; if they differ, unobserved country effects are correlated with
+#   the regressors and the within (fixed-effects) separation is required.
+#
+#       H0: beta_between_j = beta_within_j   for all j   (RE consistent)
+#
+#   NOTE: testing H0: beta_between_j = 0 is NOT the Mundlak test. In this
+#   parameterisation the coefficient on the country mean equals
+#   (beta_between - beta_within), so "= 0" only coincides with the Mundlak
+#   null when the means are entered WITHOUT the deviations. Because this model
+#   contains both components, the correct restriction is equality, not zero.
 out("\n" + "="*64)
 out("(B) Mundlak test — fixed effects vs random effects")
 out("="*64)
@@ -85,16 +100,38 @@ between = [f"{c}_mean" for c in CONTROLS]
 within  = [f"{c}_dev"  for c in CONTROLS]
 f_m = "tfr ~ ca + " + " + ".join(between + within) + " + C(year)"
 mund = smf.ols(f_m, data=m).fit(cov_type="cluster", cov_kwds={"groups": m["country"]})
-ftest = mund.f_test(" , ".join([f"{v} = 0" for v in between]))
-out(f"  H0: all between-country mean coefficients = 0 (random effects consistent)")
+
+# Correct Mundlak restriction: between slope == within slope for every control.
+restrictions = " , ".join([f"{b} = {w}" for b, w in zip(between, within)])
+ftest = mund.f_test(restrictions)
+out("  H0: between-country slope = within-country slope for every control")
+out("      (equivalently, no correlation between country effects and regressors")
+out("       => random effects is consistent)")
 out(f"  F({int(ftest.df_num)}, {int(ftest.df_denom)}) = {float(ftest.fvalue):.3f}   "
     f"p = {float(ftest.pvalue):.4f}")
 if float(ftest.pvalue) < 0.05:
-    out("  => Reject H0: unobserved country effects are correlated with the")
-    out("     regressors. Random effects is inconsistent; the between/within")
-    out("     separation used in Layer A (M2h) and Layer B is required.")
+    out("  => Reject H0: within and between slopes differ. Unobserved country")
+    out("     effects are correlated with the regressors, so random effects is")
+    out("     inconsistent and the between/within separation used in Layer A")
+    out("     (M2h) and Layer B is required.")
 else:
-    out("  => Fail to reject H0: no evidence that random effects is inconsistent.")
+    out("  => Fail to reject H0: no statistical evidence that the within and")
+    out("     between slopes differ, i.e. no evidence that random effects is")
+    out("     inconsistent. The between/within (Mundlak hybrid) specification is")
+    out("     retained for transparency and to report both components separately,")
+    out("     but this test does NOT establish that random effects is inconsistent.")
+
+# For completeness, also report the (incorrect-as-a-Mundlak-test) joint
+# significance of the country means. This is a test of whether the between
+# variation matters at all, NOT the RE-consistency test above. Reported only
+# so the difference between the two nulls is transparent.
+ftest_zero = mund.f_test(" , ".join([f"{v} = 0" for v in between]))
+out("")
+out("  For reference only — joint significance of the country-mean terms")
+out("  (this is NOT the RE-consistency test; it asks whether between-country")
+out("   variation is jointly non-zero):")
+out(f"    F({int(ftest_zero.df_num)}, {int(ftest_zero.df_denom)}) = "
+    f"{float(ftest_zero.fvalue):.3f}   p = {float(ftest_zero.pvalue):.4f}")
 
 # ----------------------------------------------------------------------------
 # (C) Few-cluster caveat
