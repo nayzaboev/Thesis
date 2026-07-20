@@ -1,0 +1,8 @@
+series,cv_slope_per_year,p_value,cv_start,cv_end
+All 14 countries,-0.000701,0.7578,0.3981,0.4279
+Bloc: Central Asia,-0.007507,0.0,0.2449,0.0948
+Bloc: Rest of post-Soviet,0.001632,0.0248,0.1357,0.1921
+Sub-group: Baltic,-0.000966,0.3592,0.0543,0.0638
+Sub-group: Caucasus,7.4e-05,0.972,0.0722,0.0412
+Sub-group: Central Asia,-0.007507,0.0,0.2449,0.0948
+Sub-group: Eastern European,0.00435,0.0499,0.1319,0.2412

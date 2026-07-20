@@ -1,5 +1,5 @@
 
-# VIF, Hausman test, serial-correlation tests.
+# VIF, Mundlak FE-vs-RE test, few-cluster caveat.
 """
 17_diagnostics.py
 -----------------
@@ -11,8 +11,9 @@ Produces:
       this checks whether the new variable set (PPP-GDP, under-5 mortality, no FLFP,
       no tertiary enrolment) is cleaner.
 
-  (B) Hausman test, fixed effects vs random effects — the formal justification for
-      using FE (Layer B). H0: RE is consistent/efficient. Rejection => prefer FE.
+  (B) Mundlak test for FE vs RE — the formal justification for the between/within
+      separation. Replaces the classical Hausman test, which is undefined here
+      because Var(b_FE) - Var(b_RE) is not positive definite (see note in code).
 
   (C) Few-cluster caveat — consolidated note; 14 clusters is below the safe
       threshold, so cluster-robust SEs may be anti-conservative; wild-cluster
@@ -56,39 +57,44 @@ for i, col in enumerate(X.columns):
     out(f"  {col:28s}: {vif:5.2f}{flag}")
 
 # ----------------------------------------------------------------------------
-# (B) Hausman test (FE vs RE)
+# (B) Mundlak test for FE vs RE  (replaces the classical Hausman test)
 # ----------------------------------------------------------------------------
+# WHY NOT THE CLASSICAL HAUSMAN TEST:
+#   The classical statistic requires Var(b_FE) - Var(b_RE) to be positive
+#   definite. In this sample it is NOT: three of its four eigenvalues are
+#   negative. Computing the statistic with a pseudo-inverse (as an earlier
+#   version of this script did) returns a number, but that number is not a
+#   valid chi-square statistic and must not be reported.
+#
+#   The Mundlak (1978) auxiliary-regression test is the robust alternative and
+#   is valid with clustered standard errors. Add the country means of the
+#   regressors to a pooled model; H0: all mean coefficients = 0 (RE consistent).
 out("\n" + "="*64)
-out("(B) Hausman test — fixed effects vs random effects")
+out("(B) Mundlak test — fixed effects vs random effects")
 out("="*64)
-di = d.set_index(["country", "year"])
-exog = add_constant(di[CONTROLS])
+out("Classical Hausman is NOT reported: Var(b_FE) - Var(b_RE) is not positive")
+out("definite in this sample (3 of 4 eigenvalues negative), so the statistic")
+out("is undefined. The Mundlak auxiliary-regression test is used instead.\n")
 
-fe = PanelOLS(di["tfr"], exog, entity_effects=True).fit()
-re = RandomEffects(di["tfr"], exog).fit()
-
-# Hausman statistic: (b_fe - b_re)' [Var(b_fe) - Var(b_re)]^-1 (b_fe - b_re)
-common = [c for c in CONTROLS if c in fe.params.index and c in re.params.index]
-b_fe = fe.params[common].values
-b_re = re.params[common].values
-v_fe = fe.cov.loc[common, common].values
-v_re = re.cov.loc[common, common].values
-diff = b_fe - b_re
-vdiff = v_fe - v_re
-try:
-    stat = float(diff.T @ np.linalg.pinv(vdiff) @ diff)
-    from scipy import stats as ss
-    dfree = len(common)
-    pval = 1 - ss.chi2.cdf(stat, dfree)
-    out(f"  Hausman chi2({dfree}) = {stat:.2f}   p = {pval:.4f}")
-    if pval < 0.05:
-        out("  => Reject H0: random effects is inconsistent. FIXED EFFECTS preferred.")
-    else:
-        out("  => Fail to reject H0: random effects not rejected (RE may be acceptable).")
-    out("  (We use FE on substantive grounds regardless: strong country heterogeneity,")
-    out("   and the research question concerns between-country differences handled in Layer A.)")
-except Exception as e:
-    out(f"  Hausman computation issue: {e}")
+import statsmodels.formula.api as smf
+m = d.copy()
+for c in CONTROLS:
+    m[f"{c}_mean"] = m.groupby("country")[c].transform("mean")
+    m[f"{c}_dev"]  = m[c] - m[f"{c}_mean"]
+between = [f"{c}_mean" for c in CONTROLS]
+within  = [f"{c}_dev"  for c in CONTROLS]
+f_m = "tfr ~ ca + " + " + ".join(between + within) + " + C(year)"
+mund = smf.ols(f_m, data=m).fit(cov_type="cluster", cov_kwds={"groups": m["country"]})
+ftest = mund.f_test(" , ".join([f"{v} = 0" for v in between]))
+out(f"  H0: all between-country mean coefficients = 0 (random effects consistent)")
+out(f"  F({int(ftest.df_num)}, {int(ftest.df_denom)}) = {float(ftest.fvalue):.3f}   "
+    f"p = {float(ftest.pvalue):.4f}")
+if float(ftest.pvalue) < 0.05:
+    out("  => Reject H0: unobserved country effects are correlated with the")
+    out("     regressors. Random effects is inconsistent; the between/within")
+    out("     separation used in Layer A (M2h) and Layer B is required.")
+else:
+    out("  => Fail to reject H0: no evidence that random effects is inconsistent.")
 
 # ----------------------------------------------------------------------------
 # (C) Few-cluster caveat
@@ -108,6 +114,6 @@ out("  This is a known small-N limitation of the post-Soviet sample, not a codin
 # ----------------------------------------------------------------------------
 os.makedirs("data/processed", exist_ok=True)
 with open("data/processed/diagnostics_results.txt", "w") as f:
-    f.write("DIAGNOSTICS — VIF, Hausman (FE vs RE), few-cluster caveat.\n\n")
+    f.write("DIAGNOSTICS — VIF, Mundlak test (FE vs RE), few-cluster caveat.\n\n")
     f.write("\n".join(lines))
 out("\nSaved -> data/processed/diagnostics_results.txt")

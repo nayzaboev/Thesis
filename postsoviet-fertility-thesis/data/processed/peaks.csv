@@ -1,15 +1,15 @@
-country,year,tfr,subgroup
-Estonia,2008,1.718613,Baltic
-Latvia,2016,1.742342,Baltic
-Lithuania,2015,1.705244,Baltic
-Armenia,2022,1.719447,Caucasus
-Azerbaijan,2013,2.147511,Caucasus
-Georgia,2016,2.22789,Caucasus
-Kazakhstan,2021,3.32,Central Asia
-Kyrgyzstan,2019,3.33,Central Asia
-Tajikistan,2004,3.507367,Central Asia
-Uzbekistan,2023,3.5,Central Asia
-Belarus,2015,1.728063,Eastern European
-Moldova,2016,1.89,Eastern European
-Russia,2015,1.790093,Eastern European
-Ukraine,2012,1.528347,Eastern European
+country,subgroup,peak_year,peak_tfr
+Estonia,Baltic,2008,1.72
+Latvia,Baltic,2016,1.74
+Lithuania,Baltic,2015,1.71
+Armenia,Caucasus,2022,1.72
+Azerbaijan,Caucasus,2013,2.15
+Georgia,Caucasus,2016,2.23
+Kazakhstan,Central Asia,2021,3.32
+Kyrgyzstan,Central Asia,2019,3.33
+Tajikistan,Central Asia,2004,3.51
+Uzbekistan,Central Asia,2023,3.5
+Belarus,Eastern European,2015,1.73
+Moldova,Eastern European,2016,1.89
+Russia,Eastern European,2015,1.79
+Ukraine,Eastern European,2012,1.53

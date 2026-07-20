@@ -98,10 +98,21 @@ M_period: CA × period interactions — is the gap widening?
 Periods: 2000-2007 (base), 2008-2016, 2017-2023
 
   CA gap in 2000-2007 (base period): +0.795 (SE 0.171, p=0.000)
-  CA gap in 2008-2016: +0.888  (base +0.795 + Δ +0.093, interaction p=0.553)
-  CA gap in 2017-2023: +1.174  (base +0.795 + Δ +0.379, interaction p=0.102)
+  CA gap in 2008-2016: +0.888  (base +0.795 + Δ +0.093, interaction p=0.551)
+  CA gap in 2017-2023: +1.174  (base +0.795 + Δ +0.379, interaction p=0.101)
 
   R2: 0.918
-  Interpretation: if the interaction terms are significant, the CA premium
-  changed over time. A positive interaction for 2017-2023 means the gap
-  WIDENED — consistent with the post-2017 Uzbekistan fertility surge.
+
+  95% confidence intervals on the period interactions:
+    Delta 2008-2016: +0.093  CI [-0.214, +0.401]  p=0.551
+    Delta 2017-2023: +0.379  CI [-0.074, +0.831]  p=0.101
+
+  HONEST READING: the point estimate of the gap rises across periods
+  (+0.79 -> +0.89 -> +1.17), and the raw descriptive gap rises too
+  (1.23 -> 1.24 -> 1.50). HOWEVER, neither period interaction is
+  statistically significant at conventional levels, and the 95% CI for
+  the 2017-2023 term includes zero. With 14 clusters the test is
+  underpowered. The correct claim is therefore: 'the gap did not narrow,
+  and the point estimates suggest widening after 2017, but the widening
+  cannot be statistically distinguished from no change in this sample.'
+  Do NOT write that the gap 'significantly widened'.

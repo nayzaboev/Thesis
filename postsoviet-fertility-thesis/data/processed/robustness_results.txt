@@ -1,10 +1,9 @@
-ROBUSTNESS — leave-one-out, exclusion sensitivity, descriptive table
+ROBUSTNESS — leave-one-out, exclusions, descriptive table, HC3 inference, permutation test, interaction fragility
 
 ======================================================================
 (A) LEAVE-ONE-COUNTRY-OUT — M2 CA coefficient stability
 ======================================================================
-Baseline M2 (all 14 countries, N=315):
-CA = +0.971 (p=0.000)
+Baseline M2 (14 countries, N=315): CA = +0.971 (p=0.000)
 
   Drop Armenia       : CA = +0.972  (p=0.000, N=292)
   Drop Azerbaijan    : CA = +1.054  (p=0.000, N=292)
@@ -23,18 +22,18 @@ CA = +0.971 (p=0.000)
 
   Range: [+0.778, +1.081]
   All significant at 1%: Yes
-  Interpretation: the CA premium is NOT driven by any single country.
+  The premium is not driven by any single country.
 
 ======================================================================
-(B) EXCLUSION SENSITIVITY — substantively motivated restrictions
+(B) EXCLUSION SENSITIVITY
 ======================================================================
-  Baseline (all data)                     : CA = +0.971  (SE 0.118, p=0.000, N=315)
-  Excl. Ukraine 2022-2023 (war)           : CA = +0.965  (SE 0.114, p=0.000, N=313)
-  Excl. Uzbekistan 2018-2023 (surge)      : CA = +0.938  (SE 0.126, p=0.000, N=309)
-  Excl. Tajikistan entirely               : CA = +0.951  (SE 0.117, p=0.000, N=294)
-  Excl. Azerbaijan entirely               : CA = +1.054  (SE 0.134, p=0.000, N=292)
+  Baseline (all data)                   : CA = +0.971 (SE 0.118, p=0.000, N=315)
+  Excl. Ukraine 2022-2023 (war)         : CA = +0.965 (SE 0.114, p=0.000, N=313)
+  Excl. Uzbekistan 2018-2023 (surge)    : CA = +0.938 (SE 0.126, p=0.000, N=309)
+  Excl. Tajikistan entirely             : CA = +0.951 (SE 0.117, p=0.000, N=294)
+  Excl. Azerbaijan entirely             : CA = +1.054 (SE 0.134, p=0.000, N=292)
 
-  Interpretation: the CA premium is robust to all four exclusions.
+  The premium is robust to all four exclusions.
 
 ======================================================================
 (C) DESCRIPTIVE COUNTRY TABLE — TFR at key time points
@@ -56,3 +55,41 @@ Lithuania   Rest of post-Soviet      1.38      1.50      1.63      1.20         
 Moldova     Rest of post-Soviet      1.50      1.70      1.81      1.73              0.23             -0.08
 Russia      Rest of post-Soviet      1.19      1.59      1.63      1.45              0.26             -0.18
 Ukraine     Rest of post-Soviet      1.11      1.44      1.30      0.98             -0.13             -0.32
+
+======================================================================
+(D) COUNTRY-MEAN HC3 — small-sample-safe inference
+======================================================================
+OLS on 14 country averages with HC3 SEs. Sidesteps the 14-cluster problem.
+
+  CA: +1.324  (HC3 SE 0.211, p=0.000)
+  R2: 0.878
+  Note: this is the RAW gap at country level (no economic controls).
+
+======================================================================
+(E) PERMUTATION TEST — nonparametric significance of the raw gap
+======================================================================
+  Observed gap: +1.324
+  Groupings with gap >= observed: 1 of 1001   permutation p = 0.0010
+  The observed CA grouping is the most extreme of all 1,001 four-country splits.
+  CAVEAT: this tests whether the grouping is unusual, not whether 'Central Asia'
+  causes higher fertility. It is a nonparametric check on the raw gap only.
+
+======================================================================
+(F) INTERACTION FRAGILITY — CA x remittances
+======================================================================
+Is the CA x remittances interaction driven by particular countries?
+
+  Drop none                      : CA x rem = +0.0157  p=0.001
+  Drop Tajikistan                : CA x rem = +0.0143  p=0.008
+  Drop Kyrgyzstan                : CA x rem = +0.0164  p=0.002
+  Drop Tajikistan + Kyrgyzstan   : CA x rem = +0.0265  p=0.268
+
+  HONEST READING: the interaction survives dropping Tajikistan OR Kyrgyzstan
+  individually, but collapses when BOTH are removed. It therefore rests on
+  two of the four Central Asian countries and should be reported as
+  suggestive of a labour-migration channel in the high-remittance economies,
+  NOT as a general Central Asian regularity.
+
+  Note also that all 8 missing remittance observations fall in Central Asia
+  (Uzbekistan 5, Tajikistan 2, Kyrgyzstan 1), so remittance coverage is
+  weakest precisely in the group of interest.

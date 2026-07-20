@@ -1,0 +1,15 @@
+country,bloc,subgroup,tfr_start,tfr_end,abs_change,growth
+Armenia,Rest of post-Soviet,Caucasus,1.47,1.714,0.244,0.00668
+Azerbaijan,Rest of post-Soviet,Caucasus,1.698,1.67,-0.028,-0.00071
+Belarus,Rest of post-Soviet,Eastern European,1.272,1.208,-0.064,-0.00226
+Estonia,Rest of post-Soviet,Baltic,1.347,1.35,0.003,9e-05
+Georgia,Rest of post-Soviet,Caucasus,1.609,1.81,0.201,0.00511
+Kazakhstan,Central Asia,Central Asia,1.898,3.012,1.114,0.02008
+Kyrgyzstan,Central Asia,Central Asia,2.576,2.8,0.224,0.00362
+Latvia,Rest of post-Soviet,Baltic,1.244,1.338,0.093,0.00313
+Lithuania,Rest of post-Soviet,Baltic,1.383,1.201,-0.182,-0.00614
+Moldova,Rest of post-Soviet,Eastern European,1.496,1.731,0.234,0.00633
+Russia,Rest of post-Soviet,Eastern European,1.19,1.449,0.259,0.00857
+Tajikistan,Central Asia,Central Asia,3.49,3.072,-0.418,-0.00554
+Ukraine,Rest of post-Soviet,Eastern European,1.108,0.977,-0.131,-0.00549
+Uzbekistan,Central Asia,Central Asia,2.696,3.5,0.804,0.01135

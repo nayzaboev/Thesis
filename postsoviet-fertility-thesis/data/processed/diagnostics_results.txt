@@ -1,4 +1,4 @@
-DIAGNOSTICS — VIF, Hausman (FE vs RE), few-cluster caveat.
+DIAGNOSTICS — VIF, Mundlak test (FE vs RE), few-cluster caveat.
 
 ================================================================
 (A) Variance Inflation Factors (lagged covariates)
@@ -11,12 +11,17 @@ Rule of thumb: VIF > 5 concerning, > 10 serious.
   under5_mortality_lag1       :  3.94  <- OK
 
 ================================================================
-(B) Hausman test — fixed effects vs random effects
+(B) Mundlak test — fixed effects vs random effects
 ================================================================
-  Hausman chi2(4) = 15.18   p = 0.0044
-  => Reject H0: random effects is inconsistent. FIXED EFFECTS preferred.
-  (We use FE on substantive grounds regardless: strong country heterogeneity,
-   and the research question concerns between-country differences handled in Layer A.)
+Classical Hausman is NOT reported: Var(b_FE) - Var(b_RE) is not positive
+definite in this sample (3 of 4 eigenvalues negative), so the statistic
+is undefined. The Mundlak auxiliary-regression test is used instead.
+
+  H0: all between-country mean coefficients = 0 (random effects consistent)
+  F(4, 13) = 21.225   p = 0.0000
+  => Reject H0: unobserved country effects are correlated with the
+     regressors. Random effects is inconsistent; the between/within
+     separation used in Layer A (M2h) and Layer B is required.
 
 ================================================================
 (C) Few-cluster caveat

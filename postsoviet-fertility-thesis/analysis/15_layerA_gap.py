@@ -156,7 +156,11 @@ sample["period"] = pd.cut(sample["year"],
     bins=[1999, 2007, 2016, 2023],
     labels=["2000-2007", "2008-2016", "2017-2023"])
 
-f_per = "tfr ~ ca * C(period) + " + " + ".join(CONTROLS) + " + C(year)"
+# NOTE: "ca * C(period)" together with C(year) is rank-deficient — period main
+# effects are perfectly collinear with the year dummies. We therefore include
+# the CA x period INTERACTIONS only, keeping full year fixed effects. This is
+# numerically identical on the interaction terms but the design matrix is full rank.
+f_per = "tfr ~ ca + " + " + ".join(CONTROLS) + " + C(year) + ca:C(period)"
 m_per = smf.ols(f_per, data=sample).fit(
     cov_type="cluster", cov_kwds={"groups": sample["country"]})
 
@@ -174,9 +178,24 @@ for per in ["2008-2016", "2017-2023"]:
             f"interaction p={m_per.pvalues[inter_key]:.3f})")
 
 out(f"\n  R2: {m_per.rsquared:.3f}")
-out("  Interpretation: if the interaction terms are significant, the CA premium")
-out("  changed over time. A positive interaction for 2017-2023 means the gap")
-out("  WIDENED — consistent with the post-2017 Uzbekistan fertility surge.")
+# Report confidence intervals — the point estimates rise but significance is the issue
+ci = m_per.conf_int()
+out("\n  95% confidence intervals on the period interactions:")
+for per in ["2008-2016", "2017-2023"]:
+    k = f"ca:C(period)[T.{per}]"
+    if k in m_per.params.index:
+        lo, hi = ci.loc[k]
+        out(f"    Delta {per}: {m_per.params[k]:+.3f}  CI [{lo:+.3f}, {hi:+.3f}]  p={m_per.pvalues[k]:.3f}")
+out("")
+out("  HONEST READING: the point estimate of the gap rises across periods")
+out("  (+0.79 -> +0.89 -> +1.17), and the raw descriptive gap rises too")
+out("  (1.23 -> 1.24 -> 1.50). HOWEVER, neither period interaction is")
+out("  statistically significant at conventional levels, and the 95% CI for")
+out("  the 2017-2023 term includes zero. With 14 clusters the test is")
+out("  underpowered. The correct claim is therefore: 'the gap did not narrow,")
+out("  and the point estimates suggest widening after 2017, but the widening")
+out("  cannot be statistically distinguished from no change in this sample.'")
+out("  Do NOT write that the gap 'significantly widened'.")
 
 # =====================================================================
 # Save
