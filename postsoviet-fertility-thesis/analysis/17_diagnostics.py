@@ -1,4 +1,4 @@
-"""Part 2 scaffold."""
+
 # VIF, Hausman test, serial-correlation tests.
 """
 17_diagnostics.py

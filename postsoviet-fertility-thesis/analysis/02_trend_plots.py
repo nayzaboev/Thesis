@@ -18,7 +18,7 @@ REPLACEMENT = 2.1  # replacement-level fertility, drawn as a reference line
 
 SUB_COLORS = {
     "Central Asia": "#c1121f",   # red — the focus group
-    "Slavic":       "#14213d",   # navy
+    "Eastern European":       "#14213d",   # navy
     "Baltic":       "#4a6fa5",   # blue
     "Caucasus":     "#2a9d8f",   # teal
 }

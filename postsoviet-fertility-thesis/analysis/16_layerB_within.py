@@ -23,9 +23,9 @@ Four estimators / tests:
        by within-country covariate variation.
 
   (C) DIAGNOSTICS for non-stationarity / serial correlation:
-      - Im-Pesaran-Shin (IPS) panel unit-root test on TFR and each covariate
+      - Average ADF t-bar panel unit-root check on TFR and each covariate
         (heterogeneous-panel test; handles the unbalanced structure reasonably).
-      - Wooldridge test for AR(1) serial correlation in the FE residuals.
+      - Residual AR(1) check for serial correlation in the FE residuals.
 
 Controls (lagged 1 year): log_gdp_ppp_lag1, urban_pop_pct_lag1,
 remittances_gdp_pct_lag1, under5_mortality_lag1
@@ -117,7 +117,7 @@ for v in d_controls:
 # --- Compare B1 and B2 ---
 out("\n  SENSITIVITY CHECK: compare B1 (no year FE) vs B2 (with year FE).")
 out("  If a coefficient is significant in B1 but not in B2, the result was")
-out("  driven by common time shocks rather than within-country variation.")
+out("  sensitive to the inclusion of year effects, suggesting common time")
 out("  Coefficients that survive in both B1 and B2 are more credible.")
 
 # Flag any coefficient that flips significance
@@ -134,7 +134,7 @@ for v_raw, v_d in zip(CONTROLS, d_controls):
         pass
 
 # ----------------------------------------------------------------------------
-# (C1) Im-Pesaran-Shin panel unit-root test
+# (C1) Average ADF t-bar panel unit-root check
 #      Implemented manually: per-country ADF(1) t-stats, averaged (t-bar),
 #      reported with the per-series mean ADF stat. (No external panel-root pkg.)
 # ----------------------------------------------------------------------------
@@ -153,16 +153,16 @@ def ips_tbar(panel_df, var):
     return (np.mean(stats), len(stats)) if stats else (np.nan, 0)
 
 out("\n" + "="*70)
-out("(C1) Im-Pesaran-Shin panel unit-root (t-bar = mean of per-country ADF stats)")
+out("(C1) Average ADF t-bar — panel unit-root check (mean of per-country ADF stats)")
 out("="*70)
-out("IMPLEMENTATION NOTE (report this honestly): this is the DESCRIPTIVE t-bar")
-out("form of IPS — the simple average of per-country ADF(1) t-statistics. It is")
-out("NOT the full standardized IPS W-statistic with exact p-values. It is")
+out("IMPLEMENTATION NOTE: this is the DESCRIPTIVE t-bar")
+out("form — the simple average of per-country ADF(1) t-statistics. It is")
+out("NOT the formal Im-Pesaran-Shin (IPS) W-statistic with exact p-values. It is")
 out("directionally informative and adequate for a robustness section, but for")
 out("formal IPS p-values use Stata (xtunitroot ips) or R (plm::purtest). Do not")
-out("present the numbers below as exact IPS test p-values.")
+out("present the numbers below as formal IPS test results.")
 out("More negative t-bar => stronger rejection of the unit-root null (=> stationary).")
-out("Approx IPS 5% critical t-bar for these dims is around -1.7 to -2.3 (indicative only).\n")
+out("A more negative t-bar suggests stationarity. Critical values are approximate and indicative only.\n")
 for var in ["tfr"] + CONTROLS:
     tbar, k = ips_tbar(p_idx, var)
     flag = ""
@@ -178,8 +178,8 @@ out(f"  {'d_tfr (first difference)':28s}: t-bar = {tbar_d:+.3f}  (from {k_d} cou
     f"{'  <- stationary' if tbar_d < -2.0 else ''}")
 
 # ----------------------------------------------------------------------------
-# (C2) Wooldridge AR(1) test for serial correlation in panel residuals
-#      Regress FE residuals on their own lag within country; H0: no AR(1).
+# (C2) Residual AR(1) check for serial correlation in panel residuals
+#      Regress FE residuals on their own lag within country.
 # ----------------------------------------------------------------------------
 res_df = d.copy()
 res_df["resid"] = fe_res.resids
@@ -190,18 +190,18 @@ ww = res_df.dropna(subset=["resid", "resid_lag"])
 ar1 = smf.ols("resid ~ resid_lag", data=ww).fit(
     cov_type="cluster", cov_kwds={"groups": ww["country"]})
 out("\n" + "="*70)
-out("(C2) Wooldridge-style AR(1) serial-correlation check on FE residuals")
+out("(C2) Residual AR(1) check on FE residuals")
 out("="*70)
 out(f"  AR(1) coefficient on lagged residual: {ar1.params['resid_lag']:+.3f} "
     f"(p={ar1.pvalues['resid_lag']:.3f})")
 out("  An AR(1) coefficient this close to 1 indicates the FE-in-levels residuals")
-out("  are near-integrated — consistent with the IPS finding that TFR in levels")
+out("  are strongly persistent — consistent with the IPS finding that TFR in levels")
 out("  is I(1) but stationary in first differences (see C1 above).")
 out("")
 out("  INTERPRETATION OF LAYER B:")
 out("  The levels-based FE model (A) is reported for transparency but should")
 out("  not be treated as the primary within-country estimate. The first-")
-out("  difference models (B1/B2) remove the near-integrated component. However,")
+out("  difference models (B1/B2) remove the persistent trend component. However,")
 out("  the FD results are themselves sensitive to whether year effects are")
 out("  included (see B1 vs B2). Therefore, Layer B as a whole is best treated")
 out("  as a robustness exercise confirming that within-country economic effects")

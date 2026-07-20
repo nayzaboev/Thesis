@@ -1,4 +1,4 @@
-"""Part 2 scaffold."""
+
 # Country x year x variable coverage grid + heatmap.
 """
 11_coverage_map.py

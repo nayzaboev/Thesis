@@ -33,21 +33,21 @@ N = 301   R2 = 0.257
 
   SENSITIVITY CHECK: compare B1 (no year FE) vs B2 (with year FE).
   If a coefficient is significant in B1 but not in B2, the result was
-  driven by common time shocks rather than within-country variation.
+  sensitive to the inclusion of year effects, suggesting common time
   Coefficients that survive in both B1 and B2 are more credible.
   ** under5_mortality_lag1: significant in B1 (p=0.013) but NOT in B2 (p=0.968). This result is SENSITIVE to year effects.
 
 ======================================================================
-(C1) Im-Pesaran-Shin panel unit-root (t-bar = mean of per-country ADF stats)
+(C1) Average ADF t-bar — panel unit-root check (mean of per-country ADF stats)
 ======================================================================
-IMPLEMENTATION NOTE (report this honestly): this is the DESCRIPTIVE t-bar
-form of IPS — the simple average of per-country ADF(1) t-statistics. It is
-NOT the full standardized IPS W-statistic with exact p-values. It is
+IMPLEMENTATION NOTE: this is the DESCRIPTIVE t-bar
+form — the simple average of per-country ADF(1) t-statistics. It is
+NOT the formal Im-Pesaran-Shin (IPS) W-statistic with exact p-values. It is
 directionally informative and adequate for a robustness section, but for
 formal IPS p-values use Stata (xtunitroot ips) or R (plm::purtest). Do not
-present the numbers below as exact IPS test p-values.
+present the numbers below as formal IPS test results.
 More negative t-bar => stronger rejection of the unit-root null (=> stationary).
-Approx IPS 5% critical t-bar for these dims is around -1.7 to -2.3 (indicative only).
+A more negative t-bar suggests stationarity. Critical values are approximate and indicative only.
 
   tfr                         : t-bar = -1.585  (from 14 countries)  <- unit root not rejected
   log_gdp_ppp_lag1            : t-bar = -2.114  (from 14 countries)  <- likely stationary
@@ -57,17 +57,17 @@ Approx IPS 5% critical t-bar for these dims is around -1.7 to -2.3 (indicative o
   d_tfr (first difference)    : t-bar = -2.504  (from 14 countries)  <- stationary
 
 ======================================================================
-(C2) Wooldridge-style AR(1) serial-correlation check on FE residuals
+(C2) Residual AR(1) check on FE residuals
 ======================================================================
   AR(1) coefficient on lagged residual: +0.948 (p=0.000)
   An AR(1) coefficient this close to 1 indicates the FE-in-levels residuals
-  are near-integrated — consistent with the IPS finding that TFR in levels
+  are strongly persistent — consistent with the IPS finding that TFR in levels
   is I(1) but stationary in first differences (see C1 above).
 
   INTERPRETATION OF LAYER B:
   The levels-based FE model (A) is reported for transparency but should
   not be treated as the primary within-country estimate. The first-
-  difference models (B1/B2) remove the near-integrated component. However,
+  difference models (B1/B2) remove the persistent trend component. However,
   the FD results are themselves sensitive to whether year effects are
   included (see B1 vs B2). Therefore, Layer B as a whole is best treated
   as a robustness exercise confirming that within-country economic effects

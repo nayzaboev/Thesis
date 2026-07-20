@@ -28,10 +28,10 @@ df["country"] = df["country"].replace({
 
 # --- Define the 14-country sample and subgroups ---
 central_asia = ["Kazakhstan", "Kyrgyzstan", "Tajikistan", "Uzbekistan"]
-slavic       = ["Russia", "Ukraine", "Belarus", "Moldova"]
+eastern_eu   = ["Russia", "Ukraine", "Belarus", "Moldova"]
 baltic       = ["Estonia", "Latvia", "Lithuania"]
 caucasus     = ["Armenia", "Georgia", "Azerbaijan"]
-COUNTRIES    = central_asia + slavic + baltic + caucasus  # 14 countries
+COUNTRIES    = central_asia + eastern_eu + baltic + caucasus  # 14 countries
 
 # --- Filter to sample countries and study years ---
 df = df[df["country"].isin(COUNTRIES)]
@@ -51,7 +51,7 @@ assert df.groupby("country")["year"].nunique().eq(24).all(), \
 # --- Assign subgroup and bloc ---
 def subgroup(c):
     if c in central_asia: return "Central Asia"
-    if c in slavic:       return "Slavic"
+    if c in eastern_eu:   return "Eastern European"
     if c in baltic:       return "Baltic"
     if c in caucasus:     return "Caucasus"
     return "Unassigned"

@@ -15,7 +15,7 @@ How have fertility trends evolved in Central Asia and other post-Soviet countrie
 Turkmenistan is excluded due to data-quality concerns.
 
 - **Central Asia:** Kazakhstan, Kyrgyzstan, Tajikistan, Uzbekistan
-- **Slavic:** Belarus, Moldova, Russia, Ukraine
+- **Eastern European:** Belarus, Moldova, Russia, Ukraine
 - **Baltic:** Estonia, Latvia, Lithuania
 - **Caucasus:** Armenia, Azerbaijan, Georgia
 
