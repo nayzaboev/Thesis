@@ -1,37 +1,25 @@
 """
 18_crosssection.py
 ------------------
-Cross-country analysis (n=14): what explains the between-country fertility
-premium that survives economic controls?
+Cross-country analysis (n=14): what is associated with the between-country
+fertility premium that survives economic controls?
 
-Two complementary approaches:
+Three analyses:
 
-  (A) Direct: correlate mean TFR with cultural variables + stepwise OLS.
-      Descriptive — shows which cultural factors track cross-country TFR.
+  (A) Direct bivariate correlations + stepwise OLS (A1-A3).
 
-  (B) Residuals-based (recommended): estimate TFR ~ lagged economic controls
-      + year FE WITHOUT the CA dummy on the full panel, then average the
-      country-level residuals. Correlate those residuals with the cultural
-      variables. This isolates "what the economic model cannot explain" and
-      asks whether cultural factors track THAT — which is more aligned with
-      the thesis argument than regressing on mean TFR directly.
+  (B) Residuals-based: strip economics + year FE (without CA dummy),
+      average country residuals, correlate with cultural variables.
 
-Both approaches converge in this sample, but (B) is the more defensible framing.
-
-Caveats reported honestly:
-  - n=14 severely limits statistical power; all findings are descriptive
-    associations, NOT causal estimates.
-  - Muslim share and the Central Asia dummy are highly correlated in this
-    sample (r ~ 0.83), so cultural variables partly RE-DESCRIBE the CA/non-CA
-    split rather than uniquely identifying religion's role.
-  - Cross-sectional analysis cannot distinguish religion, ethnicity, family
-    norms, rurality, or historical legacy — these bundle together in the data.
+  (C) INSEPARABILITY TEST: regress residuals on CA + Muslim share jointly.
+      If Muslim share adds nothing once CA is included, then the two are
+      empirically inseparable in this sample (n=14, r(CA,Muslim)≈0.83).
+      The cultural interpretation must then rest on the LITERATURE, not
+      on the cross-sectional regression.
 
 Outputs:
   data/processed/crosssection_results.txt
   figures/crosssection_scatter.png
-
-Run from repo root:  python analysis/18_crosssection.py
 """
 
 import os
@@ -50,22 +38,19 @@ lines = []
 def out(s):
     print(s); lines.append(s)
 
-# =========================================================================
-# Report the CA / Muslim-share correlation upfront — it disciplines everything
-# =========================================================================
 r_ca_muslim = cs["ca"].corr(cs["muslim_share"])
 out("=" * 68)
 out("Cross-section n=14 — cultural correlates of the fertility premium")
 out("=" * 68)
-out(f"\nUpfront caveat: corr(CA dummy, Muslim share) = {r_ca_muslim:+.3f}.")
-out("Cultural variables largely re-describe the CA / non-CA split;")
-out("they cannot uniquely identify religion vs ethnicity vs family norms.")
+out(f"\nUpfront: corr(CA dummy, Muslim share) = {r_ca_muslim:+.3f}.")
+out("At this level of collinearity, the two variables cannot be")
+out("separately identified with 14 observations.")
 
 # =========================================================================
 # (A) Direct correlations + stepwise OLS
 # =========================================================================
 out("\n" + "=" * 68)
-out("(A) Direct: TFR ~ cultural variables")
+out("(A) Direct: mean TFR ~ cultural variables")
 out("=" * 68)
 
 pairs = [
@@ -78,12 +63,7 @@ for var, label in pairs:
     r = cs["mean_tfr"].corr(cs[var])
     out(f"  TFR vs {label:36s}: r = {r:+.3f}")
 
-out("\nStepwise OLS (mean_tfr as dependent variable):")
-# NOTE: an "A4" specification adding female schooling was cut for parsimony —
-# at n=14 with 3 predictors it has only 10 residual df, adds negligible R2 (0.007),
-# and its only informative content (schooling p~0.58, wrong sign) is already
-# conveyed by the bivariate correlation and by A3's demonstration of Muslim/SMAM
-# collinearity. Schooling remains reported bivariately in (A) above.
+out("\nStepwise OLS:")
 models = {
     "A1: Muslim share only":
         "mean_tfr ~ muslim_share",
@@ -103,40 +83,65 @@ for name, formula in models.items():
             f"(SE {m.bse[v]:.4f}, p={m.pvalues[v]:.3f})")
 
 # =========================================================================
-# (B) Residuals-based: strip economics + year effects, then correlate residuals
+# (B) Residuals-based
 # =========================================================================
 out("\n" + "=" * 68)
 out("(B) Residuals-based: cultural correlates of the unexplained premium")
 out("=" * 68)
-out("Step 1: fit TFR ~ lagged economic controls + year FE (NO CA dummy).")
-out("Step 2: country-average the residuals.")
-out("Step 3: correlate country residuals with cultural variables.")
-out("Interpretation: what the economic model cannot explain — does culture track it?\n")
 
-# Step 1: pooled OLS with year FE, no CA dummy, on complete cases
 est_df = panel.dropna(subset=["tfr"] + CONTROLS).copy()
 formula = "tfr ~ " + " + ".join(CONTROLS) + " + C(year)"
 econ_model = smf.ols(formula, data=est_df).fit()
-
-# Step 2: average residuals per country
 est_df["resid"] = econ_model.resid
 country_resid = est_df.groupby("country")["resid"].mean()
-
-# Step 3: attach to the cross-section frame
 cs_r = cs.merge(country_resid.rename("mean_resid").reset_index(), on="country")
 
-out("Country residuals (unexplained TFR after economics + year FE):")
+out("\nCountry residuals (unexplained TFR after economics + year FE):")
 for _, r in cs_r.sort_values("mean_resid", ascending=False).iterrows():
     out(f"  {r['country']:14s} ({r['bloc']:22s}): {r['mean_resid']:+.3f}")
 
 out("\nCorrelations — country residuals vs cultural variables:")
 for var, label in pairs:
-    r_full = cs_r["mean_tfr"].corr(cs_r[var])
+    r_raw = cs_r["mean_tfr"].corr(cs_r[var])
     r_resid = cs_r["mean_resid"].corr(cs_r[var])
-    out(f"  {label:36s}: r(mean_TFR)={r_full:+.3f}  |  r(residual)={r_resid:+.3f}")
+    out(f"  {label:36s}: r(TFR)={r_raw:+.3f}  |  r(resid)={r_resid:+.3f}")
 
 # =========================================================================
-# Scatterplots — mean TFR vs the three cultural variables
+# (C) INSEPARABILITY TEST: CA + Muslim share jointly
+# =========================================================================
+out("\n" + "=" * 68)
+out("(C) Inseparability test: can Muslim share be distinguished from CA status?")
+out("=" * 68)
+
+# On mean TFR
+m_joint_tfr = smf.ols("mean_tfr ~ ca + muslim_share", data=cs_r).fit(
+    cov_type="HC3")
+out("\n  Joint model on mean TFR (HC3 standard errors):")
+out(f"    CA:           {m_joint_tfr.params['ca']:+.3f}  "
+    f"(SE {m_joint_tfr.bse['ca']:.3f}, p={m_joint_tfr.pvalues['ca']:.3f})")
+out(f"    Muslim share: {m_joint_tfr.params['muslim_share']:+.4f}  "
+    f"(SE {m_joint_tfr.bse['muslim_share']:.4f}, p={m_joint_tfr.pvalues['muslim_share']:.3f})")
+
+# On residuals
+m_joint_res = smf.ols("mean_resid ~ ca + muslim_share", data=cs_r).fit(
+    cov_type="HC3")
+out("\n  Joint model on country residuals (HC3 standard errors):")
+out(f"    CA:           {m_joint_res.params['ca']:+.3f}  "
+    f"(SE {m_joint_res.bse['ca']:.3f}, p={m_joint_res.pvalues['ca']:.3f})")
+out(f"    Muslim share: {m_joint_res.params['muslim_share']:+.4f}  "
+    f"(SE {m_joint_res.bse['muslim_share']:.4f}, p={m_joint_res.pvalues['muslim_share']:.3f})")
+
+out("\n  FINDING: Muslim share adds NO explanatory power once CA status is included.")
+out("  The two variables are empirically inseparable at n=14 (r=0.83).")
+out("  This does NOT mean religion is irrelevant — it means this dataset cannot")
+out("  distinguish Central Asian regional identity from Muslim population share.")
+out("  The cultural interpretation must therefore rest on the LITERATURE")
+out("  (Spoorenberg, Kumo & Perugini, Dommaraju & Agadjanian), not on the")
+out("  cross-sectional regression. The regression documents the inseparability;")
+out("  the literature carries the interpretation.")
+
+# =========================================================================
+# Scatterplots
 # =========================================================================
 fig, axes = plt.subplots(1, 3, figsize=(14, 4.5))
 ca_mask = cs["ca"] == 1
@@ -149,9 +154,6 @@ for ax, (var, label) in zip(axes, pairs):
         offset = (3, 4) if row["ca"] else (3, -8)
         ax.annotate(row["country"][:3].upper(), (row[var], row["mean_tfr"]),
                     fontsize=7, textcoords="offset points", xytext=offset)
-    z = np.polyfit(cs[var], cs["mean_tfr"], 1)
-    xr = np.linspace(cs[var].min(), cs[var].max(), 50)
-    ax.plot(xr, np.polyval(z, xr), "--", color="gray", linewidth=1, alpha=0.7)
     r = cs["mean_tfr"].corr(cs[var])
     ax.set_xlabel(label)
     ax.set_title(f"r = {r:+.2f}", fontsize=10)
@@ -167,29 +169,55 @@ plt.close()
 out("\n  Saved -> figures/crosssection_scatter.png")
 
 # =========================================================================
-# (C) Cautious interpretation
+# (D) Cautious interpretation
 # =========================================================================
 out("\n" + "=" * 68)
-out("(C) Interpretation")
+out("(D) Summary interpretation")
 out("=" * 68)
-
 m_muslim = smf.ols("mean_tfr ~ muslim_share", data=cs).fit()
-m_both   = smf.ols("mean_tfr ~ muslim_share + smam_female", data=cs).fit()
-
+m_both = smf.ols("mean_tfr ~ muslim_share + smam_female", data=cs).fit()
 out(f"  Muslim share alone: R2 = {m_muslim.rsquared:.3f}")
-out(f"  Muslim + SMAM together: R2 = {m_both.rsquared:.3f}")
-out(f"  Bivariate TFR-schooling correlation: r = "
-    f"{cs['mean_tfr'].corr(cs['female_mean_schooling']):+.3f} — weak, and consistent")
-out("  with the Soviet-era compression of female education across the region.\n")
+out(f"  Muslim + SMAM: R2 = {m_both.rsquared:.3f}")
+out(f"  Bivariate TFR-schooling: r = {cs['mean_tfr'].corr(cs['female_mean_schooling']):+.3f}")
+out("")
+out("  The cross-section documents strong bivariate associations between TFR")
+out("  and Muslim share / SMAM, and a moderate negative association with female")
+out("  schooling (r = -0.58) that disappears in the residuals (r = +0.19),")
+out("  suggesting it reflects the same regional split rather than an education effect.")
+out("  However, the inseparability test (C) shows that Muslim share cannot be")
+out("  distinguished from Central Asian regional identity in this sample.")
+out("  Azerbaijan (95% Muslim, TFR 1.88) further demonstrates that Muslim")
+out("  share alone does not determine fertility.")
+out("")
+out("  The defensible conclusion: the cross-section is CONSISTENT with the")
+out("  literature's emphasis on religious-cultural and nuptiality regimes,")
+out("  but it cannot IDENTIFY these factors separately from regional identity.")
+out("  Causal attribution is not possible at n=14 with these data.")
 
-out("The cross-section is consistent with the interpretation that religious-cultural")
-out("factors and nuptiality regimes are associated with the fertility gap that survives")
-out("economic controls in Layer A. It cannot identify these factors causally: n=14 is")
-out("too small, cultural variables are collinear with Central Asia status, and cross-")
-out("sectional averages cannot distinguish religion from ethnicity, family norms, or")
-out("historical legacy. Azerbaijan (95% Muslim, mean TFR 1.88) also shows that Muslim")
-out("share alone does not determine fertility — the story involves religion INTERACTING")
-out("with nuptiality patterns and demographic history, not religion by itself.")
+# =========================================================================
+# (E) TEMPORAL ALIGNMENT CHECK — 2018-2022 mean TFR vs cultural variables
+# =========================================================================
+out("\n" + "=" * 68)
+out("(E) Temporal alignment: 2018-2022 mean TFR vs cultural variables")
+out("=" * 68)
+out("Cultural variables are measured ~2020. If full-period mean TFR (2000-2023)")
+out("gives different correlations than a 2018-2022 window aligned with the")
+out("cultural measurement dates, the results may be driven by temporal mismatch.\n")
+
+panel_recent = panel[(panel["year"] >= 2018) & (panel["year"] <= 2022)]
+recent_means = panel_recent.groupby("country")["tfr"].mean().rename("mean_tfr_recent")
+cs_t = cs.merge(recent_means.reset_index(), on="country")
+
+out("  Correlations: full period (2000-2023) vs aligned window (2018-2022):")
+for var, label in pairs:
+    r_full = cs_t["mean_tfr"].corr(cs_t[var])
+    r_recent = cs_t["mean_tfr_recent"].corr(cs_t[var])
+    delta = r_recent - r_full
+    out(f"    {label:36s}: r(full)={r_full:+.3f}  |  r(2018-22)={r_recent:+.3f}  |  Δ={delta:+.3f}")
+
+out("\n  Interpretation: if the correlations are similar, temporal mismatch")
+out("  between cultural variables (~2020) and TFR (2000-2023) is not a concern.")
+out("  Large divergences would suggest the cross-section is period-sensitive.")
 
 # =========================================================================
 # Save

@@ -4,12 +4,12 @@ CROSS-SECTION ANALYSIS — cultural correlates of the CA fertility premium (n=14
 Cross-section n=14 — cultural correlates of the fertility premium
 ====================================================================
 
-Upfront caveat: corr(CA dummy, Muslim share) = +0.827.
-Cultural variables largely re-describe the CA / non-CA split;
-they cannot uniquely identify religion vs ethnicity vs family norms.
+Upfront: corr(CA dummy, Muslim share) = +0.827.
+At this level of collinearity, the two variables cannot be
+separately identified with 14 observations.
 
 ====================================================================
-(A) Direct: TFR ~ cultural variables
+(A) Direct: mean TFR ~ cultural variables
 ====================================================================
 
 Bivariate correlations:
@@ -17,7 +17,7 @@ Bivariate correlations:
   TFR vs Female SMAM (years)                 : r = -0.568
   TFR vs Female mean schooling (years)       : r = -0.581
 
-Stepwise OLS (mean_tfr as dependent variable):
+Stepwise OLS:
 
   --- A1: Muslim share only ---
   R2 = 0.766   Adj-R2 = 0.746
@@ -35,10 +35,6 @@ Stepwise OLS (mean_tfr as dependent variable):
 ====================================================================
 (B) Residuals-based: cultural correlates of the unexplained premium
 ====================================================================
-Step 1: fit TFR ~ lagged economic controls + year FE (NO CA dummy).
-Step 2: country-average the residuals.
-Step 3: correlate country residuals with cultural variables.
-Interpretation: what the economic model cannot explain — does culture track it?
 
 Country residuals (unexplained TFR after economics + year FE):
   Kazakhstan     (Central Asia          ): +0.591
@@ -57,25 +53,66 @@ Country residuals (unexplained TFR after economics + year FE):
   Moldova        (Rest of post-Soviet   ): -0.676
 
 Correlations — country residuals vs cultural variables:
-  Muslim share (%)                    : r(mean_TFR)=+0.875  |  r(residual)=+0.452
-  Female SMAM (years)                 : r(mean_TFR)=-0.568  |  r(residual)=-0.176
-  Female mean schooling (years)       : r(mean_TFR)=-0.581  |  r(residual)=+0.192
+  Muslim share (%)                    : r(TFR)=+0.875  |  r(resid)=+0.452
+  Female SMAM (years)                 : r(TFR)=-0.568  |  r(resid)=-0.176
+  Female mean schooling (years)       : r(TFR)=-0.581  |  r(resid)=+0.192
+
+====================================================================
+(C) Inseparability test: can Muslim share be distinguished from CA status?
+====================================================================
+
+  Joint model on mean TFR (HC3 standard errors):
+    CA:           +0.953  (SE 1.645, p=0.562)
+    Muslim share: +0.0047  (SE 0.0185, p=0.799)
+
+  Joint model on country residuals (HC3 standard errors):
+    CA:           +0.620  (SE 0.224, p=0.006)
+    Muslim share: -0.0023  (SE 0.0023, p=0.328)
+
+  FINDING: Muslim share adds NO explanatory power once CA status is included.
+  The two variables are empirically inseparable at n=14 (r=0.83).
+  This does NOT mean religion is irrelevant — it means this dataset cannot
+  distinguish Central Asian regional identity from Muslim population share.
+  The cultural interpretation must therefore rest on the LITERATURE
+  (Spoorenberg, Kumo & Perugini, Dommaraju & Agadjanian), not on the
+  cross-sectional regression. The regression documents the inseparability;
+  the literature carries the interpretation.
 
   Saved -> figures/crosssection_scatter.png
 
 ====================================================================
-(C) Interpretation
+(D) Summary interpretation
 ====================================================================
   Muslim share alone: R2 = 0.766
-  Muslim + SMAM together: R2 = 0.776
-  Bivariate TFR-schooling correlation: r = -0.581 — weak, and consistent
-  with the Soviet-era compression of female education across the region.
+  Muslim + SMAM: R2 = 0.776
+  Bivariate TFR-schooling: r = -0.581
 
-The cross-section is consistent with the interpretation that religious-cultural
-factors and nuptiality regimes are associated with the fertility gap that survives
-economic controls in Layer A. It cannot identify these factors causally: n=14 is
-too small, cultural variables are collinear with Central Asia status, and cross-
-sectional averages cannot distinguish religion from ethnicity, family norms, or
-historical legacy. Azerbaijan (95% Muslim, mean TFR 1.88) also shows that Muslim
-share alone does not determine fertility — the story involves religion INTERACTING
-with nuptiality patterns and demographic history, not religion by itself.
+  The cross-section documents strong bivariate associations between TFR
+  and Muslim share / SMAM, and a moderate negative association with female
+  schooling (r = -0.58) that disappears in the residuals (r = +0.19),
+  suggesting it reflects the same regional split rather than an education effect.
+  However, the inseparability test (C) shows that Muslim share cannot be
+  distinguished from Central Asian regional identity in this sample.
+  Azerbaijan (95% Muslim, TFR 1.88) further demonstrates that Muslim
+  share alone does not determine fertility.
+
+  The defensible conclusion: the cross-section is CONSISTENT with the
+  literature's emphasis on religious-cultural and nuptiality regimes,
+  but it cannot IDENTIFY these factors separately from regional identity.
+  Causal attribution is not possible at n=14 with these data.
+
+====================================================================
+(E) Temporal alignment: 2018-2022 mean TFR vs cultural variables
+====================================================================
+Cultural variables are measured ~2020. If full-period mean TFR (2000-2023)
+gives different correlations than a 2018-2022 window aligned with the
+cultural measurement dates, the results may be driven by temporal mismatch.
+
+  Correlations: full period (2000-2023) vs aligned window (2018-2022):
+    Muslim share (%)                    : r(full)=+0.875  |  r(2018-22)=+0.852  |  Δ=-0.024
+    Female SMAM (years)                 : r(full)=-0.568  |  r(2018-22)=-0.541  |  Δ=+0.027
+    Female mean schooling (years)       : r(full)=-0.581  |  r(2018-22)=-0.493  |  Δ=+0.088
+
+  Interpretation: if the correlations are similar, temporal mismatch
+  between cultural variables (~2020) and TFR (2000-2023) is not a concern.
+  Large divergences would suggest the cross-section is period-sensitive.
