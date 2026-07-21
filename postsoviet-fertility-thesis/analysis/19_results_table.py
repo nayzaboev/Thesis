@@ -1,4 +1,3 @@
-
 # Assembled M1-M4 results table.
 """
 19_results_table.py
@@ -186,11 +185,11 @@ lines.append("Cluster-robust SE (country) in parentheses.  *** p<0.01, ** p<0.05
 lines.append(f"All columns estimated on the controls-complete sample (N={n_obs[0]}).")
 lines.append("M4: 'ca' absorbed by country FE; FD columns: 'ca' differenced away — both by design.")
 lines.append("Cluster count = 14. Few-cluster fragility flagged in diagnostics (17_diagnostics).")
-lines.append("The FD column WITHOUT year effects shows under-5 mortality as significant (p=0.013);")
-lines.append("with year effects (rightmost column) the result disappears (p~0.97), indicating it")
-lines.append("was driven by common time shocks rather than within-country variation. Layer B as a")
-lines.append("whole is best treated as a robustness exercise: within-country economic effects are")
-lines.append("small and fragile, consistent with a structural between-country fertility gap.")
+lines.append("Under-5 mortality is significant in the FD specification without year effects but not")
+lines.append("after year effects are added; the estimate is therefore sensitive to common time controls.")
+lines.append("Layer B provides little stable evidence of within-country associations for the selected")
+lines.append("macroeconomic indicators; it does not identify the mechanisms underlying the persistent")
+lines.append("between-country regional difference.")
 
 text_table = "\n".join(lines)
 print(text_table)

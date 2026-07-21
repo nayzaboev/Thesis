@@ -223,11 +223,13 @@ for label, s in series.items():
                        "slope_2017_2023": round(sl_late, 6),  "p_2017_2023": round(p_late, 4),
                        "slope_full": round(sl_full, 6),       "p_full": round(p_full, 4)})
 out()
-out("  READING: for the all-14 series, dispersion FELL over 2000-2016 and ROSE")
-out("  over 2017-2023. The near-zero full-period slope is an artifact of")
-out("  averaging these opposing phases. The substantive Part 1 story is:")
-out("  compression to ~2016, then divergence, with the Central Asia-rest gap")
-out("  widening after 2017 (documented in Layer A, script 15).")
+out("  READING: for the all-14 series, dispersion fell over 2000-2016 and rose")
+out("  over 2017-2023. The near-zero full-period slope averages these opposing phases.")
+out("  CAVEAT: the post-2017 regressions use only 7 observations. P-values from")
+out("  HAC inference on T=7 are NOT reliable — the asymptotic approximation is")
+out("  too weak. The direction of the pattern (compression then divergence) is")
+out("  descriptively clear from the raw CV series; do NOT cite p-values or claim")
+out("  statistical significance for the post-2017 period specifically.")
 
 # =========================================================================
 # (B3) CONVERGENCE LEAVE-ONE-OUT — are the bloc trends country-driven?
@@ -276,7 +278,8 @@ out("=" * 72)
 out("(C) PEAK TFR YEAR PER COUNTRY")
 out("=" * 72)
 out("The year each country recorded its highest TFR in 2000-2023. Late peaks")
-out("indicate recuperation or a genuine reversal rather than continued decline.")
+out("document renewed or sustained increases in period TFR but do not distinguish")
+out("tempo effects (postponement/recuperation) from changes in completed fertility.")
 out()
 
 peaks = (df.loc[df.groupby("country")["tfr"].idxmax()]

@@ -19,18 +19,18 @@ Bivariate correlations:
 
 Stepwise OLS:
 
-  --- A1: Muslim share only ---
+  --- A1: Muslim share only (HC3 SEs) ---
   R2 = 0.766   Adj-R2 = 0.746
-    muslim_share                : +0.0130  (SE 0.0021, p=0.000)
+    muslim_share                : +0.0130  (HC3 SE 0.0033, p=0.000)
 
-  --- A2: SMAM only ---
+  --- A2: SMAM only (HC3 SEs) ---
   R2 = 0.323   Adj-R2 = 0.267
-    smam_female                 : -0.0897  (SE 0.0375, p=0.034)
+    smam_female                 : -0.0897  (HC3 SE 0.0390, p=0.021)
 
-  --- A3: Muslim + SMAM ---
+  --- A3: Muslim + SMAM (HC3 SEs) ---
   R2 = 0.776   Adj-R2 = 0.735
-    muslim_share                : +0.0120  (SE 0.0025, p=0.001)
-    smam_female                 : -0.0189  (SE 0.0271, p=0.499)
+    muslim_share                : +0.0120  (HC3 SE 0.0041, p=0.003)
+    smam_female                 : -0.0189  (HC3 SE 0.0247, p=0.443)
 
 ====================================================================
 (B) Residuals-based: cultural correlates of the unexplained premium
@@ -52,7 +52,8 @@ Country residuals (unexplained TFR after economics + year FE):
   Azerbaijan     (Rest of post-Soviet   ): -0.303
   Moldova        (Rest of post-Soviet   ): -0.676
 
-Correlations — country residuals vs cultural variables:
+Descriptive correlations — country residuals vs cultural variables:
+(Second-stage SEs ignore first-stage estimation uncertainty; treat as descriptive.)
   Muslim share (%)                    : r(TFR)=+0.875  |  r(resid)=+0.452
   Female SMAM (years)                 : r(TFR)=-0.568  |  r(resid)=-0.176
   Female mean schooling (years)       : r(TFR)=-0.581  |  r(resid)=+0.192
@@ -62,7 +63,7 @@ Correlations — country residuals vs cultural variables:
 ====================================================================
 
   Joint model on mean TFR (HC3 standard errors):
-    CA:           +0.953  (SE 1.645, p=0.562)
+    CA:           +0.953  (SE 1.646, p=0.563)
     Muslim share: +0.0047  (SE 0.0185, p=0.799)
 
   Joint model on country residuals (HC3 standard errors):

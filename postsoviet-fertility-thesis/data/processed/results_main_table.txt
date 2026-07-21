@@ -22,8 +22,8 @@ Cluster-robust SE (country) in parentheses.  *** p<0.01, ** p<0.05, * p<0.10.
 All columns estimated on the controls-complete sample (N=315).
 M4: 'ca' absorbed by country FE; FD columns: 'ca' differenced away — both by design.
 Cluster count = 14. Few-cluster fragility flagged in diagnostics (17_diagnostics).
-The FD column WITHOUT year effects shows under-5 mortality as significant (p=0.013);
-with year effects (rightmost column) the result disappears (p~0.97), indicating it
-was driven by common time shocks rather than within-country variation. Layer B as a
-whole is best treated as a robustness exercise: within-country economic effects are
-small and fragile, consistent with a structural between-country fertility gap.
+Under-5 mortality is significant in the FD specification without year effects but not
+after year effects are added; the estimate is therefore sensitive to common time controls.
+Layer B provides little stable evidence of within-country associations for the selected
+macroeconomic indicators; it does not identify the mechanisms underlying the persistent
+between-country regional difference.

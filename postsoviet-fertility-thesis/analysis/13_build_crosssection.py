@@ -31,7 +31,8 @@ agg = p.groupby("country").agg(
     bloc=("bloc", "first"),
 ).reset_index()
 agg["ca"] = (agg["bloc"] == "Central Asia").astype(int)
-agg["mean_tfr"] = agg["mean_tfr"].round(3)
+# NOTE: mean_tfr is NOT rounded here — full precision is preserved for regressions.
+# Rounding is done only in display/output tables.
 
 # --- Validation on the panel/cultural country-set match ---
 panel_countries = set(agg["country"])

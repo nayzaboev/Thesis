@@ -8,7 +8,7 @@
 
 ## Research Question
 
-How have fertility trends evolved in Central Asia and other post-Soviet countries between 2000 and 2023, and what factors explain the persistence of comparatively higher fertility rates observed in Central Asia?
+How have fertility trends evolved in Central Asia and other post-Soviet countries between 2000 and 2023, and what factors are associated with the persistence of comparatively higher fertility rates observed in Central Asia?
 
 ## Countries (n = 14)
 
@@ -21,7 +21,7 @@ Turkmenistan is excluded due to data-quality concerns.
 
 ## Headline Result
 
-The Central Asia fertility premium (average of 2.89 vs 1.57 children per woman elsewhere) is a raw gap of **+1.31**. Under lagged economic controls (log GDP-PPP, urbanisation, remittances, under-5 mortality) with year fixed effects and country-clustered standard errors, the premium narrows to **+0.97** and remains highly significant. Selected economic controls account for roughly a quarter of the raw gap; the surviving premium is strongly associated with cross-country cultural and nuptiality indicators, especially Muslim population share (r = +0.88 with mean TFR; r = +0.45 with country-level residuals after stripping economic controls). These associations are descriptive, not causal.
+The Central Asia fertility premium (average of 2.89 vs 1.57 children per woman elsewhere) is a raw gap of **+1.31**. Under lagged economic controls (log GDP-PPP, urbanisation, remittances, under-5 mortality) with year fixed effects and country-clustered standard errors, the premium narrows to **+0.97** and remains highly significant. This attenuation is descriptive and is not interpreted as a causal decomposition. Muslim population share and female SMAM are strongly correlated bivariately with country-average fertility, but they cannot be empirically separated from broader Central Asian regional identity in the 14-country cross-section (r(CA, Muslim) ≈ 0.83). The cultural interpretation rests on the demographic literature, not on the cross-sectional regression.
 
 ## Project Structure
 
@@ -63,7 +63,7 @@ postsoviet-fertility-thesis/
 - **Layer A — between-country gap** (`15`): pooled OLS with year fixed effects and country-clustered SEs. Model 1 estimates the raw Central Asia premium; Model 2 adds lagged economic controls and reports the surviving conditional premium; Model 3 tests interactions (CA × remittances, CA × urbanisation, CA × GDP).
 - **Layer B — within-country robustness** (`16`): two-way fixed effects (country + year), first-difference model, average ADF t-bar unit-root check (descriptive form, not the formal IPS test), and a residual AR(1) serial-correlation check. This layer defends against the spurious-regression concern that motivated the analytical rebuild.
 - **Diagnostics** (`17`): VIF, Mundlak test (FE vs RE — replaces the classical Hausman, which is undefined in this sample), and the few-cluster caveat.
-- **Cross-section** (`18`): country-average TFR regressed on cultural variables (Muslim share, SMAM, female schooling) to close the "why" question at n = 14.
+- **Cross-section** (`18`): country-average TFR regressed on cultural variables (Muslim share, SMAM, female schooling) to examine whether selected cultural and nuptiality indicators align descriptively with the between-country pattern and to test whether they can be separated from Central Asian regional status (n = 14).
 
 ## Run Order
 

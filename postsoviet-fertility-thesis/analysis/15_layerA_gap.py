@@ -209,4 +209,4 @@ header = ("LAYER A RESULTS — Central Asia fertility premium\n"
           "Controls lagged 1 year. Caution: few-cluster SEs may be anti-conservative.\n")
 with open("data/processed/layerA_results.txt", "w") as f:
     f.write(header + "\n".join(lines))
-out("\nSaved -> data/processed/layerA_results.txt")
+out("\nSaved -> data/processed/layerA_results.txt") 

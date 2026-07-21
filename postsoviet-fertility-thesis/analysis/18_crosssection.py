@@ -73,14 +73,14 @@ models = {
         "mean_tfr ~ muslim_share + smam_female",
 }
 for name, formula in models.items():
-    m = smf.ols(formula, data=cs).fit()
-    out(f"\n  --- {name} ---")
+    m = smf.ols(formula, data=cs).fit(cov_type="HC3")
+    out(f"\n  --- {name} (HC3 SEs) ---")
     out(f"  R2 = {m.rsquared:.3f}   Adj-R2 = {m.rsquared_adj:.3f}")
     for v in m.params.index:
         if v == "Intercept":
             continue
         out(f"    {v:28s}: {m.params[v]:+.4f}  "
-            f"(SE {m.bse[v]:.4f}, p={m.pvalues[v]:.3f})")
+            f"(HC3 SE {m.bse[v]:.4f}, p={m.pvalues[v]:.3f})")
 
 # =========================================================================
 # (B) Residuals-based
@@ -100,7 +100,8 @@ out("\nCountry residuals (unexplained TFR after economics + year FE):")
 for _, r in cs_r.sort_values("mean_resid", ascending=False).iterrows():
     out(f"  {r['country']:14s} ({r['bloc']:22s}): {r['mean_resid']:+.3f}")
 
-out("\nCorrelations — country residuals vs cultural variables:")
+out("\nDescriptive correlations — country residuals vs cultural variables:")
+out("(Second-stage SEs ignore first-stage estimation uncertainty; treat as descriptive.)")
 for var, label in pairs:
     r_raw = cs_r["mean_tfr"].corr(cs_r[var])
     r_resid = cs_r["mean_resid"].corr(cs_r[var])

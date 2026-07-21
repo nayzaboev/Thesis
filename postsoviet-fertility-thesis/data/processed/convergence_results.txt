@@ -101,11 +101,13 @@ CV trend separately on 2000-2016 and 2017-2023 shows the real pattern.
   Sub-group: Eastern European     
       2000-2016: slope=-0.00221 (p=0.280)   2017-2023: slope=+0.01839 (p=0.000)
 
-  READING: for the all-14 series, dispersion FELL over 2000-2016 and ROSE
-  over 2017-2023. The near-zero full-period slope is an artifact of
-  averaging these opposing phases. The substantive Part 1 story is:
-  compression to ~2016, then divergence, with the Central Asia-rest gap
-  widening after 2017 (documented in Layer A, script 15).
+  READING: for the all-14 series, dispersion fell over 2000-2016 and rose
+  over 2017-2023. The near-zero full-period slope averages these opposing phases.
+  CAVEAT: the post-2017 regressions use only 7 observations. P-values from
+  HAC inference on T=7 are NOT reliable — the asymptotic approximation is
+  too weak. The direction of the pattern (compression then divergence) is
+  descriptively clear from the raw CV series; do NOT cite p-values or claim
+  statistical significance for the post-2017 period specifically.
 
 ========================================================================
 (B3) CONVERGENCE LEAVE-ONE-OUT (bloc trends)
@@ -141,7 +143,8 @@ country-driven, not a group-wide regularity.
 (C) PEAK TFR YEAR PER COUNTRY
 ========================================================================
 The year each country recorded its highest TFR in 2000-2023. Late peaks
-indicate recuperation or a genuine reversal rather than continued decline.
+document renewed or sustained increases in period TFR but do not distinguish
+tempo effects (postponement/recuperation) from changes in completed fertility.
 
    country         subgroup  peak_year  peak_tfr
    Estonia           Baltic       2008      1.72
