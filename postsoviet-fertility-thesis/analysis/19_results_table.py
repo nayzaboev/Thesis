@@ -1,23 +1,32 @@
-# Assembled M1-M4 results table.
+# Assembled main results table: M1, M2, M2h (Mundlak), M4 (two-way FE), FD, FD+yr.
 """
 19_results_table.py
 -------------------
-Assemble the main Part 2 results table: M1, M2, M4 (two-way FE), FD without
-year effects, and FD with year effects — five columns side by side.
+Assemble the main Part 2 results table with SIX columns:
+  M1    raw gap (pooled, year FE)
+  M2    controlled gap (pooled, year FE)
+  M2h   MUNDLAK HYBRID — between/within separation (the primary specification)
+  M4    two-way fixed effects (country + year)
+  FD    first-difference, no year effects
+  FD+yr first-difference, with year effects
 
-Why five columns:
-  M1/M2 answer the between-country question (Layer A).
-  M4/FD/FD+yr answer the within-country question (Layer B).
-  Showing FD both with and without year effects exposes the sensitivity of
-  the under-5 mortality result (significant without year FE, disappears with
-  year FE — flagged automatically in script 16).
+Why the Mundlak column is included:
+  M2h is the design's primary between/within specification. Earlier versions of
+  this table omitted it and showed the two first-difference columns instead,
+  which gave less central models more prominence than the hybrid. For M2h the
+  reported "CA" row is the between-country premium (the coefficient on the CA
+  dummy); the individual control coefficients are the WITHIN coefficients (the
+  between coefficients are collinear — see 17_diagnostics.py — and are not
+  tabulated here to avoid over-interpretation).
 
 Sample discipline:
-  All five columns are estimated on the controls-complete sample (drop any
-  row with a missing lagged control). N is reported per column.
+  All columns are estimated on the controls-complete sample (drop any row with a
+  missing lagged control). N is reported per column.
 
 Standard errors:
-  Clustered by country throughout (14 clusters).
+  Clustered by country throughout (14 clusters). With only 14 clusters these are
+  asymptotic and may be anti-conservative; the wild-cluster bootstrap in script
+  20 (section G) is the few-cluster robustness check for the CA coefficients.
 
 Outputs:
   data/processed/results_main_table.txt   (fixed-width, for inspection)
@@ -69,7 +78,7 @@ def fmt(coef, se, p, decimals=3):
     return (f"{coef:+.{decimals}f}{stars(p)}", f"({se:.{decimals}f})")
 
 # --------------------------------------------------------------------------- #
-# 3. Fit five models on the SAME sample                                       #
+# 3. Fit six models on the SAME sample                                        #
 # --------------------------------------------------------------------------- #
 
 # --- M1: raw gap ---
@@ -80,6 +89,17 @@ m1 = smf.ols("tfr ~ ca + C(year)", data=sample).fit(
 f2 = "tfr ~ ca + " + " + ".join(CONTROLS) + " + C(year)"
 m2 = smf.ols(f2, data=sample).fit(
     cov_type="cluster", cov_kwds={"groups": sample["country"]})
+
+# --- M2h: Mundlak hybrid (between/within) ---
+mh = sample.copy()
+for c in CONTROLS:
+    mh[f"{c}_mean"] = mh.groupby("country")[c].transform("mean")
+    mh[f"{c}_dev"]  = mh[c] - mh[f"{c}_mean"]
+between = [f"{c}_mean" for c in CONTROLS]
+within  = [f"{c}_dev"  for c in CONTROLS]
+f_mh = "tfr ~ ca + " + " + ".join(between + within) + " + C(year)"
+m2h = smf.ols(f_mh, data=mh).fit(
+    cov_type="cluster", cov_kwds={"groups": mh["country"]})
 
 # --- M4: two-way FE ---
 s_idx = sample.set_index(["country", "year"]).sort_index()
@@ -121,6 +141,17 @@ def pack_lm(res, names):
 rows = ["ca"] + CONTROLS
 M1 = pack_sm(m1, rows)
 M2 = pack_sm(m2, rows)
+
+# For M2h: the CA row is the between-country premium; the control rows shown are
+# the WITHIN coefficients (mapped back to the base control name for alignment).
+M2H = {}
+if "ca" in m2h.params.index:
+    M2H["ca"] = (m2h.params["ca"], m2h.bse["ca"], m2h.pvalues["ca"])
+for c in CONTROLS:
+    wname = f"{c}_dev"
+    if wname in m2h.params.index:
+        M2H[c] = (m2h.params[wname], m2h.bse[wname], m2h.pvalues[wname])
+
 M4 = pack_lm(m4, rows)
 MF = pack_lm(fd, rows)
 
@@ -130,19 +161,19 @@ for v_raw, v_d in zip(CONTROLS, d_controls):
     if v_d in fd_yr.params.index:
         MFY[v_raw] = (fd_yr.params[v_d], fd_yr.bse[v_d], fd_yr.pvalues[v_d])
 
-ALL_MODELS = [M1, M2, M4, MF, MFY]
+ALL_MODELS = [M1, M2, M2H, M4, MF, MFY]
 
 # --------------------------------------------------------------------------- #
 # 5. Build the table                                                          #
 # --------------------------------------------------------------------------- #
-COL_HEADERS = ["M1: raw gap", "M2: + controls", "M4: two-way FE",
-               "FD", "FD + year FE"]
-COL_NOTES = ["Pooled, year FE", "Pooled, year FE", "Country+year FE",
-             "Within (Δ)", "Within (Δ)+yr"]
+COL_HEADERS = ["M1: raw gap", "M2: + controls", "M2h: Mundlak",
+               "M4: two-way FE", "FD", "FD + year FE"]
+COL_NOTES = ["Pooled, year FE", "Pooled, year FE", "Between/within",
+             "Country+year FE", "Within (Δ)", "Within (Δ)+yr"]
 
 # --- (a) Plain-text ---
 label_w = max(len(LABELS[r]) for r in rows) + 2
-col_w = 18
+col_w = 17
 header = " " * label_w + "".join(h.center(col_w) for h in COL_HEADERS)
 subhdr = " " * label_w + "".join(n.center(col_w) for n in COL_NOTES)
 sep = "-" * len(header)
@@ -165,15 +196,26 @@ for r in rows:
 
 lines.append(sep)
 
-fe_year = [True, True, True, False, True]
-fe_ctry = [False, False, True, True, True]
-n_obs = [int(m1.nobs), int(m2.nobs), int(m4.nobs), int(fd.nobs), int(fd_yr.nobs)]
-r2 = [m1.rsquared, m2.rsquared, float(m4.rsquared_within), float(fd.rsquared), fd_yr.rsquared]
-r2_label = ["R²(overall)", "R²(overall)", "R²(within)", "R²(within)", "R²(overall)"]
+# Column meta. NOTE on labels:
+#  - "Year FE": M4/FD+yr include year effects; FD (no year FE) does not.
+#  - "Country effects": M4 estimates country FE; M2h enters country means
+#    (between block); FD/FD+yr REMOVE country effects by differencing — they do
+#    not estimate country dummies. Labelled accordingly, not "Yes".
+#  - R² type: FD/FD+yr R² is computed on DIFFERENCED observations, which is NOT
+#    the fixed-effects within-R². Labelled "R²(differenced)".
+year_fe   = ["Yes", "Yes", "Yes", "Yes", "No", "Yes"]
+ctry_eff  = ["No", "No", "means (between)", "estimated (FE)",
+             "differenced out", "differenced out"]
+n_obs = [int(m1.nobs), int(m2.nobs), int(m2h.nobs), int(m4.nobs),
+         int(fd.nobs), int(fd_yr.nobs)]
+r2 = [m1.rsquared, m2.rsquared, m2h.rsquared, float(m4.rsquared_within),
+      float(fd.rsquared), fd_yr.rsquared]
+r2_label = ["R²(overall)", "R²(overall)", "R²(overall)", "R²(within)",
+            "R²(differenced)", "R²(differenced)"]
 
 for name, vals in [
-    ("Year FE", [("Yes" if b else "No") for b in fe_year]),
-    ("Country FE", [("Yes" if b else "No") for b in fe_ctry]),
+    ("Year FE", year_fe),
+    ("Country effects", ctry_eff),
     ("Observations", [str(n) for n in n_obs]),
     ("R²", [f"{v:.3f}" for v in r2]),
     ("R² type", r2_label),
@@ -183,13 +225,18 @@ for name, vals in [
 lines.append(sep)
 lines.append("Cluster-robust SE (country) in parentheses.  *** p<0.01, ** p<0.05, * p<0.10.")
 lines.append(f"All columns estimated on the controls-complete sample (N={n_obs[0]}).")
-lines.append("M4: 'ca' absorbed by country FE; FD columns: 'ca' differenced away — both by design.")
-lines.append("Cluster count = 14. Few-cluster fragility flagged in diagnostics (17_diagnostics).")
-lines.append("Under-5 mortality is significant in the FD specification without year effects but not")
-lines.append("after year effects are added; the estimate is therefore sensitive to common time controls.")
-lines.append("Layer B provides little stable evidence of within-country associations for the selected")
-lines.append("macroeconomic indicators; it does not identify the mechanisms underlying the persistent")
-lines.append("between-country regional difference.")
+lines.append("M2h: 'CA' row is the between-country premium; control rows are the WITHIN")
+lines.append("coefficients (deviations). The between-country control coefficients are")
+lines.append("collinear (see 17_diagnostics) and are not tabulated individually.")
+lines.append("M4: 'ca' absorbed by country FE; FD columns: 'ca' differenced away — by design.")
+lines.append("FD / FD+yr R² is computed on first-differenced data, not the FE within-R².")
+lines.append("Cluster count = 14; wild-cluster bootstrap for the CA coefficients in script 20.")
+lines.append("Under-5 mortality is significant in the FD specification without year effects but")
+lines.append("not after year effects are added; the estimate is therefore sensitive to the")
+lines.append("inclusion of common year effects.")
+lines.append("Layer B provides little stable evidence of within-country associations for the")
+lines.append("selected macroeconomic indicators; it does not identify the mechanisms underlying")
+lines.append("the persistent between-country regional difference.")
 
 text_table = "\n".join(lines)
 print(text_table)
@@ -210,8 +257,8 @@ for r in rows:
         else:
             cells.append("*(absorbed)*" if r == "ca" else "—")
     md.append(f"| {label} | {' | '.join(cells)} |")
-md.append(f"| Year FE | {' | '.join(('Yes' if b else 'No') for b in fe_year)} |")
-md.append(f"| Country FE | {' | '.join(('Yes' if b else 'No') for b in fe_ctry)} |")
+md.append(f"| Year FE | {' | '.join(year_fe)} |")
+md.append(f"| Country effects | {' | '.join(ctry_eff)} |")
 md.append(f"| Observations | {' | '.join(str(n) for n in n_obs)} |")
 md.append(f"| R² | {' | '.join(f'{v:.3f}' for v in r2)} |")
 md.append(f"| R² type | {' | '.join(r2_label)} |")
@@ -221,10 +268,14 @@ md_footer = (
     "\n\n*Cluster-robust SE (country) in parentheses. "
     "\\*\\*\\* p<0.01, \\*\\* p<0.05, \\* p<0.10.*  \n"
     f"*All columns estimated on controls-complete sample (N={n_obs[0]}). "
-    "M4: CA dummy absorbed by country FE; FD columns: differenced away. "
-    "Cluster count = 14; few-cluster fragility documented in diagnostics. "
-    "Under-5 mortality is significant in FD without year FE but disappears "
-    "with year FE, indicating sensitivity to common time shocks.*\n"
+    "M2h: the CA row is the between-country premium; the control rows are the "
+    "within coefficients (the collinear between-country control coefficients are "
+    "not tabulated — see diagnostics). M4: CA dummy absorbed by country FE; "
+    "FD columns: CA differenced away. FD / FD+yr R² is computed on first-"
+    "differenced data, not the FE within-R². Cluster count = 14; wild-cluster "
+    "bootstrap for the CA coefficients in script 20. Under-5 mortality is "
+    "significant in FD without year FE but not once year effects are added, "
+    "i.e. it is sensitive to the inclusion of common year effects.*\n"
 )
 
 # --------------------------------------------------------------------------- #

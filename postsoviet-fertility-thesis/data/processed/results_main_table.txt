@@ -1,29 +1,34 @@
-                                 M1: raw gap      M2: + controls    M4: two-way FE          FD           FD + year FE   
-                               Pooled, year FE   Pooled, year FE   Country+year FE      Within (Δ)      Within (Δ)+yr   
-------------------------------------------------------------------------------------------------------------------------
-Central Asia dummy                +1.314***         +0.971***         (absorbed)        (absorbed)        (absorbed)    
-                                   (0.164)           (0.118)                                                            
-log GDP per capita PPP (lag)          —               +0.009            +0.183           +0.125*            +0.054      
-                                                     (0.129)           (0.259)           (0.071)           (0.135)      
-Urban population %  (lag)             —              -0.012*            +0.006            -0.004            +0.025      
-                                                     (0.007)           (0.025)           (0.013)           (0.017)      
-Remittances % GDP  (lag)              —               +0.001            +0.000            +0.000            +0.001      
-                                                     (0.006)           (0.007)           (0.002)           (0.002)      
-Under-5 mortality  (lag)              —               +0.006            -0.004           -0.008**           -0.000      
-                                                     (0.004)           (0.009)           (0.003)           (0.003)      
-------------------------------------------------------------------------------------------------------------------------
-Year FE                              Yes               Yes               Yes                No               Yes        
-Country FE                            No                No               Yes               Yes               Yes        
-Observations                         315               315               315               301               301        
-R²                                  0.842             0.908             0.296             0.056             0.257       
-R² type                          R²(overall)       R²(overall)        R²(within)        R²(within)       R²(overall)    
-------------------------------------------------------------------------------------------------------------------------
+                                 M1: raw gap     M2: + controls    M2h: Mundlak    M4: two-way FE         FD          FD + year FE  
+                               Pooled, year FE  Pooled, year FE   Between/within  Country+year FE     Within (Δ)     Within (Δ)+yr  
+------------------------------------------------------------------------------------------------------------------------------------
+Central Asia dummy                +1.314***        +0.971***        +0.964***        (absorbed)       (absorbed)       (absorbed)   
+                                   (0.164)          (0.118)          (0.140)                                                        
+log GDP per capita PPP (lag)          —              +0.009           +0.182           +0.183          +0.125*           +0.054     
+                                                    (0.129)          (0.278)          (0.259)          (0.071)          (0.135)     
+Urban population %  (lag)             —             -0.012*           +0.006           +0.006           -0.004           +0.025     
+                                                    (0.007)          (0.025)          (0.025)          (0.013)          (0.017)     
+Remittances % GDP  (lag)              —              +0.001           +0.001           +0.000           +0.000           +0.001     
+                                                    (0.006)          (0.007)          (0.007)          (0.002)          (0.002)     
+Under-5 mortality  (lag)              —              +0.006           -0.004           -0.004          -0.008**          -0.000     
+                                                    (0.004)          (0.009)          (0.009)          (0.003)          (0.003)     
+------------------------------------------------------------------------------------------------------------------------------------
+Year FE                              Yes              Yes              Yes              Yes               No              Yes       
+Country effects                       No               No        means (between)   estimated (FE)  differenced out  differenced out 
+Observations                         315              315              315              315              301              301       
+R²                                  0.842            0.908            0.918            0.296            0.056            0.257      
+R² type                          R²(overall)      R²(overall)      R²(overall)       R²(within)    R²(differenced)  R²(differenced) 
+------------------------------------------------------------------------------------------------------------------------------------
 Cluster-robust SE (country) in parentheses.  *** p<0.01, ** p<0.05, * p<0.10.
 All columns estimated on the controls-complete sample (N=315).
-M4: 'ca' absorbed by country FE; FD columns: 'ca' differenced away — both by design.
-Cluster count = 14. Few-cluster fragility flagged in diagnostics (17_diagnostics).
-Under-5 mortality is significant in the FD specification without year effects but not
-after year effects are added; the estimate is therefore sensitive to common time controls.
-Layer B provides little stable evidence of within-country associations for the selected
-macroeconomic indicators; it does not identify the mechanisms underlying the persistent
-between-country regional difference.
+M2h: 'CA' row is the between-country premium; control rows are the WITHIN
+coefficients (deviations). The between-country control coefficients are
+collinear (see 17_diagnostics) and are not tabulated individually.
+M4: 'ca' absorbed by country FE; FD columns: 'ca' differenced away — by design.
+FD / FD+yr R² is computed on first-differenced data, not the FE within-R².
+Cluster count = 14; wild-cluster bootstrap for the CA coefficients in script 20.
+Under-5 mortality is significant in the FD specification without year effects but
+not after year effects are added; the estimate is therefore sensitive to the
+inclusion of common year effects.
+Layer B provides little stable evidence of within-country associations for the
+selected macroeconomic indicators; it does not identify the mechanisms underlying
+the persistent between-country regional difference.
