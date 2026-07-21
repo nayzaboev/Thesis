@@ -1,15 +1,15 @@
 country,bloc,subgroup,tfr_start,tfr_end,abs_change,growth
-Armenia,Rest of post-Soviet,Caucasus,1.47,1.714,0.244,0.00668
-Azerbaijan,Rest of post-Soviet,Caucasus,1.698,1.67,-0.028,-0.00071
-Belarus,Rest of post-Soviet,Eastern European,1.272,1.208,-0.064,-0.00226
-Estonia,Rest of post-Soviet,Baltic,1.347,1.35,0.003,9e-05
-Georgia,Rest of post-Soviet,Caucasus,1.609,1.81,0.201,0.00511
-Kazakhstan,Central Asia,Central Asia,1.898,3.012,1.114,0.02008
-Kyrgyzstan,Central Asia,Central Asia,2.576,2.8,0.224,0.00362
-Latvia,Rest of post-Soviet,Baltic,1.244,1.338,0.093,0.00313
-Lithuania,Rest of post-Soviet,Baltic,1.383,1.201,-0.182,-0.00614
-Moldova,Rest of post-Soviet,Eastern European,1.496,1.731,0.234,0.00633
-Russia,Rest of post-Soviet,Eastern European,1.19,1.449,0.259,0.00857
-Tajikistan,Central Asia,Central Asia,3.49,3.072,-0.418,-0.00554
-Ukraine,Rest of post-Soviet,Eastern European,1.108,0.977,-0.131,-0.00549
-Uzbekistan,Central Asia,Central Asia,2.696,3.5,0.804,0.01135
+Armenia,Rest of post-Soviet,Caucasus,1.426,1.714,0.289,0.00878
+Azerbaijan,Rest of post-Soviet,Caucasus,1.621,1.689,0.068,0.00195
+Belarus,Rest of post-Soviet,Eastern European,1.238,1.302,0.063,0.00236
+Estonia,Rest of post-Soviet,Baltic,1.339,1.451,0.113,0.00385
+Georgia,Rest of post-Soviet,Caucasus,1.586,1.87,0.284,0.00783
+Kazakhstan,Central Asia,Central Asia,1.92,3.127,1.207,0.02323
+Kyrgyzstan,Central Asia,Central Asia,2.563,2.833,0.271,0.00478
+Latvia,Rest of post-Soviet,Baltic,1.242,1.46,0.218,0.00771
+Lithuania,Rest of post-Soviet,Baltic,1.299,1.277,-0.022,-0.00081
+Moldova,Rest of post-Soviet,Eastern European,1.472,1.725,0.254,0.00757
+Russia,Rest of post-Soviet,Eastern European,1.233,1.469,0.236,0.00835
+Tajikistan,Central Asia,Central Asia,3.483,3.123,-0.36,-0.0052
+Ukraine,Rest of post-Soviet,Eastern European,1.109,1.007,-0.102,-0.00458
+Uzbekistan,Central Asia,Central Asia,2.627,3.39,0.763,0.01214

@@ -38,6 +38,7 @@ Input:   data/processed/master_tfr.csv
 Outputs: data/processed/cv_all.csv
          data/processed/cv_by_bloc.csv
          data/processed/cv_by_subgroup.csv
+         data/processed/cv_absolute_dispersion.csv
          data/processed/cv_trend_tests.csv
          data/processed/peaks.csv
          data/processed/beta_convergence.csv
@@ -90,6 +91,35 @@ out()
 out("CV within each sub-group:")
 out(cv_by_subgroup.round(3).loc[snapshot_years].to_string())
 
+# --- Absolute dispersion (SD and IQR) alongside the scale-free CV ---
+# CV = sd/mean can move because dispersion OR the group mean changes. Reporting
+# the standard deviation and interquartile range (absolute measures) shows
+# whether a falling CV reflects genuine compression or a rising denominator.
+out()
+out("-" * 72)
+out("Absolute dispersion across all 14 countries (SD and IQR), for comparison")
+out("with the scale-free CV above. If CV falls but SD/IQR do not, the CV move is")
+out("partly a denominator (mean) effect rather than genuine compression.")
+out()
+sd_all  = df.groupby("year")["tfr"].std(ddof=1)
+iqr_all = df.groupby("year")["tfr"].apply(
+    lambda s: s.quantile(0.75) - s.quantile(0.25))
+mean_all = df.groupby("year")["tfr"].mean()
+abs_disp = pd.DataFrame({
+    "mean": mean_all.round(3),
+    "SD": sd_all.round(3),
+    "IQR": iqr_all.round(3),
+    "CV": cv_all.round(3),
+})
+out(abs_disp.loc[snapshot_years].to_string())
+_sd_chg  = sd_all.loc[2023] - sd_all.loc[2000]
+_cv_chg  = cv_all.loc[2023] - cv_all.loc[2000]
+out()
+out(f"  2000->2023: SD {_sd_chg:+.3f}, CV {_cv_chg:+.3f}. Read together: a falling")
+out("  CV accompanied by a roughly flat or rising SD indicates the CV change is")
+out("  substantially a mean (denominator) effect, not pure absolute compression.")
+abs_disp.to_csv("data/processed/cv_absolute_dispersion.csv")
+
 # --- Formal trend test on each CV series ---
 out()
 out("-" * 72)
@@ -133,12 +163,17 @@ out("(B) BETA-CONVERGENCE — catch-up across the 14 countries")
 out("=" * 72)
 
 first_year, last_year = int(df["year"].min()), int(df["year"].max())
-T = last_year - first_year
+# Endpoints are 3-YEAR AVERAGES (2000-2002 and 2021-2023) rather than single
+# years, to reduce sensitivity to annual measurement noise at the endpoints.
+# T is the gap between the window midpoints (2001 -> 2022 = 21 years).
+START_WIN = [2000, 2001, 2002]
+END_WIN   = [2021, 2022, 2023]
+T = int(np.mean(END_WIN) - np.mean(START_WIN))
 
 wide = df.pivot(index="country", columns="year", values="tfr")
 bc = pd.DataFrame({
-    "tfr_start": wide[first_year],
-    "tfr_end": wide[last_year],
+    "tfr_start": wide[START_WIN].mean(axis=1),
+    "tfr_end":   wide[END_WIN].mean(axis=1),
 }).reset_index()
 bc = bc.merge(df.groupby("country")[["bloc", "subgroup"]].first().reset_index(),
               on="country")
@@ -147,12 +182,13 @@ bc["ln_tfr_start"] = np.log(bc["tfr_start"])
 bc["growth"] = (np.log(bc["tfr_end"]) - np.log(bc["tfr_start"])) / T
 bc["abs_change"] = bc["tfr_end"] - bc["tfr_start"]
 
-out(f"Specification: (1/{T}) * ln(TFR_{last_year} / TFR_{first_year}) "
-    f"= alpha + beta * ln(TFR_{first_year})")
-out(f"n = {len(bc)} countries. HC3 standard errors (small sample).")
+out(f"Specification: (1/{T}) * ln(TFR_end / TFR_start) "
+    f"= alpha + beta * ln(TFR_start)")
+out(f"Endpoints are 3-year averages: start = mean(2000-2002), end = mean(2021-2023).")
+out(f"n = {len(bc)} countries. HC3 standard errors with small-sample t inference.")
 out()
 
-m_uncond = smf.ols("growth ~ ln_tfr_start", data=bc).fit(cov_type="HC3")
+m_uncond = smf.ols("growth ~ ln_tfr_start", data=bc).fit(cov_type="HC3", use_t=True)
 b = m_uncond.params["ln_tfr_start"]
 se = m_uncond.bse["ln_tfr_start"]
 pv = m_uncond.pvalues["ln_tfr_start"]
@@ -171,7 +207,7 @@ else:
     out("       countries did NOT decline faster; if anything the opposite.")
 
 # --- Conditional on Central Asia ---
-m_cond = smf.ols("growth ~ ln_tfr_start + ca", data=bc).fit(cov_type="HC3")
+m_cond = smf.ols("growth ~ ln_tfr_start + ca", data=bc).fit(cov_type="HC3", use_t=True)
 out()
 out("  CONDITIONAL beta-convergence (adds the Central Asia dummy):")
 for v in ["ln_tfr_start", "ca"]:
@@ -215,21 +251,26 @@ for label, s in series.items():
     sl_early, p_early = split_trend(s, 2000, 2016)
     sl_late,  p_late  = split_trend(s, 2017, 2023)
     sl_full,  p_full  = split_trend(s, 2000, 2023)
+    # Report the 2000-2016 slope with its p-value (17 obs), but the 2017-2023
+    # slope WITHOUT a p-value: with only 7 annual observations HAC p-values are
+    # unreliable and are deliberately not shown (see caveat below).
     out(f"  {label:32s}")
     out(f"      2000-2016: slope={sl_early:+.5f} (p={p_early:.3f})   "
-        f"2017-2023: slope={sl_late:+.5f} (p={p_late:.3f})")
+        f"2017-2023: slope={sl_late:+.5f} (direction only, n=7)")
+    # p_2017_2023 is retained in the CSV for completeness but flagged unreliable.
     split_rows.append({"series": label,
                        "slope_2000_2016": round(sl_early, 6), "p_2000_2016": round(p_early, 4),
-                       "slope_2017_2023": round(sl_late, 6),  "p_2017_2023": round(p_late, 4),
+                       "slope_2017_2023": round(sl_late, 6),
+                       "p_2017_2023_UNRELIABLE_n7": round(p_late, 4),
                        "slope_full": round(sl_full, 6),       "p_full": round(p_full, 4)})
 out()
 out("  READING: for the all-14 series, dispersion fell over 2000-2016 and rose")
 out("  over 2017-2023. The near-zero full-period slope averages these opposing phases.")
-out("  CAVEAT: the post-2017 regressions use only 7 observations. P-values from")
-out("  HAC inference on T=7 are NOT reliable — the asymptotic approximation is")
-out("  too weak. The direction of the pattern (compression then divergence) is")
-out("  descriptively clear from the raw CV series; do NOT cite p-values or claim")
-out("  statistical significance for the post-2017 period specifically.")
+out("  CAVEAT: the post-2017 window has only 7 annual observations. HAC p-values on")
+out("  T=7 are NOT reliable, so NO significance is claimed for the post-2017 period.")
+out("  Only the slope SIGN and the descriptive pattern (compression then divergence,")
+out("  visible in the raw CV series) are reported. Do NOT cite a post-2017 p-value")
+out("  or describe the post-2017 change as statistically significant.")
 
 # =========================================================================
 # (B3) CONVERGENCE LEAVE-ONE-OUT — are the bloc trends country-driven?

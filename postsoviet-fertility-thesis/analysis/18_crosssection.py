@@ -73,8 +73,10 @@ models = {
         "mean_tfr ~ muslim_share + smam_female",
 }
 for name, formula in models.items():
-    m = smf.ols(formula, data=cs).fit(cov_type="HC3")
-    out(f"\n  --- {name} (HC3 SEs) ---")
+    # use_t=True => small-sample t-based inference (n=14). Without it statsmodels
+    # reports normal-based p-values, which overstate precision at this sample size.
+    m = smf.ols(formula, data=cs).fit(cov_type="HC3", use_t=True)
+    out(f"\n  --- {name} (HC3 SEs, small-sample t inference) ---")
     out(f"  R2 = {m.rsquared:.3f}   Adj-R2 = {m.rsquared_adj:.3f}")
     for v in m.params.index:
         if v == "Intercept":
@@ -100,8 +102,11 @@ out("\nCountry residuals (unexplained TFR after economics + year FE):")
 for _, r in cs_r.sort_values("mean_resid", ascending=False).iterrows():
     out(f"  {r['country']:14s} ({r['bloc']:22s}): {r['mean_resid']:+.3f}")
 
-out("\nDescriptive correlations — country residuals vs cultural variables:")
-out("(Second-stage SEs ignore first-stage estimation uncertainty; treat as descriptive.)")
+out("\nExploratory descriptive residual associations — country residuals vs cultural vars:")
+out("(These are NOT formal two-stage hypothesis tests. The country residuals are")
+out(" generated from a first-stage regression; any second-stage SE would ignore")
+out(" first-stage estimation uncertainty. Read sign, magnitude and country")
+out(" sensitivity from the scatterplots, not p-values.)")
 for var, label in pairs:
     r_raw = cs_r["mean_tfr"].corr(cs_r[var])
     r_resid = cs_r["mean_resid"].corr(cs_r[var])
@@ -116,8 +121,8 @@ out("=" * 68)
 
 # On mean TFR
 m_joint_tfr = smf.ols("mean_tfr ~ ca + muslim_share", data=cs_r).fit(
-    cov_type="HC3")
-out("\n  Joint model on mean TFR (HC3 standard errors):")
+    cov_type="HC3", use_t=True)
+out("\n  Joint model on mean TFR (HC3 SEs, small-sample t inference):")
 out(f"    CA:           {m_joint_tfr.params['ca']:+.3f}  "
     f"(SE {m_joint_tfr.bse['ca']:.3f}, p={m_joint_tfr.pvalues['ca']:.3f})")
 out(f"    Muslim share: {m_joint_tfr.params['muslim_share']:+.4f}  "
@@ -125,14 +130,15 @@ out(f"    Muslim share: {m_joint_tfr.params['muslim_share']:+.4f}  "
 
 # On residuals
 m_joint_res = smf.ols("mean_resid ~ ca + muslim_share", data=cs_r).fit(
-    cov_type="HC3")
-out("\n  Joint model on country residuals (HC3 standard errors):")
+    cov_type="HC3", use_t=True)
+out("\n  Joint model on country residuals (HC3 SEs, small-sample t inference):")
 out(f"    CA:           {m_joint_res.params['ca']:+.3f}  "
     f"(SE {m_joint_res.bse['ca']:.3f}, p={m_joint_res.pvalues['ca']:.3f})")
 out(f"    Muslim share: {m_joint_res.params['muslim_share']:+.4f}  "
     f"(SE {m_joint_res.bse['muslim_share']:.4f}, p={m_joint_res.pvalues['muslim_share']:.3f})")
 
-out("\n  FINDING: Muslim share adds NO explanatory power once CA status is included.")
+out("\n  FINDING: the analysis provides no evidence that Muslim share explains")
+out("  additional cross-country variation once Central Asian status is included.")
 out("  The two variables are empirically inseparable at n=14 (r=0.83).")
 out("  This does NOT mean religion is irrelevant — it means this dataset cannot")
 out("  distinguish Central Asian regional identity from Muslim population share.")
@@ -183,8 +189,9 @@ out(f"  Bivariate TFR-schooling: r = {cs['mean_tfr'].corr(cs['female_mean_school
 out("")
 out("  The cross-section documents strong bivariate associations between TFR")
 out("  and Muslim share / SMAM, and a moderate negative association with female")
-out("  schooling (r = -0.58) that disappears in the residuals (r = +0.19),")
-out("  suggesting it reflects the same regional split rather than an education effect.")
+out("  schooling (r = -0.58) that disappears in the residuals (r = +0.19). This")
+out("  pattern is consistent with confounding by the broader regional division and")
+out("  cannot be interpreted as an independent education effect.")
 out("  However, the inseparability test (C) shows that Muslim share cannot be")
 out("  distinguished from Central Asian regional identity in this sample.")
 out("  Azerbaijan (95% Muslim, TFR 1.88) further demonstrates that Muslim")
@@ -216,8 +223,9 @@ for var, label in pairs:
     delta = r_recent - r_full
     out(f"    {label:36s}: r(full)={r_full:+.3f}  |  r(2018-22)={r_recent:+.3f}  |  Δ={delta:+.3f}")
 
-out("\n  Interpretation: if the correlations are similar, temporal mismatch")
-out("  between cultural variables (~2020) and TFR (2000-2023) is not a concern.")
+out("\n  Interpretation: similar correlations across the full-period and aligned")
+out("  windows REDUCE, but do not eliminate, concern about temporal mismatch")
+out("  between cultural variables (~2020) and TFR (2000-2023).")
 out("  Large divergences would suggest the cross-section is period-sensitive.")
 
 # =========================================================================

@@ -19,18 +19,18 @@ Bivariate correlations:
 
 Stepwise OLS:
 
-  --- A1: Muslim share only (HC3 SEs) ---
+  --- A1: Muslim share only (HC3 SEs, small-sample t inference) ---
   R2 = 0.766   Adj-R2 = 0.746
-    muslim_share                : +0.0130  (HC3 SE 0.0033, p=0.000)
+    muslim_share                : +0.0130  (HC3 SE 0.0033, p=0.002)
 
-  --- A2: SMAM only (HC3 SEs) ---
+  --- A2: SMAM only (HC3 SEs, small-sample t inference) ---
   R2 = 0.323   Adj-R2 = 0.267
-    smam_female                 : -0.0897  (HC3 SE 0.0390, p=0.021)
+    smam_female                 : -0.0897  (HC3 SE 0.0390, p=0.040)
 
-  --- A3: Muslim + SMAM (HC3 SEs) ---
+  --- A3: Muslim + SMAM (HC3 SEs, small-sample t inference) ---
   R2 = 0.776   Adj-R2 = 0.735
-    muslim_share                : +0.0120  (HC3 SE 0.0041, p=0.003)
-    smam_female                 : -0.0189  (HC3 SE 0.0247, p=0.443)
+    muslim_share                : +0.0120  (HC3 SE 0.0041, p=0.013)
+    smam_female                 : -0.0189  (HC3 SE 0.0247, p=0.459)
 
 ====================================================================
 (B) Residuals-based: cultural correlates of the unexplained premium
@@ -52,8 +52,11 @@ Country residuals (unexplained TFR after economics + year FE):
   Azerbaijan     (Rest of post-Soviet   ): -0.303
   Moldova        (Rest of post-Soviet   ): -0.676
 
-Descriptive correlations — country residuals vs cultural variables:
-(Second-stage SEs ignore first-stage estimation uncertainty; treat as descriptive.)
+Exploratory descriptive residual associations — country residuals vs cultural vars:
+(These are NOT formal two-stage hypothesis tests. The country residuals are
+ generated from a first-stage regression; any second-stage SE would ignore
+ first-stage estimation uncertainty. Read sign, magnitude and country
+ sensitivity from the scatterplots, not p-values.)
   Muslim share (%)                    : r(TFR)=+0.875  |  r(resid)=+0.452
   Female SMAM (years)                 : r(TFR)=-0.568  |  r(resid)=-0.176
   Female mean schooling (years)       : r(TFR)=-0.581  |  r(resid)=+0.192
@@ -62,15 +65,16 @@ Descriptive correlations — country residuals vs cultural variables:
 (C) Inseparability test: can Muslim share be distinguished from CA status?
 ====================================================================
 
-  Joint model on mean TFR (HC3 standard errors):
-    CA:           +0.953  (SE 1.646, p=0.563)
-    Muslim share: +0.0047  (SE 0.0185, p=0.799)
+  Joint model on mean TFR (HC3 SEs, small-sample t inference):
+    CA:           +0.953  (SE 1.646, p=0.574)
+    Muslim share: +0.0047  (SE 0.0185, p=0.804)
 
-  Joint model on country residuals (HC3 standard errors):
-    CA:           +0.620  (SE 0.224, p=0.006)
-    Muslim share: -0.0023  (SE 0.0023, p=0.328)
+  Joint model on country residuals (HC3 SEs, small-sample t inference):
+    CA:           +0.620  (SE 0.224, p=0.018)
+    Muslim share: -0.0023  (SE 0.0023, p=0.349)
 
-  FINDING: Muslim share adds NO explanatory power once CA status is included.
+  FINDING: the analysis provides no evidence that Muslim share explains
+  additional cross-country variation once Central Asian status is included.
   The two variables are empirically inseparable at n=14 (r=0.83).
   This does NOT mean religion is irrelevant — it means this dataset cannot
   distinguish Central Asian regional identity from Muslim population share.
@@ -90,8 +94,9 @@ Descriptive correlations — country residuals vs cultural variables:
 
   The cross-section documents strong bivariate associations between TFR
   and Muslim share / SMAM, and a moderate negative association with female
-  schooling (r = -0.58) that disappears in the residuals (r = +0.19),
-  suggesting it reflects the same regional split rather than an education effect.
+  schooling (r = -0.58) that disappears in the residuals (r = +0.19). This
+  pattern is consistent with confounding by the broader regional division and
+  cannot be interpreted as an independent education effect.
   However, the inseparability test (C) shows that Muslim share cannot be
   distinguished from Central Asian regional identity in this sample.
   Azerbaijan (95% Muslim, TFR 1.88) further demonstrates that Muslim
@@ -114,6 +119,7 @@ cultural measurement dates, the results may be driven by temporal mismatch.
     Female SMAM (years)                 : r(full)=-0.568  |  r(2018-22)=-0.541  |  Δ=+0.027
     Female mean schooling (years)       : r(full)=-0.581  |  r(2018-22)=-0.493  |  Δ=+0.088
 
-  Interpretation: if the correlations are similar, temporal mismatch
-  between cultural variables (~2020) and TFR (2000-2023) is not a concern.
+  Interpretation: similar correlations across the full-period and aligned
+  windows REDUCE, but do not eliminate, concern about temporal mismatch
+  between cultural variables (~2020) and TFR (2000-2023).
   Large divergences would suggest the cross-section is period-sensitive.

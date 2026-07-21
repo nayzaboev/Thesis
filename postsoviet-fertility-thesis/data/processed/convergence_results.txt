@@ -37,6 +37,24 @@ year
 2023       0.064     0.041         0.095             0.241
 
 ------------------------------------------------------------------------
+Absolute dispersion across all 14 countries (SD and IQR), for comparison
+with the scale-free CV above. If CV falls but SD/IQR do not, the CV move is
+partly a denominator (mean) effect rather than genuine compression.
+
+       mean     SD    IQR     CV
+year                            
+2000  1.749  0.696  0.557  0.398
+2005  1.805  0.655  0.880  0.363
+2010  1.991  0.659  0.804  0.331
+2015  2.121  0.642  0.785  0.302
+2020  2.020  0.741  1.266  0.367
+2023  1.917  0.820  1.212  0.428
+
+  2000->2023: SD +0.124, CV +0.030. Read together: a falling
+  CV accompanied by a roughly flat or rising SD indicates the CV change is
+  substantially a mean (denominator) effect, not pure absolute compression.
+
+------------------------------------------------------------------------
 Trend test: regress CV on a linear year term.
 Newey-West SEs (4 lags) because CV series are strongly serially correlated.
 A negative, significant slope indicates sigma-convergence.
@@ -56,19 +74,20 @@ A negative, significant slope indicates sigma-convergence.
 ========================================================================
 (B) BETA-CONVERGENCE — catch-up across the 14 countries
 ========================================================================
-Specification: (1/23) * ln(TFR_2023 / TFR_2000) = alpha + beta * ln(TFR_2000)
-n = 14 countries. HC3 standard errors (small sample).
+Specification: (1/21) * ln(TFR_end / TFR_start) = alpha + beta * ln(TFR_start)
+Endpoints are 3-year averages: start = mean(2000-2002), end = mean(2021-2023).
+n = 14 countries. HC3 standard errors with small-sample t inference.
 
   UNCONDITIONAL beta-convergence:
-    beta = +0.0030  (HC3 SE 0.0107, p = 0.780)
-    95% CI [-0.0179, +0.0239]     R2 = 0.019
+    beta = +0.0013  (HC3 SE 0.0116, p = 0.911)
+    95% CI [-0.0240, +0.0267]     R2 = 0.004
     => Positive: no evidence of catch-up. Initially higher-fertility
        countries did NOT decline faster; if anything the opposite.
 
   CONDITIONAL beta-convergence (adds the Central Asia dummy):
-    ln_tfr_start    : -0.0175  (HC3 SE 0.0212, p = 0.409)
-    ca              : +0.0171  (HC3 SE 0.0148, p = 0.247)
-    R2 = 0.294
+    ln_tfr_start    : -0.0201  (HC3 SE 0.0267, p = 0.467)
+    ca              : +0.0176  (HC3 SE 0.0187, p = 0.368)
+    R2 = 0.270
     Reading: the CA dummy asks whether Central Asian countries followed a
     different trajectory once their 2000 starting level is accounted for.
     A positive CA coefficient means Central Asia declined less (or rose
@@ -87,27 +106,27 @@ A single linear trend over 2000-2023 masks a turning point. Fitting the
 CV trend separately on 2000-2016 and 2017-2023 shows the real pattern.
 
   All 14 countries                
-      2000-2016: slope=-0.00715 (p=0.000)   2017-2023: slope=+0.01954 (p=0.000)
+      2000-2016: slope=-0.00715 (p=0.000)   2017-2023: slope=+0.01954 (direction only, n=7)
   Bloc: Central Asia              
-      2000-2016: slope=-0.00695 (p=0.000)   2017-2023: slope=-0.00371 (p=0.390)
+      2000-2016: slope=-0.00695 (p=0.000)   2017-2023: slope=-0.00371 (direction only, n=7)
   Bloc: Rest of post-Soviet       
-      2000-2016: slope=-0.00011 (p=0.863)   2017-2023: slope=+0.00912 (p=0.000)
+      2000-2016: slope=-0.00011 (p=0.863)   2017-2023: slope=+0.00912 (direction only, n=7)
   Sub-group: Baltic               
-      2000-2016: slope=-0.00069 (p=0.687)   2017-2023: slope=+0.00990 (p=0.000)
+      2000-2016: slope=-0.00069 (p=0.687)   2017-2023: slope=+0.00990 (direction only, n=7)
   Sub-group: Caucasus             
-      2000-2016: slope=+0.00459 (p=0.001)   2017-2023: slope=-0.02080 (p=0.000)
+      2000-2016: slope=+0.00459 (p=0.001)   2017-2023: slope=-0.02080 (direction only, n=7)
   Sub-group: Central Asia         
-      2000-2016: slope=-0.00695 (p=0.000)   2017-2023: slope=-0.00371 (p=0.390)
+      2000-2016: slope=-0.00695 (p=0.000)   2017-2023: slope=-0.00371 (direction only, n=7)
   Sub-group: Eastern European     
-      2000-2016: slope=-0.00221 (p=0.280)   2017-2023: slope=+0.01839 (p=0.000)
+      2000-2016: slope=-0.00221 (p=0.280)   2017-2023: slope=+0.01839 (direction only, n=7)
 
   READING: for the all-14 series, dispersion fell over 2000-2016 and rose
   over 2017-2023. The near-zero full-period slope averages these opposing phases.
-  CAVEAT: the post-2017 regressions use only 7 observations. P-values from
-  HAC inference on T=7 are NOT reliable — the asymptotic approximation is
-  too weak. The direction of the pattern (compression then divergence) is
-  descriptively clear from the raw CV series; do NOT cite p-values or claim
-  statistical significance for the post-2017 period specifically.
+  CAVEAT: the post-2017 window has only 7 annual observations. HAC p-values on
+  T=7 are NOT reliable, so NO significance is claimed for the post-2017 period.
+  Only the slope SIGN and the descriptive pattern (compression then divergence,
+  visible in the raw CV series) are reported. Do NOT cite a post-2017 p-value
+  or describe the post-2017 change as statistically significant.
 
 ========================================================================
 (B3) CONVERGENCE LEAVE-ONE-OUT (bloc trends)
