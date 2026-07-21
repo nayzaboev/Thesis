@@ -1,6 +1,11 @@
 # ── Raw data ── large files, don't version
 data/raw/*
 !data/raw/README.md
+# Freeze the small World Bank WDI inputs so the pipeline is reproducible
+# without a live API call (results can change when the WB revises series).
+!data/raw/raw_wb_*.csv
+# Freeze the UN WPP export used by 01_clean_data.py as well.
+!data/raw/unpopulation_dataportal_*.csv
 
 # ── But DO keep the clean processed table ──
 !data/processed/

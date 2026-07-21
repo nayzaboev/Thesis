@@ -12,7 +12,21 @@ How have fertility trends evolved in Central Asia and other post-Soviet countrie
 
 ## Countries (n = 14)
 
-Turkmenistan is excluded due to data-quality concerns.
+The Central Asia group covers the **four Central Asian successor states with
+sufficiently comparable data** (Kazakhstan, Kyrgyzstan, Tajikistan, Uzbekistan).
+Turkmenistan, the fifth Central Asian successor state, is **excluded** — not for
+convenience but because its official statistics are not comparable with the rest
+of the sample:
+
+| Issue | Evidence | Consequence for this study |
+|---|---|---|
+| Covariate coverage | World Bank WDI series used as controls (GDP-PPP, remittances % GDP, urbanisation, under-5 mortality) are missing or sparsely reported for Turkmenistan across 2000–2023 | Turkmenistan cannot enter the controlled panel (Part 2) on the same basis as the other 14 |
+| Statistical transparency | Turkmenistan's demographic and economic reporting is widely regarded as opaque, with limited independent verification | Even the TFR series (Part 1) would not be comparably measured |
+| Treatment in this thesis | Excluded from **all** analyses (Parts 1 and 2), not selectively | Scope is "four comparable Central Asian states", stated explicitly, rather than implying full coverage of the region |
+
+Adding Turkmenistan merely to achieve nominal five-country coverage would import
+non-comparable measurement into both the descriptive and the modelling parts;
+the exclusion is therefore a deliberate scope decision, documented here.
 
 - **Central Asia:** Kazakhstan, Kyrgyzstan, Tajikistan, Uzbekistan
 - **Eastern European:** Belarus, Moldova, Russia, Ukraine
