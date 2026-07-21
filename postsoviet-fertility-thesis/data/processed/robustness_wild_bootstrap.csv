@@ -1,0 +1,5 @@
+specification,coef,t_obs,p_asymptotic,p_wild_bootstrap
+M1 raw CA premium,1.3144,8.033,0.0,0.0005
+M2 controlled CA premium,0.9707,8.255,0.0,0.006
+CA x remittances,0.0157,3.394,0.0007,0.0375
+CA x urbanisation,-0.0119,-1.93,0.0536,0.2945
