@@ -1,38 +1,72 @@
 # Raw Data Directory
 
-This directory is **git-ignored** because the underlying files are either large binaries or licensed microdata that cannot be redistributed. To reproduce the analysis from scratch, download the files listed below into `data/raw/` before running the scripts.
+This directory is **git-ignored** (`data/raw/*`) because the files are either
+large binaries or licensed microdata that cannot be redistributed. The exception
+is this README, which is tracked.
 
-## Files required by the pipeline
+To reproduce the analysis from scratch, download the files listed below into
+`data/raw/` before running the scripts.
 
-| File | Used by script | Source | How to get it |
-|---|---|---|---|
-| `unpopulation_dataportal_YYYYMMDDHHMMSS.csv` | `01_clean_data.py` | UN Population Division Data Portal | https://population.un.org/dataportal/ → select "Total Fertility Rate," 14 countries, 2000–2023, "Median" variant → export CSV. Rename or update the path in `01_clean_data.py` to match. |
-| `raw_wb_gdp_per_capita_ppp.csv` | `10_fetch_wdi.py` (fetches automatically) | World Bank WDI | Auto-downloaded via `wbgapi` when script runs. Indicator `NY.GDP.PCAP.PP.KD`. |
-| `raw_wb_urban_pop_pct.csv` | `10_fetch_wdi.py` | World Bank WDI | Auto-downloaded. Indicator `SP.URB.TOTL.IN.ZS`. |
-| `raw_wb_remittances_gdp_pct.csv` | `10_fetch_wdi.py` | World Bank WDI | Auto-downloaded. Indicator `BX.TRF.PWKR.DT.GD.ZS`. |
-| `raw_wb_under5_mortality.csv` | `10_fetch_wdi.py` | World Bank WDI | Auto-downloaded. Indicator `SH.DYN.MORT`. |
-| `wm.sav` | `compute_uzb_smam.py` | UNICEF MICS6 Uzbekistan 2021–2022, women's file | https://mics.unicef.org/surveys → Uzbekistan → MICS6 2021–2022 → request access (free) → download Women SPSS dataset. Save as `data/raw/wm.sav`. |
-| `blrwm.sav` | `compute_blr_smam.py` | UNICEF MICS6 Belarus 2019, women's file | Same portal → Belarus MICS6 2019 → Women SPSS. Save as `data/raw/blrwm.sav`. |
-| `geo.wm.sav` | `compute_geo_smam.py` | UNICEF MICS6 Georgia 2018, women's file | Same portal → Georgia MICS6 2018 → Women SPSS. Save as `data/raw/geo.wm.sav`. |
-| `kyz.wm.sav` | `compute_kgz_smam.py` | UNICEF MICS6 Kyrgyzstan 2018, women's file | Same portal → Kyrgyzstan MICS6 2018 → Women SPSS. Save as `data/raw/kyz.wm.sav`. |
-| `rus_census2021_tab5.xlsx` | `compute_rus_smam.py` | Rosstat, VPN-2020 (2021 Russian Census), Tom 2, Table 5 | https://rosstat.gov.ru/vpn/2020/ → Tom 2 (Возрастно-половой состав и состояние в браке) → download `Tоm2_tab5_VPN-2020.xlsx`. Save as `data/raw/rus_census2021_tab5.xlsx`. |
+## Files auto-downloaded by the pipeline
 
-## Files used only for the cultural cross-section (already merged into `data/manual/cultural_vars.csv`)
+These are fetched by `10_fetch_wdi.py` via the World Bank API (`wbgapi`). If
+you have internet access, simply run the script; the CSVs appear automatically.
 
-These do not need to be re-downloaded to reproduce `18_crosssection.py`, but the sources are recorded here for provenance:
+| File | WDI indicator | Variable |
+|---|---|---|
+| `raw_wb_gdp_per_capita_ppp.csv` | `NY.GDP.PCAP.PP.KD` | GDP per capita, PPP (constant 2021 int'l $) |
+| `raw_wb_urban_pop_pct.csv` | `SP.URB.TOTL.IN.ZS` | Urban population (%) |
+| `raw_wb_remittances_gdp_pct.csv` | `BX.TRF.PWKR.DT.GD.ZS` | Personal remittances received (% of GDP) |
+| `raw_wb_under5_mortality.csv` | `SH.DYN.MORT` | Under-5 mortality rate (per 1,000) |
+
+## Files requiring manual download
+
+### UN World Population Prospects (TFR)
+
+| File | Script | Source |
+|---|---|---|
+| `unpopulation_dataportal_20260616151558.csv` | `01_clean_data.py` | https://population.un.org/dataportal/ → Indicator: Total Fertility Rate → Locations: the 14 study countries → Variant: Median → Years: 2000–2023 → Export CSV. The filename includes a timestamp; update the path in `01_clean_data.py` if yours differs. |
+
+### MICS6 women's microdata (for SMAM computation)
+
+All four files are obtained from https://mics.unicef.org/surveys. Registration
+is free; approval typically takes one working day. Download the Women's SPSS
+dataset (`.sav`) from each survey page and rename as shown.
+
+| File | Script | Survey |
+|---|---|---|
+| `wm.sav` | `compute_uzb_smam.py` | Uzbekistan MICS6, 2021–2022 |
+| `blrwm.sav` | `compute_blr_smam.py` | Belarus MICS6, 2019 |
+| `geo.wm.sav` | `compute_geo_smam.py` | Georgia MICS6, 2018 |
+| `kyz.wm.sav` | `compute_kgz_smam.py` | Kyrgyzstan MICS6, 2018 |
+
+### Russian Census 2021
+
+| File | Script | Source |
+|---|---|---|
+| `rus_census2021_tab5.xlsx` | `compute_rus_smam.py` | Rosstat, Всероссийская перепись населения 2020 (conducted October 2021), Tom 2, Table 5: "Население по возрасту, полу и состоянию в браке." Download from https://rosstat.gov.ru/vpn/2020/ → Tom 2 → Table 5 (`Tоm2_tab5_VPN-2020.xlsx`). Rename to `rus_census2021_tab5.xlsx`. |
+
+## Files used for the cultural cross-section (already in `data/manual/`)
+
+These do not need to be re-downloaded to reproduce scripts 13–20. The final
+values and full source/year metadata are committed in `data/manual/cultural_vars.csv`.
+Sources are recorded here for provenance.
 
 | Variable | Source | URL |
 |---|---|---|
-| Female SMAM (for the 9 countries not covered by microdata) | UN DESA World Marriage Data 2019 | https://www.un.org/development/desa/pd/data/world-marriage-data |
-| Muslim population share (2020) | Pew Research Center, Religious Composition 2010–2020 | https://www.pewresearch.org/religion/2024/06/09/religious-composition-of-the-world-2010-2020/ |
-| Female mean years of schooling, age 25+, SSP2 (2020) | Wittgenstein Centre Data Explorer v3.0 | http://dataexplorer.wittgensteincentre.org/wcde-v3/ |
+| Female SMAM (9 countries not covered by microdata) | UN DESA, World Marriage Data 2019 | https://www.un.org/development/desa/pd/data/world-marriage-data |
+| Muslim population share (2020) | Pew Research Center, Religious Composition 2010–2020 | https://www.pewresearch.org/religion/ |
+| Female mean years of schooling, age 25+, SSP2 (2020) | Wittgenstein Centre, Human Capital Data Explorer v3.0 | http://dataexplorer.wittgensteincentre.org/wcde-v3/ |
 
-## MICS access note
+## What happens if raw files are missing
 
-UNICEF MICS microdata is free but requires a registered account and a signed data-use agreement. Registration takes a few minutes; approval is typically within one working day. The women's SPSS file for each survey is named `wm.sav` in the raw archive — the country-specific filenames in this repo (`blrwm.sav`, `geo.wm.sav`, `kyz.wm.sav`) are renamings for local disambiguation.
-
-## What to do if a raw file is missing
-
-If you clone this repo without the raw files:
-- Scripts `10`–`19` will still run **once `10_fetch_wdi.py` has been executed** (it downloads all four World Bank indicators automatically).
-- The five SMAM computation scripts will fail with `FileNotFoundError`. They are not required for the main results; `data/manual/cultural_vars.csv` already contains the final computed values and is committed. Downstream scripts (`13`, `18`) read from that file and will produce the correct cross-section results without re-running the SMAM scripts.
+- Scripts `10`–`20` will still run once `10_fetch_wdi.py` has been executed
+  (it auto-downloads the four WDI indicators).
+- The five `compute_*_smam.py` scripts will fail with `FileNotFoundError`.
+  They are **not required** for the main results: `data/manual/cultural_vars.csv`
+  already contains the final computed SMAM values and is committed. Downstream
+  scripts (`13_build_crosssection`, `18_crosssection`) read from that file and
+  produce the correct cross-section outputs without re-running the SMAM scripts.
+- `01_clean_data.py` requires the WPP CSV. If you re-download from the UN Data
+  Portal, the filename will include a different timestamp; update line 9 of the
+  script accordingly.
