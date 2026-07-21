@@ -1,5 +1,5 @@
 # ── Raw data ── large files, don't version
-data/raw/ 
+data/raw/*
 !data/raw/README.md
 
 # ── But DO keep the clean processed table ──
@@ -40,4 +40,3 @@ venv/
 
 # ── Figures (optional — commit these if you want plots versioned) ──
 # figures/
-# If you want figures tracked, leave the line above commented out.DS_Store

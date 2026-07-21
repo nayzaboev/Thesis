@@ -60,9 +60,9 @@ postsoviet-fertility-thesis/
 
 **Part 2 — Explanatory analysis** in two layers:
 
-- **Layer A — between-country gap** (`15`): pooled OLS with year fixed effects and country-clustered SEs. Model 1 estimates the raw Central Asia premium; Model 2 adds lagged economic controls and reports the surviving cultural residual; Model 3 tests interactions (CA × remittances, CA × urbanisation, CA × GDP).
-- **Layer B — within-country robustness** (`16`): two-way fixed effects (country + year), first-difference model, Im–Pesaran–Shin unit-root check (descriptive t-bar form), and a Wooldridge-style AR(1) test. This layer defends against the spurious-regression concern that motivated the analytical rebuild.
-- **Diagnostics** (`17`): VIF, Hausman (FE vs RE), and the few-cluster caveat.
+- **Layer A — between-country gap** (`15`): pooled OLS with year fixed effects and country-clustered SEs. Model 1 estimates the raw Central Asia premium; Model 2 adds lagged economic controls and reports the surviving conditional premium; Model 3 tests interactions (CA × remittances, CA × urbanisation, CA × GDP).
+- **Layer B — within-country robustness** (`16`): two-way fixed effects (country + year), first-difference model, average ADF t-bar unit-root check (descriptive form, not the formal IPS test), and a residual AR(1) serial-correlation check. This layer defends against the spurious-regression concern that motivated the analytical rebuild.
+- **Diagnostics** (`17`): VIF, Mundlak test (FE vs RE — replaces the classical Hausman, which is undefined in this sample), and the few-cluster caveat.
 - **Cross-section** (`18`): country-average TFR regressed on cultural variables (Muslim share, SMAM, female schooling) to close the "why" question at n = 14.
 
 ## Run Order
