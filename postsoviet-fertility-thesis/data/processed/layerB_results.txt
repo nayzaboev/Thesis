@@ -52,12 +52,12 @@ test use Stata (xtunitroot ips / xtunitroot fisher) or R (plm::purtest).
 A more negative average t-statistic indicates weaker persistence (values
 further from a unit root); this is reported only as descriptive context.
 
-  tfr                         : avg ADF t = -1.585  (from 14 countries)  <- high persistence
-  log_gdp_ppp_lag1            : avg ADF t = -2.114  (from 14 countries)  <- lower persistence
-  urban_pop_pct_lag1          : avg ADF t = -1.394  (from 14 countries)  <- high persistence
-  remittances_gdp_pct_lag1    : avg ADF t = -1.571  (from 14 countries)  <- high persistence
-  under5_mortality_lag1       : avg ADF t = -3.933  (from 14 countries)  <- lower persistence
-  d_tfr (first difference)    : avg ADF t = -2.504  (from 14 countries)  <- lower persistence after differencing
+  tfr                         : avg ADF t = -1.585  (from 14 countries)
+  log_gdp_ppp_lag1            : avg ADF t = -2.114  (from 14 countries)
+  urban_pop_pct_lag1          : avg ADF t = -1.394  (from 14 countries)
+  remittances_gdp_pct_lag1    : avg ADF t = -1.571  (from 14 countries)
+  under5_mortality_lag1       : avg ADF t = -3.933  (from 14 countries)
+  d_tfr (first difference)    : avg ADF t = -2.504  (from 14 countries)
 
 ======================================================================
 (C2) Descriptive residual persistence check — AR(1) on FE residuals
@@ -79,8 +79,10 @@ that the levels regression is spurious.
   four selected macroeconomic indicators are generally imprecise and
   sensitive to the treatment of common year effects (see B1 vs B2). Layer B
   is therefore best read as a robustness exercise showing that these
-  particular within-country economic associations are small and fragile in
-  this sample. This does NOT establish that economic factors in general have
+  particular within-country coefficients are generally imprecise and
+  specification-sensitive in this sample (several point estimates are not
+  necessarily economically small). This does NOT establish that economic
+  factors in general have
   small effects, and it does not rule out other economic, policy or
   demographic mechanisms. Consistent with Layer A, most of the Central
   Asia-rest fertility difference is between-country rather than year-to-year

@@ -104,9 +104,19 @@ out("\n  Interpretation: the Mundlak hybrid separates long-run cross-country")
 out("  associations (between) from short-run within-country changes (within).")
 out("  The CA premium is essentially unchanged from pooled M2, confirming it")
 out("  is not an artifact of mixing between/within variation.")
+# Compute the Mundlak RE-vs-FE F-test here rather than hardcoding it, so the
+# reported statistic can never drift from the actual model. Full discussion is
+# in 17_diagnostics.py; this reproduces the same restriction (between = within).
+_mund_hyp = " , ".join([f"{b} = {w}" for b, w in zip(between_vars, within_vars)])
+_mund_ft = m2h.f_test(_mund_hyp)
+_mund_verdict = ("FAILS to reject" if float(_mund_ft.pvalue) >= 0.05
+                 else "REJECTS")
 out("  The formal Mundlak RE-vs-FE test (H0: between = within coefficients)")
-out("  is reported in 17_diagnostics.py. In this sample it FAILS to reject")
-out("  (F(4,13)=1.34, p=0.31), so there is no statistical evidence that RE is")
+out("  is reported in 17_diagnostics.py. In this sample it "
+    f"{_mund_verdict} H0")
+out(f"  (F({int(_mund_ft.df_num)},{int(_mund_ft.df_denom)})="
+    f"{float(_mund_ft.fvalue):.2f}, p={float(_mund_ft.pvalue):.2f}), so there is "
+    "no statistical evidence that RE is")
 out("  inconsistent; the hybrid/FE specification is retained on substantive")
 out("  grounds, and the CA coefficient is numerically similar to pooled M2.")
 
@@ -209,4 +219,4 @@ header = ("LAYER A RESULTS — Central Asia fertility premium\n"
           "Controls lagged 1 year. Caution: few-cluster SEs may be anti-conservative.\n")
 with open("data/processed/layerA_results.txt", "w") as f:
     f.write(header + "\n".join(lines))
-out("\nSaved -> data/processed/layerA_results.txt") 
+out("\nSaved -> data/processed/layerA_results.txt")

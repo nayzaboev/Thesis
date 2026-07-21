@@ -176,17 +176,17 @@ out("A more negative average t-statistic indicates weaker persistence (values")
 out("further from a unit root); this is reported only as descriptive context.\n")
 for var in ["tfr"] + CONTROLS:
     tbar, k = adf_tbar(p_idx, var)
-    flag = ""
-    if not np.isnan(tbar):
-        flag = "  <- lower persistence" if tbar < -2.0 else "  <- high persistence"
-    out(f"  {var:28s}: avg ADF t = {tbar:+.3f}  (from {k} countries){flag}")
+    # Report the average ADF t-statistic without a threshold-based label. A
+    # "high/low persistence" cutoff at t=-2 has no formal statistical basis here
+    # (this is not a formal panel unit-root test); the raw number is left to
+    # speak for itself and a more negative value indicates weaker persistence.
+    out(f"  {var:28s}: avg ADF t = {tbar:+.3f}  (from {k} countries)")
 
 # Also summarise FIRST DIFFERENCES of TFR
 p_idx_d = p_idx.copy()
 p_idx_d["d_tfr"] = p_idx.groupby(level=0)["tfr"].diff()
 tbar_d, k_d = adf_tbar(p_idx_d, "d_tfr")
-out(f"  {'d_tfr (first difference)':28s}: avg ADF t = {tbar_d:+.3f}  (from {k_d} countries)"
-    f"{'  <- lower persistence after differencing' if tbar_d < -2.0 else ''}")
+out(f"  {'d_tfr (first difference)':28s}: avg ADF t = {tbar_d:+.3f}  (from {k_d} countries)")
 
 # ----------------------------------------------------------------------------
 # (C2) Descriptive residual persistence check — AR(1) on FE residuals
@@ -223,8 +223,10 @@ out("  Within the available annual panel, the associations between TFR and the")
 out("  four selected macroeconomic indicators are generally imprecise and")
 out("  sensitive to the treatment of common year effects (see B1 vs B2). Layer B")
 out("  is therefore best read as a robustness exercise showing that these")
-out("  particular within-country economic associations are small and fragile in")
-out("  this sample. This does NOT establish that economic factors in general have")
+out("  particular within-country coefficients are generally imprecise and")
+out("  specification-sensitive in this sample (several point estimates are not")
+out("  necessarily economically small). This does NOT establish that economic")
+out("  factors in general have")
 out("  small effects, and it does not rule out other economic, policy or")
 out("  demographic mechanisms. Consistent with Layer A, most of the Central")
 out("  Asia-rest fertility difference is between-country rather than year-to-year")

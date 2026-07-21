@@ -69,7 +69,7 @@ R2: 0.908   Adj-R2: 0.899
   The CA premium is essentially unchanged from pooled M2, confirming it
   is not an artifact of mixing between/within variation.
   The formal Mundlak RE-vs-FE test (H0: between = within coefficients)
-  is reported in 17_diagnostics.py. In this sample it FAILS to reject
+  is reported in 17_diagnostics.py. In this sample it FAILS to reject H0
   (F(4,13)=1.34, p=0.31), so there is no statistical evidence that RE is
   inconsistent; the hybrid/FE specification is retained on substantive
   grounds, and the CA coefficient is numerically similar to pooled M2.

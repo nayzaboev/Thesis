@@ -1,4 +1,3 @@
-
 # Summary statistics + coverage appendix table.
 """
 14_descriptives.py
@@ -136,6 +135,13 @@ try:
 except Exception as e:
     print(f"  Population fetch failed ({type(e).__name__}: {e});")
     print("  skipping population-weighted table. Run with internet access to include it.")
+    # Prevent a SILENTLY STALE output: if the live fetch fails, remove any
+    # previously-written population-weighted CSV so the repo never ships a
+    # pop-weighted table that does not correspond to the current run.
+    _pw_path = "data/processed/summary_by_bloc_pop_weighted.csv"
+    if os.path.exists(_pw_path):
+        os.remove(_pw_path)
+        print(f"  Removed stale {_pw_path} (was from an earlier run).")
 
 # ---------------------------------------------------------------------------
 # 3. Missingness appendix (the audit trail)
