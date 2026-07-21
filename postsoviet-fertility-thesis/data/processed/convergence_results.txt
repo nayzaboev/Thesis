@@ -81,6 +81,63 @@ n = 14 countries. HC3 standard errors (small sample).
   at n = 14.
 
 ========================================================================
+(B2) PERIOD-SPLIT SIGMA-CONVERGENCE (pre/post 2017)
+========================================================================
+A single linear trend over 2000-2023 masks a turning point. Fitting the
+CV trend separately on 2000-2016 and 2017-2023 shows the real pattern.
+
+  All 14 countries                
+      2000-2016: slope=-0.00715 (p=0.000)   2017-2023: slope=+0.01954 (p=0.000)
+  Bloc: Central Asia              
+      2000-2016: slope=-0.00695 (p=0.000)   2017-2023: slope=-0.00371 (p=0.390)
+  Bloc: Rest of post-Soviet       
+      2000-2016: slope=-0.00011 (p=0.863)   2017-2023: slope=+0.00912 (p=0.000)
+  Sub-group: Baltic               
+      2000-2016: slope=-0.00069 (p=0.687)   2017-2023: slope=+0.00990 (p=0.000)
+  Sub-group: Caucasus             
+      2000-2016: slope=+0.00459 (p=0.001)   2017-2023: slope=-0.02080 (p=0.000)
+  Sub-group: Central Asia         
+      2000-2016: slope=-0.00695 (p=0.000)   2017-2023: slope=-0.00371 (p=0.390)
+  Sub-group: Eastern European     
+      2000-2016: slope=-0.00221 (p=0.280)   2017-2023: slope=+0.01839 (p=0.000)
+
+  READING: for the all-14 series, dispersion FELL over 2000-2016 and ROSE
+  over 2017-2023. The near-zero full-period slope is an artifact of
+  averaging these opposing phases. The substantive Part 1 story is:
+  compression to ~2016, then divergence, with the Central Asia-rest gap
+  widening after 2017 (documented in Layer A, script 15).
+
+========================================================================
+(B3) CONVERGENCE LEAVE-ONE-OUT (bloc trends)
+========================================================================
+Re-fit each bloc's full-period CV trend dropping one country at a time.
+If significance vanishes when a single country is removed, the trend is
+country-driven, not a group-wide regularity.
+
+  Bloc: Rest of post-Soviet  (full-period slope=+0.00163, p=0.025)
+      drop Armenia       : slope=+0.00155 (p=0.034)
+      drop Azerbaijan    : slope=+0.00332 (p=0.001)
+      drop Belarus       : slope=+0.00177 (p=0.008)
+      drop Estonia       : slope=+0.00164 (p=0.047)
+      drop Georgia       : slope=+0.00074 (p=0.485)  <-- significance LOST when dropped
+      drop Latvia        : slope=+0.00191 (p=0.021)
+      drop Lithuania     : slope=+0.00168 (p=0.009)
+      drop Moldova       : slope=+0.00158 (p=0.023)
+      drop Russia        : slope=+0.00198 (p=0.008)
+      drop Ukraine       : slope=+0.00026 (p=0.632)  <-- significance LOST when dropped
+    => trend depends materially on: Georgia, Ukraine
+
+  Bloc: Central Asia  (full-period slope=-0.00751, p=0.000)
+      drop Kazakhstan    : slope=-0.00470 (p=0.000)
+      drop Kyrgyzstan    : slope=-0.01046 (p=0.000)
+      drop Tajikistan    : slope=-0.00205 (p=0.132)  <-- significance LOST when dropped
+      drop Uzbekistan    : slope=-0.01077 (p=0.000)
+    => trend depends materially on: Tajikistan
+
+  Report bloc convergence/divergence trends that flip as country-sensitive,
+  not as robust group-wide regularities.
+
+========================================================================
 (C) PEAK TFR YEAR PER COUNTRY
 ========================================================================
 The year each country recorded its highest TFR in 2000-2023. Late peaks

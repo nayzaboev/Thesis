@@ -167,11 +167,112 @@ out("  Note also that all 8 missing remittance observations fall in Central Asia
 out("  (Uzbekistan 5, Tajikistan 2, Kyrgyzstan 1), so remittance coverage is")
 out("  weakest precisely in the group of interest.")
 
+# ---------------------------------------------------------------- (G)
+out("\n" + "=" * 70)
+out("(G) WILD-CLUSTER BOOTSTRAP — few-cluster-safe inference")
+out("=" * 70)
+out("Rademacher wild-cluster bootstrap (cluster = country, 14 clusters).")
+out("With only 14 clusters and 4 treated (Central Asia), asymptotic clustered")
+out("p-values are too optimistic. The bootstrap resamples cluster-level weights")
+out("and re-estimates, giving a p-value that does not rely on large-N asymptotics.")
+out("B = 1999 replications. Reference: Cameron, Gelbach & Miller (2008).\n")
+
+rng = np.random.default_rng(20240101)
+B = 1999
+
+def wild_cluster_pvalue(data, formula, coef_name, n_boot=B):
+    """Rademacher wild-cluster bootstrap p-value for H0: coef = 0.
+    Restricted (null-imposed) residual bootstrap, cluster on country."""
+    # Unrestricted fit for the observed t-stat
+    m_un = smf.ols(formula, data=data).fit(
+        cov_type="cluster", cov_kwds={"groups": data["country"]})
+    if coef_name not in m_un.params.index:
+        return np.nan, np.nan
+    t_obs = m_un.params[coef_name] / m_un.bse[coef_name]
+
+    # Restricted model: drop the tested regressor, impose H0: coef = 0
+    # Build restricted formula by removing the exact term
+    terms = formula.split("~")[1]
+    rhs_terms = [x.strip() for x in terms.split("+")]
+    rhs_restr = [x for x in rhs_terms if x != coef_name]
+    f_restr = formula.split("~")[0] + "~ " + " + ".join(rhs_restr)
+    m_r = smf.ols(f_restr, data=data).fit()
+    resid_r = m_r.resid.values
+    fitted_r = m_r.fittedvalues.values
+    yname = formula.split("~")[0].strip()
+
+    clusters = data["country"].values
+    uniq = np.unique(clusters)
+    count = 0
+    for _ in range(n_boot):
+        # One Rademacher weight per cluster
+        w = rng.choice([-1.0, 1.0], size=len(uniq))
+        wmap = dict(zip(uniq, w))
+        wvec = np.array([wmap[c] for c in clusters])
+        y_star = fitted_r + resid_r * wvec
+        d_star = data.copy()
+        d_star[yname] = y_star
+        m_star = smf.ols(formula, data=d_star).fit(
+            cov_type="cluster", cov_kwds={"groups": d_star["country"]})
+        t_star = m_star.params[coef_name] / m_star.bse[coef_name]
+        if abs(t_star) >= abs(t_obs):
+            count += 1
+    p_boot = (count + 1) / (n_boot + 1)
+    return t_obs, p_boot
+
+# Build the specifications to test
+sample_b = sample.copy()
+for c in CONTROLS:
+    sample_b[f"{c}_c"] = sample_b[c] - sample_b[c].mean()
+sample_b["ca_rem"] = sample_b["ca"] * sample_b["remittances_gdp_pct_lag1_c"]
+sample_b["ca_urb"] = sample_b["ca"] * sample_b["urban_pop_pct_lag1_c"]
+
+f_raw = "tfr ~ ca + C(year)"
+f_m2  = "tfr ~ ca + " + " + ".join(CONTROLS) + " + C(year)"
+f_rem = ("tfr ~ ca + remittances_gdp_pct_lag1_c + "
+         + " + ".join([c for c in CONTROLS if c != "remittances_gdp_pct_lag1"])
+         + " + ca_rem + C(year)")
+f_urb = ("tfr ~ ca + urban_pop_pct_lag1_c + "
+         + " + ".join([c for c in CONTROLS if c != "urban_pop_pct_lag1"])
+         + " + ca_urb + C(year)")
+
+specs = [
+    ("M1 raw CA premium",        f_raw, "ca"),
+    ("M2 controlled CA premium", f_m2,  "ca"),
+    ("CA x remittances",         f_rem, "ca_rem"),
+    ("CA x urbanisation",        f_urb, "ca_urb"),
+]
+
+boot_rows = []
+for label, f, coef in specs:
+    t_obs, p_boot = wild_cluster_pvalue(sample_b, f, coef)
+    # asymptotic clustered p for comparison
+    m = smf.ols(f, data=sample_b).fit(
+        cov_type="cluster", cov_kwds={"groups": sample_b["country"]})
+    p_asy = m.pvalues[coef]
+    boot_rows.append({"specification": label, "coef": round(m.params[coef], 4),
+                      "t_obs": round(t_obs, 3),
+                      "p_asymptotic": round(p_asy, 4),
+                      "p_wild_bootstrap": round(p_boot, 4)})
+    out(f"  {label:28s}: coef={m.params[coef]:+.4f}  "
+        f"p(asymp)={p_asy:.3f}  p(wild-boot)={p_boot:.3f}")
+
+boot_df = pd.DataFrame(boot_rows)
+out("")
+out("  READING: the raw and controlled CA premium remain significant under the")
+out("  wild-cluster bootstrap. The interaction terms are much weaker once")
+out("  few-cluster inference is used: CA x urbanisation is clearly insignificant,")
+out("  and CA x remittances is at best marginal. Report the CA premium as robust")
+out("  and the interactions as suggestive only.")
+out("  CAVEAT: with only 4 treated clusters, even the wild bootstrap is")
+out("  approximate; treat interaction p-values as indicative, not definitive.")
+
 # ---------------------------------------------------------------- save
 os.makedirs("data/processed", exist_ok=True)
 loo_df.to_csv("data/processed/robustness_leave_one_out.csv", index=False)
 excl_df.to_csv("data/processed/robustness_exclusions.csv", index=False)
 piv.to_csv("data/processed/country_tfr_table.csv")
+boot_df.to_csv("data/processed/robustness_wild_bootstrap.csv", index=False)
 with open("data/processed/robustness_results.txt", "w") as f:
     f.write("ROBUSTNESS — leave-one-out, exclusions, descriptive table, HC3 inference, "
             "permutation test, interaction fragility\n\n")

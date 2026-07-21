@@ -28,6 +28,7 @@ import numpy as np
 import pandas as pd
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.tools.tools import add_constant
+from linearmodels.panel import PanelOLS, RandomEffects
 
 CONTROLS = ["log_gdp_ppp_lag1", "urban_pop_pct_lag1",
             "remittances_gdp_pct_lag1", "under5_mortality_lag1"]
@@ -60,36 +61,26 @@ for i, col in enumerate(X.columns):
 # WHY NOT THE CLASSICAL HAUSMAN TEST:
 #   The classical statistic requires Var(b_FE) - Var(b_RE) to be positive
 #   definite. In this sample it is NOT: three of its four eigenvalues are
-#   negative. Computing the statistic with a pseudo-inverse (as an earlier
-#   version of this script did) returns a number, but that number is not a
-#   valid chi-square statistic and must not be reported.
+#   negative. Computing the statistic with a pseudo-inverse returns a number,
+#   but that number is not a valid chi-square statistic and must not be reported.
 #
-# CORRECT MUNDLAK RESTRICTION:
-#   We estimate a hybrid (correlated random effects) model that includes BOTH
-#   the country means of the regressors (between component) and the deviations
-#   from those means (within component):
-#
-#       tfr = a + b_ca*CA + sum_j beta_between_j * xbar_j
-#                        + sum_j beta_within_j  * (x_j - xbar_j) + year FE
-#
-#   The Mundlak / Hausman equivalence test asks whether the between and within
-#   slopes are EQUAL. If they are equal, pooling them (i.e. random effects) is
-#   consistent; if they differ, unobserved country effects are correlated with
-#   the regressors and the within (fixed-effects) separation is required.
-#
-#       H0: beta_between_j = beta_within_j   for all j   (RE consistent)
-#
-#   NOTE: testing H0: beta_between_j = 0 is NOT the Mundlak test. In this
-#   parameterisation the coefficient on the country mean equals
-#   (beta_between - beta_within), so "= 0" only coincides with the Mundlak
-#   null when the means are entered WITHOUT the deviations. Because this model
-#   contains both components, the correct restriction is equality, not zero.
+#   THE MUNDLAK (1978) AUXILIARY-REGRESSION TEST — CORRECT RESTRICTION:
+#   Estimate a hybrid model with BOTH the within-country deviations and the
+#   country means of each regressor. The random-effects consistency test is
+#   whether the between and within coefficients are EQUAL:
+#       H0: beta_between = beta_within   (for every regressor)
+#   Rejecting H0 => RE is inconsistent (unobserved effects correlate with the
+#   regressors). NOTE: testing "beta_between = 0" is a DIFFERENT hypothesis
+#   (whether country means predict TFR at all) and is NOT the RE-consistency
+#   test. An earlier version of this script tested the wrong restriction.
 out("\n" + "="*64)
 out("(B) Mundlak test — fixed effects vs random effects")
 out("="*64)
 out("Classical Hausman is NOT reported: Var(b_FE) - Var(b_RE) is not positive")
-out("definite in this sample (3 of 4 eigenvalues negative), so the statistic")
-out("is undefined. The Mundlak auxiliary-regression test is used instead.\n")
+out("definite here (3 of 4 eigenvalues negative), so the statistic is undefined.")
+out("The Mundlak auxiliary-regression test is used instead.")
+out("Correct restriction: H0 is that the between and within coefficients are")
+out("EQUAL for every regressor (not that the between coefficients are zero).\n")
 
 import statsmodels.formula.api as smf
 m = d.copy()
@@ -100,38 +91,29 @@ between = [f"{c}_mean" for c in CONTROLS]
 within  = [f"{c}_dev"  for c in CONTROLS]
 f_m = "tfr ~ ca + " + " + ".join(between + within) + " + C(year)"
 mund = smf.ols(f_m, data=m).fit(cov_type="cluster", cov_kwds={"groups": m["country"]})
-
-# Correct Mundlak restriction: between slope == within slope for every control.
-restrictions = " , ".join([f"{b} = {w}" for b, w in zip(between, within)])
-ftest = mund.f_test(restrictions)
-out("  H0: between-country slope = within-country slope for every control")
-out("      (equivalently, no correlation between country effects and regressors")
-out("       => random effects is consistent)")
+# CORRECT Mundlak restriction: between_k = within_k for each regressor k
+hyp = " , ".join([f"{b} = {w}" for b, w in zip(between, within)])
+ftest = mund.f_test(hyp)
+out(f"  H0: beta_between = beta_within for all 4 regressors (random effects consistent)")
 out(f"  F({int(ftest.df_num)}, {int(ftest.df_denom)}) = {float(ftest.fvalue):.3f}   "
     f"p = {float(ftest.pvalue):.4f}")
 if float(ftest.pvalue) < 0.05:
-    out("  => Reject H0: within and between slopes differ. Unobserved country")
-    out("     effects are correlated with the regressors, so random effects is")
-    out("     inconsistent and the between/within separation used in Layer A")
-    out("     (M2h) and Layer B is required.")
+    out("  => Reject H0: within and between coefficients differ; random effects")
+    out("     is inconsistent and the between/within separation is required.")
 else:
-    out("  => Fail to reject H0: no statistical evidence that the within and")
-    out("     between slopes differ, i.e. no evidence that random effects is")
-    out("     inconsistent. The between/within (Mundlak hybrid) specification is")
-    out("     retained for transparency and to report both components separately,")
-    out("     but this test does NOT establish that random effects is inconsistent.")
+    out("  => FAIL to reject H0: no statistical evidence that within and between")
+    out("     coefficients differ, i.e. no evidence random effects is inconsistent.")
+    out("     The fixed-effects / hybrid specification is retained on substantive")
+    out("     grounds (strong country heterogeneity, and the research question")
+    out("     concerns between-country differences), not on the basis of this test.")
 
-# For completeness, also report the (incorrect-as-a-Mundlak-test) joint
-# significance of the country means. This is a test of whether the between
-# variation matters at all, NOT the RE-consistency test above. Reported only
-# so the difference between the two nulls is transparent.
-ftest_zero = mund.f_test(" , ".join([f"{v} = 0" for v in between]))
-out("")
-out("  For reference only — joint significance of the country-mean terms")
-out("  (this is NOT the RE-consistency test; it asks whether between-country")
-out("   variation is jointly non-zero):")
-out(f"    F({int(ftest_zero.df_num)}, {int(ftest_zero.df_denom)}) = "
-    f"{float(ftest_zero.fvalue):.3f}   p = {float(ftest_zero.pvalue):.4f}")
+# For transparency, also report the (different) 'between = 0' test, clearly labelled
+ftest0 = mund.f_test(" , ".join([f"{v} = 0" for v in between]))
+out(f"\n  For reference only (NOT the RE-consistency test):")
+out(f"  H0: all between-country mean coefficients = 0")
+out(f"  F({int(ftest0.df_num)}, {int(ftest0.df_denom)}) = {float(ftest0.fvalue):.3f}   "
+    f"p = {float(ftest0.pvalue):.4f}")
+out("  This tests whether country means jointly predict TFR — a separate question.")
 
 # ----------------------------------------------------------------------------
 # (C) Few-cluster caveat

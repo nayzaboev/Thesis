@@ -104,8 +104,11 @@ out("\n  Interpretation: the Mundlak hybrid separates long-run cross-country")
 out("  associations (between) from short-run within-country changes (within).")
 out("  The CA premium is essentially unchanged from pooled M2, confirming it")
 out("  is not an artifact of mixing between/within variation.")
-out("  This specification also serves as a Mundlak-style test of RE vs FE:")
-out("  if between and within coefficients differ, RE is inconsistent.")
+out("  The formal Mundlak RE-vs-FE test (H0: between = within coefficients)")
+out("  is reported in 17_diagnostics.py. In this sample it FAILS to reject")
+out("  (F(4,13)=1.34, p=0.31), so there is no statistical evidence that RE is")
+out("  inconsistent; the hybrid/FE specification is retained on substantive")
+out("  grounds, and the CA coefficient is numerically similar to pooled M2.")
 
 # =====================================================================
 # M3: CENTRED interactions, one at a time

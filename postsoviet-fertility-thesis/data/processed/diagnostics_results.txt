@@ -14,23 +14,23 @@ Rule of thumb: VIF > 5 concerning, > 10 serious.
 (B) Mundlak test — fixed effects vs random effects
 ================================================================
 Classical Hausman is NOT reported: Var(b_FE) - Var(b_RE) is not positive
-definite in this sample (3 of 4 eigenvalues negative), so the statistic
-is undefined. The Mundlak auxiliary-regression test is used instead.
+definite here (3 of 4 eigenvalues negative), so the statistic is undefined.
+The Mundlak auxiliary-regression test is used instead.
+Correct restriction: H0 is that the between and within coefficients are
+EQUAL for every regressor (not that the between coefficients are zero).
 
-  H0: between-country slope = within-country slope for every control
-      (equivalently, no correlation between country effects and regressors
-       => random effects is consistent)
+  H0: beta_between = beta_within for all 4 regressors (random effects consistent)
   F(4, 13) = 1.339   p = 0.3077
-  => Fail to reject H0: no statistical evidence that the within and
-     between slopes differ, i.e. no evidence that random effects is
-     inconsistent. The between/within (Mundlak hybrid) specification is
-     retained for transparency and to report both components separately,
-     but this test does NOT establish that random effects is inconsistent.
+  => FAIL to reject H0: no statistical evidence that within and between
+     coefficients differ, i.e. no evidence random effects is inconsistent.
+     The fixed-effects / hybrid specification is retained on substantive
+     grounds (strong country heterogeneity, and the research question
+     concerns between-country differences), not on the basis of this test.
 
-  For reference only — joint significance of the country-mean terms
-  (this is NOT the RE-consistency test; it asks whether between-country
-   variation is jointly non-zero):
-    F(4, 13) = 21.225   p = 0.0000
+  For reference only (NOT the RE-consistency test):
+  H0: all between-country mean coefficients = 0
+  F(4, 13) = 21.225   p = 0.0000
+  This tests whether country means jointly predict TFR — a separate question.
 
 ================================================================
 (C) Few-cluster caveat

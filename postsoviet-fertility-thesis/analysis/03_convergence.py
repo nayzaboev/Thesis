@@ -191,6 +191,84 @@ out("  sections (A) and (B) together, and treat both as descriptive summaries")
 out("  at n = 14.")
 
 # =========================================================================
+# (B2) PERIOD-SPLIT SIGMA-CONVERGENCE — the full-period trend hides a reversal
+# =========================================================================
+out()
+out("=" * 72)
+out("(B2) PERIOD-SPLIT SIGMA-CONVERGENCE (pre/post 2017)")
+out("=" * 72)
+out("A single linear trend over 2000-2023 masks a turning point. Fitting the")
+out("CV trend separately on 2000-2016 and 2017-2023 shows the real pattern.")
+out()
+
+def split_trend(s, y0, y1):
+    d = pd.DataFrame({"cv": s.values, "year": s.index.astype(int)}).dropna()
+    d = d[(d.year >= y0) & (d.year <= y1)].copy()
+    d["t"] = d["year"] - d["year"].min()
+    if len(d) < 4:
+        return np.nan, np.nan
+    m = smf.ols("cv ~ t", data=d).fit(cov_type="HAC", cov_kwds={"maxlags": 2})
+    return m.params["t"], m.pvalues["t"]
+
+split_rows = []
+for label, s in series.items():
+    sl_early, p_early = split_trend(s, 2000, 2016)
+    sl_late,  p_late  = split_trend(s, 2017, 2023)
+    sl_full,  p_full  = split_trend(s, 2000, 2023)
+    out(f"  {label:32s}")
+    out(f"      2000-2016: slope={sl_early:+.5f} (p={p_early:.3f})   "
+        f"2017-2023: slope={sl_late:+.5f} (p={p_late:.3f})")
+    split_rows.append({"series": label,
+                       "slope_2000_2016": round(sl_early, 6), "p_2000_2016": round(p_early, 4),
+                       "slope_2017_2023": round(sl_late, 6),  "p_2017_2023": round(p_late, 4),
+                       "slope_full": round(sl_full, 6),       "p_full": round(p_full, 4)})
+out()
+out("  READING: for the all-14 series, dispersion FELL over 2000-2016 and ROSE")
+out("  over 2017-2023. The near-zero full-period slope is an artifact of")
+out("  averaging these opposing phases. The substantive Part 1 story is:")
+out("  compression to ~2016, then divergence, with the Central Asia-rest gap")
+out("  widening after 2017 (documented in Layer A, script 15).")
+
+# =========================================================================
+# (B3) CONVERGENCE LEAVE-ONE-OUT — are the bloc trends country-driven?
+# =========================================================================
+out()
+out("=" * 72)
+out("(B3) CONVERGENCE LEAVE-ONE-OUT (bloc trends)")
+out("=" * 72)
+out("Re-fit each bloc's full-period CV trend dropping one country at a time.")
+out("If significance vanishes when a single country is removed, the trend is")
+out("country-driven, not a group-wide regularity.\n")
+
+def bloc_cv_trend(sub):
+    cvs = sub.groupby("year")["tfr"].apply(cv)
+    d = pd.DataFrame({"cv": cvs.values, "year": cvs.index.astype(int)})
+    d["t"] = d["year"] - d["year"].min()
+    m = smf.ols("cv ~ t", data=d).fit(cov_type="HAC", cov_kwds={"maxlags": 4})
+    return m.params["t"], m.pvalues["t"]
+
+loo_conv_rows = []
+for bloc_name in df["bloc"].unique():
+    bloc_df = df[df["bloc"] == bloc_name]
+    base_sl, base_p = bloc_cv_trend(bloc_df)
+    out(f"  Bloc: {bloc_name}  (full-period slope={base_sl:+.5f}, p={base_p:.3f})")
+    flips = []
+    for c in sorted(bloc_df["country"].unique()):
+        sl, pv = bloc_cv_trend(bloc_df[bloc_df["country"] != c])
+        loo_conv_rows.append({"bloc": bloc_name, "dropped": c,
+                              "slope": round(sl, 6), "p_value": round(pv, 4)})
+        mark = ""
+        if base_p < 0.05 and pv >= 0.05:
+            mark = "  <-- significance LOST when dropped"
+            flips.append(c)
+        out(f"      drop {c:14s}: slope={sl:+.5f} (p={pv:.3f}){mark}")
+    if flips:
+        out(f"    => trend depends materially on: {', '.join(flips)}")
+    out("")
+out("  Report bloc convergence/divergence trends that flip as country-sensitive,")
+out("  not as robust group-wide regularities.")
+
+# =========================================================================
 # (C) PEAK YEAR PER COUNTRY
 # =========================================================================
 out()
@@ -261,6 +339,8 @@ beta_out[["tfr_start", "tfr_end", "abs_change"]] = \
 beta_out["growth"] = beta_out["growth"].round(5)
 beta_out.to_csv("data/processed/beta_convergence.csv", index=False)
 pd.DataFrame(trend_rows).to_csv("data/processed/cv_trend_tests.csv", index=False)
+pd.DataFrame(split_rows).to_csv("data/processed/cv_period_split.csv", index=False)
+pd.DataFrame(loo_conv_rows).to_csv("data/processed/cv_leave_one_out.csv", index=False)
 
 with open("data/processed/convergence_results.txt", "w") as f:
     f.write("CONVERGENCE ANALYSIS - sigma-convergence (dispersion) and "
