@@ -1,14 +1,28 @@
-DIAGNOSTICS — VIF, Mundlak test (FE vs RE), few-cluster caveat.
+DIAGNOSTICS — VIF (pooled/between/within), Mundlak test (FE vs RE), few-cluster caveat.
 
 ================================================================
 (A) Variance Inflation Factors (lagged covariates)
 ================================================================
 Rule of thumb: VIF > 5 concerning, > 10 serious.
+Reported three ways so the source of any collinearity is transparent:
+  pooled   = the raw lagged covariates (what the pooled M2 model uses)
+  between  = country means of each covariate (the Mundlak between block)
+  within   = deviations from country means (the Mundlak within block)
 
-  log_gdp_ppp_lag1            :  5.60  <- CONCERNING
-  urban_pop_pct_lag1          :  4.87  <- OK
-  remittances_gdp_pct_lag1    :  4.13  <- OK
-  under5_mortality_lag1       :  3.94  <- OK
+  variable                     pooled   between    within
+  -------------------------- --------  --------  --------
+  log_gdp_ppp_lag1               5.60     10.47      3.86   (between: SERIOUS)
+  urban_pop_pct_lag1             4.87      7.97      1.55   (between: CONCERNING)
+  remittances_gdp_pct_lag1       4.13     10.88      1.39   (between: SERIOUS)
+  under5_mortality_lag1          3.94      4.80      4.40   (between: OK)
+
+  READING: pooled VIFs are moderate, but the BETWEEN-country components are
+  highly collinear (GDP mean, urbanisation mean and remittances mean all
+  near or above the VIF>=10 threshold), while the WITHIN components are low.
+  Consequence: the between-country control coefficients in the Mundlak hybrid
+  (M2h) are individually imprecise and must NOT be interpreted one at a time.
+  The CA premium itself is unaffected — it is identified off the group
+  contrast, not off the individual (collinear) between-country slopes.
 
 ================================================================
 (B) Mundlak test — fixed effects vs random effects
@@ -38,6 +52,6 @@ EQUAL for every regressor (not that the between coefficients are zero).
   Standard errors throughout Part 2 are clustered on country (14 clusters).
   14 clusters is below the commonly cited safe threshold (~30-50). With few
   clusters, cluster-robust SEs can be anti-conservative (too small), so
-  p-values near 0.05 should be read with caution. Recommended robustness
-  follow-up: wild-cluster bootstrap (Stata 'boottest', R 'fwildclusterboot').
+  p-values near 0.05 should be read with caution. The wild-cluster bootstrap
+  in script 20 (section G) is the recommended few-cluster robustness check.
   This is a known small-N limitation of the post-Soviet sample, not a coding issue.

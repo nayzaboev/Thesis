@@ -1,4 +1,4 @@
-# VIF, Mundlak FE-vs-RE test, few-cluster caveat.
+# VIF (pooled + between/within), Mundlak FE-vs-RE test, few-cluster caveat.
 """
 17_diagnostics.py
 -----------------
@@ -6,18 +6,18 @@ Formal model diagnostics that justify the Part 2 specification choices.
 
 Produces:
   (A) VIF (variance inflation factors) on the lagged covariates — multicollinearity.
-      The OLD model had condition number ~1,310 and a urban/remittances VIF problem;
-      this checks whether the new variable set (PPP-GDP, under-5 mortality, no FLFP,
-      no tertiary enrolment) is cleaner.
+      Reported THREE ways: pooled, between-country (country means), and
+      within-country (deviations from country means). The between/within split
+      explains why the CA coefficient is stable while individual between-country
+      control coefficients are imprecise: the country means are highly collinear.
 
   (B) Mundlak test for FE vs RE — the formal justification for the between/within
       separation. Replaces the classical Hausman test, which is undefined here
       because Var(b_FE) - Var(b_RE) is not positive definite (see note in code).
 
-  (C) Few-cluster caveat — consolidated note; 14 clusters is below the safe
-      threshold, so cluster-robust SEs may be anti-conservative; wild-cluster
-      bootstrap (e.g. Stata boottest, R fwildclusterboot) is the recommended
-      robustness follow-up.
+  (C) Few-cluster caveat — 14 clusters is below the safe threshold, so
+      cluster-robust SEs may be anti-conservative; wild-cluster bootstrap
+      (script 20, section G) is the recommended robustness follow-up.
 
 Output: data/processed/diagnostics_results.txt
 Run from repo root:  python analysis/17_diagnostics.py
@@ -28,7 +28,6 @@ import numpy as np
 import pandas as pd
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.tools.tools import add_constant
-from linearmodels.panel import PanelOLS, RandomEffects
 
 CONTROLS = ["log_gdp_ppp_lag1", "urban_pop_pct_lag1",
             "remittances_gdp_pct_lag1", "under5_mortality_lag1"]
@@ -41,19 +40,56 @@ def out(s):
     print(s); lines.append(s)
 
 # ----------------------------------------------------------------------------
-# (A) VIF
+# (A) VIF — pooled, between, within
 # ----------------------------------------------------------------------------
 out("="*64)
 out("(A) Variance Inflation Factors (lagged covariates)")
 out("="*64)
-out("Rule of thumb: VIF > 5 concerning, > 10 serious.\n")
-X = add_constant(d[CONTROLS])
-for i, col in enumerate(X.columns):
-    if col == "const":
-        continue
-    vif = variance_inflation_factor(X.values, i)
-    flag = "  <- OK" if vif < 5 else ("  <- CONCERNING" if vif < 10 else "  <- SERIOUS")
-    out(f"  {col:28s}: {vif:5.2f}{flag}")
+out("Rule of thumb: VIF > 5 concerning, > 10 serious.")
+out("Reported three ways so the source of any collinearity is transparent:")
+out("  pooled   = the raw lagged covariates (what the pooled M2 model uses)")
+out("  between  = country means of each covariate (the Mundlak between block)")
+out("  within   = deviations from country means (the Mundlak within block)\n")
+
+def vif_table(frame, cols):
+    X = add_constant(frame[cols])
+    res = {}
+    for i, col in enumerate(X.columns):
+        if col == "const":
+            continue
+        res[col] = variance_inflation_factor(X.values, i)
+    return res
+
+# Build between (means) and within (deviations)
+m = d.copy()
+for c in CONTROLS:
+    m[f"{c}_mean"] = m.groupby("country")[c].transform("mean")
+    m[f"{c}_dev"]  = m[c] - m[f"{c}_mean"]
+between_cols = [f"{c}_mean" for c in CONTROLS]
+within_cols  = [f"{c}_dev"  for c in CONTROLS]
+
+vif_pooled  = vif_table(d, CONTROLS)
+vif_between = vif_table(m, between_cols)
+vif_within  = vif_table(m, within_cols)
+
+def flag(v):
+    return "OK" if v < 5 else ("CONCERNING" if v < 10 else "SERIOUS")
+
+out(f"  {'variable':26s} {'pooled':>8s}  {'between':>8s}  {'within':>8s}")
+out(f"  {'-'*26} {'-'*8}  {'-'*8}  {'-'*8}")
+for c in CONTROLS:
+    vp, vb, vw = vif_pooled[c], vif_between[f"{c}_mean"], vif_within[f"{c}_dev"]
+    out(f"  {c:26s} {vp:8.2f}  {vb:8.2f}  {vw:8.2f}   "
+        f"(between: {flag(vb)})")
+
+out("")
+out("  READING: pooled VIFs are moderate, but the BETWEEN-country components are")
+out("  highly collinear (GDP mean, urbanisation mean and remittances mean all")
+out("  near or above the VIF>=10 threshold), while the WITHIN components are low.")
+out("  Consequence: the between-country control coefficients in the Mundlak hybrid")
+out("  (M2h) are individually imprecise and must NOT be interpreted one at a time.")
+out("  The CA premium itself is unaffected — it is identified off the group")
+out("  contrast, not off the individual (collinear) between-country slopes.")
 
 # ----------------------------------------------------------------------------
 # (B) Mundlak test for FE vs RE  (replaces the classical Hausman test)
@@ -69,10 +105,8 @@ for i, col in enumerate(X.columns):
 #   country means of each regressor. The random-effects consistency test is
 #   whether the between and within coefficients are EQUAL:
 #       H0: beta_between = beta_within   (for every regressor)
-#   Rejecting H0 => RE is inconsistent (unobserved effects correlate with the
-#   regressors). NOTE: testing "beta_between = 0" is a DIFFERENT hypothesis
-#   (whether country means predict TFR at all) and is NOT the RE-consistency
-#   test. An earlier version of this script tested the wrong restriction.
+#   Rejecting H0 => RE is inconsistent. NOTE: testing "beta_between = 0" is a
+#   DIFFERENT hypothesis and is NOT the RE-consistency test.
 out("\n" + "="*64)
 out("(B) Mundlak test — fixed effects vs random effects")
 out("="*64)
@@ -83,10 +117,6 @@ out("Correct restriction: H0 is that the between and within coefficients are")
 out("EQUAL for every regressor (not that the between coefficients are zero).\n")
 
 import statsmodels.formula.api as smf
-m = d.copy()
-for c in CONTROLS:
-    m[f"{c}_mean"] = m.groupby("country")[c].transform("mean")
-    m[f"{c}_dev"]  = m[c] - m[f"{c}_mean"]
 between = [f"{c}_mean" for c in CONTROLS]
 within  = [f"{c}_dev"  for c in CONTROLS]
 f_m = "tfr ~ ca + " + " + ".join(between + within) + " + C(year)"
@@ -124,8 +154,8 @@ out("="*64)
 out("  Standard errors throughout Part 2 are clustered on country (14 clusters).")
 out("  14 clusters is below the commonly cited safe threshold (~30-50). With few")
 out("  clusters, cluster-robust SEs can be anti-conservative (too small), so")
-out("  p-values near 0.05 should be read with caution. Recommended robustness")
-out("  follow-up: wild-cluster bootstrap (Stata 'boottest', R 'fwildclusterboot').")
+out("  p-values near 0.05 should be read with caution. The wild-cluster bootstrap")
+out("  in script 20 (section G) is the recommended few-cluster robustness check.")
 out("  This is a known small-N limitation of the post-Soviet sample, not a coding issue.")
 
 # ----------------------------------------------------------------------------
@@ -133,6 +163,7 @@ out("  This is a known small-N limitation of the post-Soviet sample, not a codin
 # ----------------------------------------------------------------------------
 os.makedirs("data/processed", exist_ok=True)
 with open("data/processed/diagnostics_results.txt", "w") as f:
-    f.write("DIAGNOSTICS — VIF, Mundlak test (FE vs RE), few-cluster caveat.\n\n")
+    f.write("DIAGNOSTICS — VIF (pooled/between/within), Mundlak test (FE vs RE), "
+            "few-cluster caveat.\n\n")
     f.write("\n".join(lines))
 out("\nSaved -> data/processed/diagnostics_results.txt")
