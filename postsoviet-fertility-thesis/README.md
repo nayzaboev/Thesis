@@ -35,7 +35,7 @@ the exclusion is therefore a deliberate scope decision, documented here.
 
 ## Headline Result
 
-The Central Asia fertility premium (average of 2.89 vs 1.57 children per woman elsewhere) is a raw gap of **+1.31**. Under lagged economic controls (log GDP-PPP, urbanisation, remittances, under-5 mortality) with year fixed effects and country-clustered standard errors, the premium narrows to **+0.97** and remains highly significant. This attenuation is descriptive and is not interpreted as a causal decomposition. Muslim population share and female SMAM are strongly correlated bivariately with country-average fertility, but they cannot be empirically separated from broader Central Asian regional identity in the 14-country cross-section (r(CA, Muslim) ≈ 0.83). The cultural interpretation rests on the demographic literature, not on the cross-sectional regression.
+The Central Asia fertility premium (average of 2.89 vs 1.57 children per woman elsewhere) is a raw gap of **+1.31** (M1). Under lagged economic controls (log GDP-PPP, urbanisation, remittances, under-5 mortality) with year fixed effects and country-clustered standard errors, the premium narrows to **+0.97** (M2) and to **+0.96** in the Mundlak hybrid specification (M2h), the primary specification. Both the pooled and hybrid estimates remain statistically distinguishable from zero under the wild-cluster bootstrap, with the primary M2h result significant at the 5% level (bootstrap p = 0.033), not the 1% level. This attenuation is descriptive and is not interpreted as a causal decomposition. Muslim population share and female SMAM are strongly correlated bivariately with country-average fertility, but they cannot be empirically separated from broader Central Asian regional identity in the 14-country cross-section (r(CA, Muslim) ≈ 0.83). The cultural interpretation rests on the demographic literature, not on the cross-sectional regression.
 
 ## Project Structure
 
@@ -43,7 +43,9 @@ The Central Asia fertility premium (average of 2.89 vs 1.57 children per woman e
 postsoviet-fertility-thesis/
 ├── analysis/                 numbered Python scripts, run in order
 ├── data/
-│   ├── raw/                  raw downloads (git-ignored; see data/raw/README.md)
+│   ├── raw/                  public snapshots tracked (4 WDI CSVs, WPP export,
+│   │                         Pew religious composition); licensed MICS6/census
+│   │                         microdata git-ignored — see data/raw/README.md
 │   ├── manual/               hand-entered cultural variables (tracked)
 │   └── processed/            all script outputs (tracked)
 ├── figures/                  generated plots (tracked)
@@ -70,7 +72,7 @@ postsoviet-fertility-thesis/
 
 ## Method — Two-Layer Design
 
-**Part 1 — Descriptive comparative** (`01`, `02`, `03`): TFR trend plots, bloc-mean comparisons, σ-convergence within groups.
+**Part 1 — Descriptive comparative** (`01`, `02`, `03`): TFR trend plots, bloc-mean comparisons, σ-convergence within groups (CV, plus absolute SD/IQR dispersion pooled and by bloc), β-convergence using three-year endpoint averages, a projection-sensitivity check on balanced samples, and a period-split analysis.
 
 **Part 2 — Explanatory analysis** in two layers:
 
@@ -140,7 +142,7 @@ These are order-independent **relative to each other**, but since they mutate
 ## Reproducibility Notes
 
 - **Raw microdata files are not committed** (see `.gitignore` and `data/raw/README.md`). To reproduce the SMAM values you must download the MICS6 `.sav` files and the Russian census workbook yourself; instructions and URLs are in `data/raw/README.md`.
-- **No interpolation is applied to any panel variable.** The eight missing cells (Uzbekistan remittances 2000–2004, Tajikistan remittances 2000–2001, Kyrgyzstan remittances 2023) are dropped from the estimation sample, not filled.
+- **No interpolation is applied to any panel variable.** There are eight raw missing remittance cells (Uzbekistan 2000–2004, Tajikistan 2000–2001, Kyrgyzstan 2023); none are filled. Because the panel regressions use a 1-year lag, only seven of these cause additional estimation-sample loss beyond the universal year-2000 lag drop (Uzbekistan's five gaps drop its 2001–2005 lagged observations; Tajikistan's two drop its 2001–2002). Kyrgyzstan's missing 2023 value would only affect a 2024 lag, which falls outside the 2000–2023 study window, so it causes no additional sample loss.
 - **Standard errors are clustered by country (14 clusters)** in all panel regressions. This is below the conventional safe threshold (~30–50); the few-cluster fragility is flagged in `data/processed/diagnostics_results.txt`.
 
 ## Key Outputs
@@ -163,5 +165,5 @@ Tested on Python 3.12 (the pinned scipy 1.13.1 has no Python 3.13 wheel; use Pyt
 
 - **n = 14 for the cross-section** limits statistical power; results are reported as descriptive associations, not causal estimates.
 - **Muslim share and SMAM are collinear** in this sample; SMAM loses individual significance once Muslim share is included, and the two variables cannot be fully disentangled with 14 observations.
-- **Cluster-robust SEs may be anti-conservative** given only 14 clusters. Wild-cluster bootstrap is recommended for future work.
+- **Cluster-robust SEs may be anti-conservative** given only 14 clusters. Wild-cluster bootstrap (Rademacher) inference is reported for M1, M2, M2h, and the two interaction terms (`19_robustness.py`, section G), with exact 2^14 Rademacher enumeration for M2h's Central Asia coefficient.
 - **SMAM temporal alignment is imperfect**: source-years range 2010–2022 across countries. This mixed-source, mixed-year approach follows the convention of the closest published literature (Dommaraju & Agadjanian 2008; Spoorenberg 2013, 2015; Kumo & Perugini 2024).

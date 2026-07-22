@@ -214,7 +214,8 @@ Saved -> figures/fig5_sigma_convergence.png
 ========================================================================
 master_tfr.csv carries 'estimate_method', distinguishing WPP retrospective
 'Interpolation' from forward-looking 'Projection' values (20 of 336 rows,
-concentrated in 2020-2023 and in every country's 2023 observation; see
+concentrated in 2020-2023 and in 11 of 14 countries' 2023 observations
+(Latvia, Lithuania and Russia are interpolated, not projected, in 2023); see
 01_clean_data.py). The (B2) post-2017 CV slope and the (B) beta-convergence
 coefficient above both partly rest on these projected endpoints. This block
 re-computes those two headline descriptive results under two BALANCED
