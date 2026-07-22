@@ -91,9 +91,12 @@ Is the CA x remittances interaction driven by particular countries?
 
   HONEST READING: the interaction survives dropping Tajikistan OR Kyrgyzstan
   individually, but collapses when BOTH are removed. It therefore rests on
-  two of the four Central Asian countries and should be reported as
-  suggestive of a labour-migration channel in the high-remittance economies,
-  NOT as a general Central Asian regularity.
+  two of the four Central Asian countries and is concentrated in the two
+  high-remittance Central Asian economies (Tajikistan and Kyrgyzstan) and
+  should NOT be reported as a general Central Asian regularity.
+  Remittances are endogenous and do not isolate a migration channel; any
+  labour-migration interpretation must be carried by the literature, not
+  this regression.
 
   Note also that all 8 missing remittance observations fall in Central Asia
   (Uzbekistan 5, Tajikistan 2, Kyrgyzstan 1), so remittance coverage is

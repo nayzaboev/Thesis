@@ -250,10 +250,12 @@ above.
   (+0.0195), Sample A (+0.0236,
   though only 3 annual points, 2017-2019), and Sample B
   (+0.0261, 2017-2022, the best-powered of the
-  three, n=10 countries, rising monotonically across those six years). The
-  post-2017 divergence in the headline result is therefore CONFIRMED by this
-  check, not called into question: it is not an artifact of WPP projections
-  or of a shrinking, low-fertility-biased country set.
+  three, n=10 countries, rising monotonically across those six years).
+  The balanced samples provide supporting evidence that the positive
+  post-2016 dispersion trend is not solely produced by the projected
+  observations or by year-to-year sample-composition changes. These are
+  descriptive slopes on small samples (Sample A has three post-2016
+  points; Sample B has ten countries), not formal tests.
   Beta-convergence: full sample beta = +0.0013; Sample A (end
   window 2017-2019, before most of the post-2017 divergence had
   accumulated) beta = -0.0085; Sample B beta = +0.0052.

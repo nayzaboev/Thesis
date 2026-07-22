@@ -93,24 +93,15 @@ m2h = smf.ols(f_mund, data=sample).fit(
 
 out(f"  CA coefficient: {m2h.params['ca']:+.3f} (SE {m2h.bse['ca']:.3f}, "
     f"p={m2h.pvalues['ca']:.3f} asymptotic clustered)")
-# The asymptotic clustered p-value above can be anti-conservative with only 14
-# clusters. The preferred inference is the wild-cluster bootstrap computed in
-# 19_robustness.py (section G) — but THIS script runs BEFORE 19 in run_all.py,
-# so its output must not be required to exist. Read it only if present.
-_boot_path = "data/processed/robustness_wild_bootstrap.csv"
-if os.path.exists(_boot_path):
-    _boot = pd.read_csv(_boot_path).set_index("specification")
-    _boot_p = float(_boot.loc["M2h Mundlak CA premium", "p_wild_bootstrap"])
-    out(f"  Wild-cluster bootstrap p-value (19_robustness.py, section G): "
-        f"{_boot_p:.3f}")
-    out("  Preferred inference: the bootstrap p-value, not the asymptotic one above.")
-else:
-    out("  Wild-cluster bootstrap p-value not yet available (run "
-        "19_robustness.py to generate it).")
-    out("  NOTE: with only 14 clusters, the asymptotic clustered p-value above")
-    out("  may be anti-conservative. The preferred inference for this")
-    out("  coefficient is the wild-cluster bootstrap in 19_robustness.py")
-    out("  (section G), not the asymptotic p-value reported here.")
+# With only 14 clusters the asymptotic clustered p-value above may be
+# anti-conservative. The preferred inference for this coefficient is the
+# wild-cluster bootstrap computed in 19_robustness.py (section G), reported
+# in the main results table — not read here, since this script runs before
+# 19_robustness.py in run_all.py.
+out("  With only 14 clusters the asymptotic p-value may be anti-conservative;")
+out("  the preferred inference for this coefficient is the wild-cluster")
+out("  bootstrap computed in 19_robustness.py (section G) and reported in")
+out("  the main results table.")
 out(f"  R2: {m2h.rsquared:.3f}\n")
 out("  BETWEEN-country coefficients (country means):")
 for v in between_vars:
@@ -120,8 +111,10 @@ for v in within_vars:
     out(f"    {v:36s}: {m2h.params[v]:+.4f}  (SE {m2h.bse[v]:.4f}, p={m2h.pvalues[v]:.3f})")
 out("\n  Interpretation: the Mundlak hybrid separates long-run cross-country")
 out("  associations (between) from short-run within-country changes (within).")
-out("  The CA premium is essentially unchanged from pooled M2, confirming it")
-out("  is not an artifact of mixing between/within variation.")
+out("  The CA premium is essentially unchanged from pooled M2. This numerical")
+out("  similarity indicates the estimated CA coefficient is not highly sensitive")
+out("  to separating the within- and between-country components of the")
+out("  included controls.")
 # Compute the Mundlak RE-vs-FE F-test here rather than hardcoding it, so the
 # reported statistic can never drift from the actual model. Full discussion is
 # in 17_diagnostics.py; this reproduces the same restriction (between = within).
