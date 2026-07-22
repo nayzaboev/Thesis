@@ -1,8 +1,10 @@
 # Raw Data Directory
 
-This directory is **git-ignored** (`data/raw/*`) because the files are either
-large binaries or licensed microdata that cannot be redistributed. The exception
-is this README, which is tracked.
+The public WPP, WDI, and Pew snapshot files in this directory ARE tracked
+(frozen for reproducibility). The licensed MICS microdata and the Russian
+census workbook are NOT tracked and must be downloaded separately (see below).
+Scripts can refresh the WDI files on demand, but the frozen copies committed
+here are what the analysis actually uses, for reproducibility.
 
 To reproduce the analysis from scratch, download the files listed below into
 `data/raw/` before running the scripts.

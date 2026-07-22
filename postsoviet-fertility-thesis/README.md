@@ -132,7 +132,7 @@ python analysis/compute_rus_smam.py
 pip install -r requirements.txt
 ```
 
-Tested on Python 3.13. All dependencies pinned in `requirements.txt`.
+Tested on Python 3.12 (the pinned scipy 1.13.1 has no Python 3.13 wheel; use Python 3.12 for a clean install). All dependencies pinned in `requirements.txt`.
 
 ## Limitations
 

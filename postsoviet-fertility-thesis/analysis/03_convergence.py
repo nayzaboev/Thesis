@@ -250,7 +250,7 @@ def split_trend(s, y0, y1):
 split_rows = []
 for label, s in series.items():
     sl_early, p_early = split_trend(s, 2000, 2016)
-    sl_late,  p_late  = split_trend(s, 2017, 2023)
+    sl_late,  _       = split_trend(s, 2017, 2023)
     sl_full,  p_full  = split_trend(s, 2000, 2023)
     # Report the 2000-2016 slope with its p-value (17 obs), but the 2017-2023
     # slope WITHOUT a p-value: with only 7 annual observations HAC p-values are
@@ -258,11 +258,9 @@ for label, s in series.items():
     out(f"  {label:32s}")
     out(f"      2000-2016: slope={sl_early:+.5f} (p={p_early:.3f})   "
         f"2017-2023: slope={sl_late:+.5f} (direction only, n=7)")
-    # p_2017_2023 is retained in the CSV for completeness but flagged unreliable.
     split_rows.append({"series": label,
                        "slope_2000_2016": round(sl_early, 6), "p_2000_2016": round(p_early, 4),
                        "slope_2017_2023": round(sl_late, 6),
-                       "p_2017_2023_UNRELIABLE_n7": round(p_late, 4),
                        "slope_full": round(sl_full, 6),       "p_full": round(p_full, 4)})
 out()
 out("  READING: for the all-14 series, dispersion fell over 2000-2016 and rose")
