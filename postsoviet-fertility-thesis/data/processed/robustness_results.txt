@@ -57,9 +57,9 @@ Russia      Rest of post-Soviet      1.19      1.59      1.63      1.45         
 Ukraine     Rest of post-Soviet      1.11      1.44      1.30      0.98             -0.13             -0.32
 
 ======================================================================
-(D) COUNTRY-MEAN HC3 — small-sample-safe inference
+(D) COUNTRY-MEAN HC3 — country-level HC3 sensitivity
 ======================================================================
-OLS on 14 country averages with HC3 SEs. Sidesteps the 14-cluster problem.
+OLS on 14 country averages with HC3 SEs. Reduces reliance on cluster asymptotics.
 
   CA: +1.324  (HC3 SE 0.211, p=0.000)
   R2: 0.878
@@ -95,12 +95,12 @@ Is the CA x remittances interaction driven by particular countries?
   weakest precisely in the group of interest.
 
 ======================================================================
-(G) WILD-CLUSTER BOOTSTRAP — few-cluster-safe inference
+(G) WILD-CLUSTER BOOTSTRAP — few-cluster robustness check
 ======================================================================
 Rademacher wild-cluster bootstrap (cluster = country, 14 clusters).
 With only 14 clusters and 4 treated (Central Asia), asymptotic clustered
 p-values are too optimistic. The bootstrap resamples cluster-level weights
-and re-estimates, giving a p-value that does not rely on large-N asymptotics.
+and re-estimates, giving a p-value that reduces reliance on conventional cluster asymptotics.
 B = 1999 replications. Reference: Cameron, Gelbach & Miller (2008).
 
   M1 raw CA premium           : coef=+1.3144  p(asymp)=0.000  p(wild-boot)=0.001

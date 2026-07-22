@@ -33,10 +33,10 @@ Stepwise OLS:
     smam_female                 : -0.0188  (HC3 SE 0.0238, p=0.447)
 
 ====================================================================
-(B) Residuals-based: cultural correlates of the unexplained premium
+(B) Residuals-based: cultural correlates of the residual from the selected macroeconomic specification
 ====================================================================
 
-Country residuals (unexplained TFR after economics + year FE):
+Country residuals (residual from the selected macroeconomic specification + year FE):
   Kazakhstan     (Central Asia          ): +0.591
   Tajikistan     (Central Asia          ): +0.290
   Uzbekistan     (Central Asia          ): +0.205
@@ -70,8 +70,10 @@ Exploratory descriptive residual associations — country residuals vs cultural 
     Muslim share: +0.0048  (SE 0.0209, p=0.822)
 
   Joint model on country residuals (HC3 SEs, small-sample t inference):
-    CA:           +0.630  (SE 0.383, p=0.128)
-    Muslim share: -0.0024  (SE 0.0042, p=0.580)
+  (descriptive; p-values omitted because these are generated-regressor
+   residuals — see section B):
+    CA:           +0.630  (SE 0.383)
+    Muslim share: -0.0024  (SE 0.0042)
 
   FINDING: the analysis provides no evidence that Muslim share explains
   additional cross-country variation once Central Asian status is included.

@@ -88,7 +88,7 @@ for name, formula in models.items():
 # (B) Residuals-based
 # =========================================================================
 out("\n" + "=" * 68)
-out("(B) Residuals-based: cultural correlates of the unexplained premium")
+out("(B) Residuals-based: cultural correlates of the residual from the selected macroeconomic specification")
 out("=" * 68)
 
 est_df = panel.dropna(subset=["tfr"] + CONTROLS).copy()
@@ -98,7 +98,7 @@ est_df["resid"] = econ_model.resid
 country_resid = est_df.groupby("country")["resid"].mean()
 cs_r = cs.merge(country_resid.rename("mean_resid").reset_index(), on="country")
 
-out("\nCountry residuals (unexplained TFR after economics + year FE):")
+out("\nCountry residuals (residual from the selected macroeconomic specification + year FE):")
 for _, r in cs_r.sort_values("mean_resid", ascending=False).iterrows():
     out(f"  {r['country']:14s} ({r['bloc']:22s}): {r['mean_resid']:+.3f}")
 
@@ -132,10 +132,10 @@ out(f"    Muslim share: {m_joint_tfr.params['muslim_share']:+.4f}  "
 m_joint_res = smf.ols("mean_resid ~ ca + muslim_share", data=cs_r).fit(
     cov_type="HC3", use_t=True)
 out("\n  Joint model on country residuals (HC3 SEs, small-sample t inference):")
-out(f"    CA:           {m_joint_res.params['ca']:+.3f}  "
-    f"(SE {m_joint_res.bse['ca']:.3f}, p={m_joint_res.pvalues['ca']:.3f})")
-out(f"    Muslim share: {m_joint_res.params['muslim_share']:+.4f}  "
-    f"(SE {m_joint_res.bse['muslim_share']:.4f}, p={m_joint_res.pvalues['muslim_share']:.3f})")
+out("  (descriptive; p-values omitted because these are generated-regressor")
+out("   residuals — see section B):")
+out(f"    CA:           {m_joint_res.params['ca']:+.3f}  (SE {m_joint_res.bse['ca']:.3f})")
+out(f"    Muslim share: {m_joint_res.params['muslim_share']:+.4f}  (SE {m_joint_res.bse['muslim_share']:.4f})")
 
 out("\n  FINDING: the analysis provides no evidence that Muslim share explains")
 out("  additional cross-country variation once Central Asian status is included.")
