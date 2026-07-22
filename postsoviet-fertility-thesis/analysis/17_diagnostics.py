@@ -69,7 +69,12 @@ between_cols = [f"{c}_mean" for c in CONTROLS]
 within_cols  = [f"{c}_dev"  for c in CONTROLS]
 
 vif_pooled  = vif_table(d, CONTROLS)
-vif_between = vif_table(m, between_cols)
+# Between VIF must be computed on ONE row per country (14 rows), not on all
+# 315 panel rows, otherwise the unbalanced panel (8 missing remittance rows)
+# gives countries unequal weight. CA is included because it is part of the
+# between design (it is a time-invariant country characteristic).
+between_df  = m.groupby("country", as_index=False)[["ca"] + between_cols].first()
+vif_between = vif_table(between_df, ["ca"] + between_cols)
 vif_within  = vif_table(m, within_cols)
 
 def flag(v):
@@ -81,6 +86,8 @@ for c in CONTROLS:
     vp, vb, vw = vif_pooled[c], vif_between[f"{c}_mean"], vif_within[f"{c}_dev"]
     out(f"  {c:26s} {vp:8.2f}  {vb:8.2f}  {vw:8.2f}   "
         f"(between: {flag(vb)})")
+out(f"  {'ca (between design)':26s} {'—':>8s}  {vif_between['ca']:8.2f}  {'—':>8s}   "
+    f"(between: {flag(vif_between['ca'])})")
 
 out("")
 out("  READING: pooled VIFs are moderate, but the BETWEEN-country components are")
@@ -88,8 +95,11 @@ out("  highly collinear (GDP mean, urbanisation mean and remittances mean all")
 out("  near or above the VIF>=10 threshold), while the WITHIN components are low.")
 out("  Consequence: the between-country control coefficients in the Mundlak hybrid")
 out("  (M2h) are individually imprecise and must NOT be interpreted one at a time.")
-out("  The CA premium itself is unaffected — it is identified off the group")
-out("  contrast, not off the individual (collinear) between-country slopes.")
+out("  The CA dummy has only a moderate between VIF, and its estimated coefficient")
+out("  remains stable across the pooled (M2) and hybrid (M2h) specifications, so")
+out("  multicollinearity does not undermine the CA premium; but the individual")
+out("  between-country control coefficients are collinear and must not be")
+out("  interpreted one at a time.")
 
 # ----------------------------------------------------------------------------
 # (B) Mundlak test for FE vs RE  (replaces the classical Hausman test)
