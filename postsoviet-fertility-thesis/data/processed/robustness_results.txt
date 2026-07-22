@@ -105,8 +105,9 @@ B = 1999 replications. Reference: Cameron, Gelbach & Miller (2008).
 
   M1 raw CA premium           : coef=+1.3144  p(asymp)=0.000  p(wild-boot)=0.001
   M2 controlled CA premium    : coef=+0.9707  p(asymp)=0.000  p(wild-boot)=0.006
-  CA x remittances            : coef=+0.0157  p(asymp)=0.001  p(wild-boot)=0.037
-  CA x urbanisation           : coef=-0.0119  p(asymp)=0.054  p(wild-boot)=0.294
+  M2h Mundlak CA premium      : coef=+0.9637  p(asymp)=0.000  p(wild-boot)=0.033
+  CA x remittances            : coef=+0.0157  p(asymp)=0.001  p(wild-boot)=0.026
+  CA x urbanisation           : coef=-0.0119  p(asymp)=0.054  p(wild-boot)=0.313
 
   READING: the raw and controlled CA premium remain significant under the
   wild-cluster bootstrap. The interaction terms are much weaker once

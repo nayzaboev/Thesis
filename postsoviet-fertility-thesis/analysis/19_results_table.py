@@ -65,6 +65,12 @@ print(f"Estimation sample: N = {len(sample)}, "
       f"countries = {sample['country'].nunique()}, "
       f"years = {sample['year'].min()}–{sample['year'].max()}\n")
 
+# Wild-cluster bootstrap p-value for M2h's "ca" coefficient (script 20, section G).
+# The asymptotic clustered p-value overstates significance with only 14 clusters;
+# the bootstrap p-value is used below for the M2h "ca" stars instead.
+boot = pd.read_csv("data/processed/robustness_wild_bootstrap.csv").set_index("specification")
+M2H_CA_BOOT_P = float(boot.loc["M2h Mundlak CA premium", "p_wild_bootstrap"])
+
 # --------------------------------------------------------------------------- #
 # 2. Helpers                                                                  #
 # --------------------------------------------------------------------------- #
@@ -185,6 +191,8 @@ for r in rows:
     for M in ALL_MODELS:
         if r in M:
             c, s, pv = M[r]
+            if M is M2H and r == "ca":
+                pv = M2H_CA_BOOT_P
             top, bot = fmt(c, s, pv)
             cells_top.append(top.center(col_w))
             cells_bot.append(bot.center(col_w))
@@ -230,7 +238,11 @@ lines.append("coefficients (deviations). The between-country control coefficient
 lines.append("collinear (see 17_diagnostics) and are not tabulated individually.")
 lines.append("M4: 'ca' absorbed by country FE; FD columns: 'ca' differenced away — by design.")
 lines.append("FD / FD+yr R² is computed on first-differenced data, not the FE within-R².")
-lines.append("Cluster count = 14; wild-cluster bootstrap for the CA coefficients in script 20.")
+lines.append("Cluster count = 14; wild-cluster bootstrap (script 20, section G) was run for the")
+lines.append("M1, M2, M2h, CA x remittances, and CA x urbanisation coefficients. The asymptotic")
+lines.append("clustered p-value for M2h 'ca' is < 0.01, but the wild-cluster bootstrap p-value")
+lines.append(f"is {M2H_CA_BOOT_P:.3f} (significant at 5%, not 1%); the stars for M2h 'ca' above")
+lines.append("use the bootstrap p-value, not the asymptotic one.")
 lines.append("Under-5 mortality is significant in the FD specification without year effects but")
 lines.append("not after year effects are added; the estimate is therefore sensitive to the")
 lines.append("inclusion of common year effects.")
@@ -252,6 +264,8 @@ for r in rows:
     for M in ALL_MODELS:
         if r in M:
             c, s, pv = M[r]
+            if M is M2H and r == "ca":
+                pv = M2H_CA_BOOT_P
             top, bot = fmt(c, s, pv)
             cells.append(f"{top}<br>{bot}")
         else:
@@ -273,9 +287,13 @@ md_footer = (
     "not tabulated — see diagnostics). M4: CA dummy absorbed by country FE; "
     "FD columns: CA differenced away. FD / FD+yr R² is computed on first-"
     "differenced data, not the FE within-R². Cluster count = 14; wild-cluster "
-    "bootstrap for the CA coefficients in script 20. Under-5 mortality is "
-    "significant in FD without year FE but not once year effects are added, "
-    "i.e. it is sensitive to the inclusion of common year effects.*\n"
+    "bootstrap (script 20, section G) was run for M1, M2, M2h, CA x remittances, "
+    "and CA x urbanisation. The asymptotic clustered p-value for M2h 'ca' is "
+    f"< 0.01, but its wild-cluster bootstrap p-value is {M2H_CA_BOOT_P:.3f} "
+    "(significant at 5%, not 1%); the stars for M2h 'ca' above use the bootstrap "
+    "p-value, not the asymptotic one. Under-5 mortality is significant in FD "
+    "without year FE but not once year effects are added, i.e. it is sensitive "
+    "to the inclusion of common year effects.*\n"
 )
 
 # --------------------------------------------------------------------------- #

@@ -1,7 +1,7 @@
 | | M1: raw gap | M2: + controls | M2h: Mundlak | M4: two-way FE | FD | FD + year FE |
 |---|---|---|---|---|---|---|
 | | Pooled, year FE | Pooled, year FE | Between/within | Country+year FE | Within (Δ) | Within (Δ)+yr |
-| Central Asia dummy | +1.314***<br>(0.164) | +0.971***<br>(0.118) | +0.964***<br>(0.140) | *(absorbed)* | *(absorbed)* | *(absorbed)* |
+| Central Asia dummy | +1.314***<br>(0.164) | +0.971***<br>(0.118) | +0.964**<br>(0.140) | *(absorbed)* | *(absorbed)* | *(absorbed)* |
 | log GDP per capita PPP (lag) | — | +0.009<br>(0.129) | +0.182<br>(0.278) | +0.183<br>(0.259) | +0.125*<br>(0.071) | +0.054<br>(0.135) |
 | Urban population %  (lag) | — | -0.012*<br>(0.007) | +0.006<br>(0.025) | +0.006<br>(0.025) | -0.004<br>(0.013) | +0.025<br>(0.017) |
 | Remittances % GDP  (lag) | — | +0.001<br>(0.006) | +0.001<br>(0.007) | +0.000<br>(0.007) | +0.000<br>(0.002) | +0.001<br>(0.002) |
@@ -13,4 +13,4 @@
 | R² type | R²(overall) | R²(overall) | R²(overall) | R²(within) | R²(differenced) | R²(differenced) |
 
 *Cluster-robust SE (country) in parentheses. \*\*\* p<0.01, \*\* p<0.05, \* p<0.10.*  
-*All columns estimated on controls-complete sample (N=315). M2h: the CA row is the between-country premium; the control rows are the within coefficients (the collinear between-country control coefficients are not tabulated — see diagnostics). M4: CA dummy absorbed by country FE; FD columns: CA differenced away. FD / FD+yr R² is computed on first-differenced data, not the FE within-R². Cluster count = 14; wild-cluster bootstrap for the CA coefficients in script 20. Under-5 mortality is significant in FD without year FE but not once year effects are added, i.e. it is sensitive to the inclusion of common year effects.*
+*All columns estimated on controls-complete sample (N=315). M2h: the CA row is the between-country premium; the control rows are the within coefficients (the collinear between-country control coefficients are not tabulated — see diagnostics). M4: CA dummy absorbed by country FE; FD columns: CA differenced away. FD / FD+yr R² is computed on first-differenced data, not the FE within-R². Cluster count = 14; wild-cluster bootstrap (script 20, section G) was run for M1, M2, M2h, CA x remittances, and CA x urbanisation. The asymptotic clustered p-value for M2h 'ca' is < 0.01, but its wild-cluster bootstrap p-value is 0.033 (significant at 5%, not 1%); the stars for M2h 'ca' above use the bootstrap p-value, not the asymptotic one. Under-5 mortality is significant in FD without year FE but not once year effects are added, i.e. it is sensitive to the inclusion of common year effects.*

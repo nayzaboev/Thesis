@@ -236,9 +236,18 @@ f_urb = ("tfr ~ ca + urban_pop_pct_lag1_c + "
          + " + ".join([c for c in CONTROLS if c != "urban_pop_pct_lag1"])
          + " + ca_urb + C(year)")
 
+# M2h: Mundlak hybrid (between/within) — same construction as 19_results_table.py
+for c in CONTROLS:
+    sample_b[f"{c}_mean"] = sample_b.groupby("country")[c].transform("mean")
+    sample_b[f"{c}_dev"]  = sample_b[c] - sample_b[f"{c}_mean"]
+mh_between = [f"{c}_mean" for c in CONTROLS]
+mh_within  = [f"{c}_dev"  for c in CONTROLS]
+f_m2h = "tfr ~ ca + " + " + ".join(mh_between + mh_within) + " + C(year)"
+
 specs = [
     ("M1 raw CA premium",        f_raw, "ca"),
     ("M2 controlled CA premium", f_m2,  "ca"),
+    ("M2h Mundlak CA premium",   f_m2h, "ca"),
     ("CA x remittances",         f_rem, "ca_rem"),
     ("CA x urbanisation",        f_urb, "ca_urb"),
 ]

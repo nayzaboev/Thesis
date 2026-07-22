@@ -1,7 +1,7 @@
                                  M1: raw gap     M2: + controls    M2h: Mundlak    M4: two-way FE         FD          FD + year FE  
                                Pooled, year FE  Pooled, year FE   Between/within  Country+year FE     Within (Δ)     Within (Δ)+yr  
 ------------------------------------------------------------------------------------------------------------------------------------
-Central Asia dummy                +1.314***        +0.971***        +0.964***        (absorbed)       (absorbed)       (absorbed)   
+Central Asia dummy                +1.314***        +0.971***         +0.964**        (absorbed)       (absorbed)       (absorbed)   
                                    (0.164)          (0.118)          (0.140)                                                        
 log GDP per capita PPP (lag)          —              +0.009           +0.182           +0.183          +0.125*           +0.054     
                                                     (0.129)          (0.278)          (0.259)          (0.071)          (0.135)     
@@ -25,7 +25,11 @@ coefficients (deviations). The between-country control coefficients are
 collinear (see 17_diagnostics) and are not tabulated individually.
 M4: 'ca' absorbed by country FE; FD columns: 'ca' differenced away — by design.
 FD / FD+yr R² is computed on first-differenced data, not the FE within-R².
-Cluster count = 14; wild-cluster bootstrap for the CA coefficients in script 20.
+Cluster count = 14; wild-cluster bootstrap (script 20, section G) was run for the
+M1, M2, M2h, CA x remittances, and CA x urbanisation coefficients. The asymptotic
+clustered p-value for M2h 'ca' is < 0.01, but the wild-cluster bootstrap p-value
+is 0.033 (significant at 5%, not 1%); the stars for M2h 'ca' above
+use the bootstrap p-value, not the asymptotic one.
 Under-5 mortality is significant in the FD specification without year effects but
 not after year effects are added; the estimate is therefore sensitive to the
 inclusion of common year effects.
