@@ -1,0 +1,4 @@
+sample,cv_slope_2000_2016,cv_slope_post_2016,post_2016_end_year,beta,n_beta,beta_end_window
+(a) Full 2000-2023 (baseline),-0.007147,0.019536,2023,0.0013,14,2021-2023
+(b) Through 2019 only,-0.007147,0.023647,2019,-0.0085,14,2017-2019
+(c) Excl. Projection rows,-0.007147,-0.019337,2023,0.0074,11,2021-2023

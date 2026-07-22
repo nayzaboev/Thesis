@@ -6,6 +6,9 @@ from the UN Population Division Data Portal export, 2000–2023.
 
 Input:  data/raw/unpopulation_dataportal_*.csv (WPP 2024)
 Output: data/processed/master_tfr.csv (336 rows: 14 countries x 24 years)
+
+estimate_method distinguishes WPP interpolated estimates ("Interpolation")
+from projected values ("Projection"); projections concentrate in 2020-2023.
 """
 
 import pandas as pd
@@ -19,8 +22,8 @@ df = df[df["Variant"] == "Median"]
 df = df[df["Sex"] == "Both sexes"]
 
 # --- Rename & normalise country names ---
-df = df[["Location", "Time", "Value"]].copy()
-df.columns = ["country", "year", "tfr"]
+df = df[["Location", "Time", "Value", "EstimateMethod"]].copy()
+df.columns = ["country", "year", "tfr", "estimate_method"]
 df["country"] = df["country"].replace({
     "Russian Federation": "Russia",
     "Republic of Moldova": "Moldova",
@@ -47,6 +50,10 @@ assert df["year"].max() == 2023, f"Year range ends at {df['year'].max()}, expect
 assert len(df) == 336, f"Expected 336 rows (14 countries x 24 years), got {len(df)}"
 assert df.groupby("country")["year"].nunique().eq(24).all(), \
     "Not all countries have complete 2000-2023 coverage"
+
+# --- Report estimate vs projection split ---
+print("EstimateMethod counts:")
+print(df["estimate_method"].value_counts().to_string())
 
 # --- Assign subgroup and bloc ---
 def subgroup(c):

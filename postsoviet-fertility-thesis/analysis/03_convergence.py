@@ -42,6 +42,7 @@ Outputs: data/processed/cv_all.csv
          data/processed/cv_trend_tests.csv
          data/processed/peaks.csv
          data/processed/beta_convergence.csv
+         data/processed/projection_sensitivity.csv
          data/processed/convergence_results.txt
          figures/fig5_sigma_convergence.png
 
@@ -368,6 +369,99 @@ out()
 out("Saved -> figures/fig5_sigma_convergence.png")
 
 # =========================================================================
+# (E) PROJECTION-SENSITIVITY CHECK — do the headline results survive dropping
+#     WPP-projected (rather than interpolated) observations?
+# =========================================================================
+out()
+out("=" * 72)
+out("(E) PROJECTION-SENSITIVITY CHECK (descriptive only)")
+out("=" * 72)
+out("master_tfr.csv carries 'estimate_method', distinguishing WPP retrospective")
+out("'Interpolation' from forward-looking 'Projection' values (20 of 336 rows,")
+out("concentrated in 2020-2023 and in every country's 2023 observation; see")
+out("01_clean_data.py). The (B2) post-2017 CV slope and the (B) beta-convergence")
+out("coefficient above both partly rest on these projected endpoints. This block")
+out("re-computes those two headline descriptive results under three samples:")
+out("  (a) full 2000-2023 (baseline, as reported above)")
+out("  (b) data through 2019 only")
+out("  (c) excluding rows where estimate_method == 'Projection'")
+out("This is NOT a significance test: no p-values or significance claims are made")
+out("here, the sub-samples are smaller than the already-small n=14/T=7 used above,")
+out("and sample (c) is a ragged panel (a country contributes a year only if its")
+out("own value that year is Interpolation, not Projection).")
+out()
+
+
+def sens_cv_slope(sub, y0, y1):
+    """Plain-OLS point estimate of the CV-on-year slope (no HAC/SE) -
+    descriptive only, used purely to compare direction/magnitude across samples."""
+    s = sub.groupby("year")["tfr"].apply(cv)
+    d = pd.DataFrame({"cv": s.values, "year": s.index.astype(int)})
+    d = d[(d.year >= y0) & (d.year <= y1)]
+    if len(d) < 2:
+        return np.nan
+    return np.polyfit(d["year"], d["cv"], 1)[0]
+
+
+def sens_beta(sub):
+    """Unconditional beta-convergence coefficient on whichever countries have
+    both a 2000-2002 start average and an end average available in `sub`. The
+    end window is the last 3 calendar years present anywhere in `sub`, so a
+    country only enters the end average via years it actually has (ragged for
+    sample (c))."""
+    end_year = int(sub["year"].max())
+    end_win = [end_year - 2, end_year - 1, end_year]
+    start_win = [2000, 2001, 2002]
+    w = sub.pivot(index="country", columns="year", values="tfr")
+    t = pd.DataFrame({
+        "tfr_start": w.reindex(columns=start_win).mean(axis=1),
+        "tfr_end":   w.reindex(columns=end_win).mean(axis=1),
+    }).dropna()
+    if len(t) < 4:
+        return np.nan, len(t), end_win
+    t["ln_tfr_start"] = np.log(t["tfr_start"])
+    tt = np.mean(end_win) - np.mean(start_win)
+    t["growth"] = (np.log(t["tfr_end"]) - np.log(t["tfr_start"])) / tt
+    m = smf.ols("growth ~ ln_tfr_start", data=t).fit(cov_type="HC3", use_t=True)
+    return m.params["ln_tfr_start"], len(t), end_win
+
+
+sensitivity_samples = {
+    "(a) Full 2000-2023 (baseline)": df,
+    "(b) Through 2019 only":         df[df["year"] <= 2019],
+    "(c) Excl. Projection rows":     df[df["estimate_method"] != "Projection"],
+}
+
+out(f"  {'Sample':32s} {'CV slope 2000-16':>17s} {'CV slope post-16':>17s} "
+    f"{'beta':>9s} {'n (beta)':>9s}  {'end window used'}")
+sensitivity_rows = []
+for label, sub in sensitivity_samples.items():
+    max_yr = int(sub["year"].max())
+    sl_early = sens_cv_slope(sub, 2000, 2016)
+    sl_late = sens_cv_slope(sub, 2017, max_yr)
+    beta, n_beta, end_win = sens_beta(sub)
+    ew_label = f"{end_win[0]}-{end_win[-1]}"
+    out(f"  {label:32s} {sl_early:+17.5f} {sl_late:+17.5f} "
+        f"{beta:+9.4f} {n_beta:9d}  {ew_label} (post-16: 2017-{max_yr})")
+    sensitivity_rows.append({
+        "sample": label, "cv_slope_2000_2016": round(sl_early, 6),
+        "cv_slope_post_2016": round(sl_late, 6),
+        "post_2016_end_year": max_yr,
+        "beta": round(beta, 4), "n_beta": n_beta,
+        "beta_end_window": ew_label,
+    })
+
+out()
+out("  Reading: compare the sign and rough magnitude of the post-2016 CV slope and")
+out("  of beta across rows (a)-(c). If they hold the same sign once projected years")
+out("  are removed or excluded (b, c), the post-2017 divergence and catch-up pattern")
+out("  reported above are not simply an artifact of WPP projections. Sample (c) has")
+out("  a smaller, ragged n for beta because countries whose most recent years are")
+out("  themselves projections (e.g. Belarus, Tajikistan) drop out of its end window.")
+out("  All entries in this block are descriptive point estimates; treat as a")
+out("  sensitivity check, not a formal robustness test.")
+
+# =========================================================================
 # Save
 # =========================================================================
 os.makedirs("data/processed", exist_ok=True)
@@ -385,6 +479,7 @@ beta_out.to_csv("data/processed/beta_convergence.csv", index=False)
 pd.DataFrame(trend_rows).to_csv("data/processed/cv_trend_tests.csv", index=False)
 pd.DataFrame(split_rows).to_csv("data/processed/cv_period_split.csv", index=False)
 pd.DataFrame(loo_conv_rows).to_csv("data/processed/cv_leave_one_out.csv", index=False)
+pd.DataFrame(sensitivity_rows).to_csv("data/processed/projection_sensitivity.csv", index=False)
 
 with open("data/processed/convergence_results.txt", "w") as f:
     f.write("CONVERGENCE ANALYSIS - sigma-convergence (dispersion) and "
@@ -394,4 +489,4 @@ with open("data/processed/convergence_results.txt", "w") as f:
 
 out("Saved -> data/processed/cv_all.csv, cv_by_bloc.csv, cv_by_subgroup.csv,")
 out("         cv_trend_tests.csv, peaks.csv, beta_convergence.csv,")
-out("         convergence_results.txt")
+out("         projection_sensitivity.csv, convergence_results.txt")

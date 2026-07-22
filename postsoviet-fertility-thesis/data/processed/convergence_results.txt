@@ -184,3 +184,34 @@ Uzbekistan     Central Asia       2023      3.50
   Countries peaking in 2015 or later: 10 of 14
 
 Saved -> figures/fig5_sigma_convergence.png
+
+========================================================================
+(E) PROJECTION-SENSITIVITY CHECK (descriptive only)
+========================================================================
+master_tfr.csv carries 'estimate_method', distinguishing WPP retrospective
+'Interpolation' from forward-looking 'Projection' values (20 of 336 rows,
+concentrated in 2020-2023 and in every country's 2023 observation; see
+01_clean_data.py). The (B2) post-2017 CV slope and the (B) beta-convergence
+coefficient above both partly rest on these projected endpoints. This block
+re-computes those two headline descriptive results under three samples:
+  (a) full 2000-2023 (baseline, as reported above)
+  (b) data through 2019 only
+  (c) excluding rows where estimate_method == 'Projection'
+This is NOT a significance test: no p-values or significance claims are made
+here, the sub-samples are smaller than the already-small n=14/T=7 used above,
+and sample (c) is a ragged panel (a country contributes a year only if its
+own value that year is Interpolation, not Projection).
+
+  Sample                            CV slope 2000-16  CV slope post-16      beta  n (beta)  end window used
+  (a) Full 2000-2023 (baseline)             -0.00715          +0.01954   +0.0013        14  2021-2023 (post-16: 2017-2023)
+  (b) Through 2019 only                     -0.00715          +0.02365   -0.0085        14  2017-2019 (post-16: 2017-2019)
+  (c) Excl. Projection rows                 -0.00715          -0.01934   +0.0074        11  2021-2023 (post-16: 2017-2023)
+
+  Reading: compare the sign and rough magnitude of the post-2016 CV slope and
+  of beta across rows (a)-(c). If they hold the same sign once projected years
+  are removed or excluded (b, c), the post-2017 divergence and catch-up pattern
+  reported above are not simply an artifact of WPP projections. Sample (c) has
+  a smaller, ragged n for beta because countries whose most recent years are
+  themselves projections (e.g. Belarus, Tajikistan) drop out of its end window.
+  All entries in this block are descriptive point estimates; treat as a
+  sensitivity check, not a formal robustness test.
