@@ -1,6 +1,6 @@
 # Assembled main results table: M1, M2, M2h (Mundlak), M4 (two-way FE), FD, FD+yr.
 """
-19_results_table.py
+20_results_table.py
 -------------------
 Assemble the main Part 2 results table with SIX columns:
   M1    raw gap (pooled, year FE)
@@ -26,13 +26,13 @@ Sample discipline:
 Standard errors:
   Clustered by country throughout (14 clusters). With only 14 clusters these are
   asymptotic and may be anti-conservative; the wild-cluster bootstrap in script
-  20 (section G) is the few-cluster robustness check for the CA coefficients.
+  19 (section G) is the few-cluster robustness check for the CA coefficients.
 
 Outputs:
   data/processed/results_main_table.txt   (fixed-width, for inspection)
   data/processed/results_main_table.md    (markdown, paste-ready for the thesis)
 
-Run from repo root:  python analysis/19_results_table.py
+Run from repo root:  python analysis/20_results_table.py
 """
 
 import os
@@ -65,7 +65,7 @@ print(f"Estimation sample: N = {len(sample)}, "
       f"countries = {sample['country'].nunique()}, "
       f"years = {sample['year'].min()}–{sample['year'].max()}\n")
 
-# Wild-cluster bootstrap p-value for M2h's "ca" coefficient (script 20, section G).
+# Wild-cluster bootstrap p-value for M2h's "ca" coefficient (script 19, section G).
 # The asymptotic clustered p-value overstates significance with only 14 clusters;
 # the bootstrap p-value is used below for the M2h "ca" stars instead.
 boot = pd.read_csv("data/processed/robustness_wild_bootstrap.csv").set_index("specification")
@@ -106,6 +106,19 @@ within  = [f"{c}_dev"  for c in CONTROLS]
 f_mh = "tfr ~ ca + " + " + ".join(between + within) + " + C(year)"
 m2h = smf.ols(f_mh, data=mh).fit(
     cov_type="cluster", cov_kwds={"groups": mh["country"]})
+
+# Staleness guard: the bootstrap p-value above (M2H_CA_BOOT_P) is only valid for
+# THIS fitted CA coefficient. If robustness_wild_bootstrap.csv was produced by an
+# older panel/model, the freshly estimated coefficient will diverge from the coef
+# stored in the CSV (rounded to 4 decimals), and the p-value would be silently
+# stale. Tolerance is 1e-3 to accommodate that rounding.
+boot_m2h_coef = float(boot.loc["M2h Mundlak CA premium", "coef"])
+assert abs(m2h.params["ca"] - boot_m2h_coef) < 1e-3, (
+    f"M2h CA coefficient ({m2h.params['ca']:.4f}) does not match the coefficient "
+    f"stored in robustness_wild_bootstrap.csv ({boot_m2h_coef:.4f}). The wild-"
+    "cluster bootstrap p-value is stale — re-run 19_robustness.py to regenerate "
+    "robustness_wild_bootstrap.csv before rebuilding this table."
+)
 
 # --- M4: two-way FE ---
 s_idx = sample.set_index(["country", "year"]).sort_index()
@@ -238,7 +251,7 @@ lines.append("coefficients (deviations). The between-country control coefficient
 lines.append("collinear (see 17_diagnostics) and are not tabulated individually.")
 lines.append("M4: 'ca' absorbed by country FE; FD columns: 'ca' differenced away — by design.")
 lines.append("FD / FD+yr R² is computed on first-differenced data, not the FE within-R².")
-lines.append("Cluster count = 14; wild-cluster bootstrap (script 20, section G) was run for the")
+lines.append("Cluster count = 14; wild-cluster bootstrap (script 19, section G) was run for the")
 lines.append("M1, M2, M2h, CA x remittances, and CA x urbanisation coefficients. The asymptotic")
 lines.append("clustered p-value for M2h 'ca' is < 0.01, but the wild-cluster bootstrap p-value")
 lines.append(f"is {M2H_CA_BOOT_P:.3f} (significant at 5%, not 1%); the stars for M2h 'ca' above")
@@ -287,7 +300,7 @@ md_footer = (
     "not tabulated — see diagnostics). M4: CA dummy absorbed by country FE; "
     "FD columns: CA differenced away. FD / FD+yr R² is computed on first-"
     "differenced data, not the FE within-R². Cluster count = 14; wild-cluster "
-    "bootstrap (script 20, section G) was run for M1, M2, M2h, CA x remittances, "
+    "bootstrap (script 19, section G) was run for M1, M2, M2h, CA x remittances, "
     "and CA x urbanisation. The asymptotic clustered p-value for M2h 'ca' is "
     f"< 0.01, but its wild-cluster bootstrap p-value is {M2H_CA_BOOT_P:.3f} "
     "(significant at 5%, not 1%); the stars for M2h 'ca' above use the bootstrap "

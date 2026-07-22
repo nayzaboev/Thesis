@@ -90,7 +90,6 @@ python analysis/02_trend_plots.py
 python analysis/03_convergence.py
 
 # Part 2 — data pipeline
-python analysis/10_fetch_wdi.py
 python analysis/11_coverage_map.py
 python analysis/12_build_panel.py
 python analysis/13_build_crosssection.py
@@ -101,16 +100,42 @@ python analysis/15_layerA_gap.py
 python analysis/16_layerB_within.py
 python analysis/17_diagnostics.py
 python analysis/18_crosssection.py
-python analysis/19_results_table.py
-python analysis/20_robustness.py
+python analysis/19_robustness.py
+python analysis/20_results_table.py
+```
 
-# SMAM primary-data computations (order-independent; each updates cultural_vars.csv)
+Or simply: `python run_all.py`, which runs the above in order and stops at the
+first script that fails.
+
+**Optional maintenance — refreshing the World Bank snapshots:**
+
+```
+python analysis/10_fetch_wdi.py --refresh
+```
+
+The committed analysis reproduces from the frozen `data/raw/raw_wb_*.csv`
+snapshots; this script is not part of the default run order because it
+overwrites those snapshots with a live download from the World Bank API
+(historical values are periodically revised, which would break reproducibility
+of the committed results). Run it only when you deliberately want to refresh
+the covariate data, then re-run the Part 2 pipeline from `12_build_panel.py`
+onward.
+
+**SMAM primary-data computations** (each updates `data/manual/cultural_vars.csv`
+in place):
+
+```
 python analysis/compute_blr_smam.py
 python analysis/compute_geo_smam.py
 python analysis/compute_kgz_smam.py
 python analysis/compute_uzb_smam.py
 python analysis/compute_rus_smam.py
 ```
+
+These are order-independent **relative to each other**, but since they mutate
+`data/manual/cultural_vars.csv`, running any of them requires regenerating
+`13_build_crosssection.py`, `18_crosssection.py`, `19_robustness.py` and
+`20_results_table.py` afterward.
 
 ## Reproducibility Notes
 

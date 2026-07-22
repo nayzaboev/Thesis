@@ -17,7 +17,7 @@ Produces:
 
   (C) Few-cluster caveat — 14 clusters is below the safe threshold, so
       cluster-robust SEs may be anti-conservative; wild-cluster bootstrap
-      (script 20, section G) is the recommended robustness follow-up.
+      (script 19, section G) is the recommended robustness follow-up.
 
 Output: data/processed/diagnostics_results.txt
 Run from repo root:  python analysis/17_diagnostics.py
@@ -165,7 +165,7 @@ out("  Standard errors throughout Part 2 are clustered on country (14 clusters).
 out("  14 clusters is below the commonly cited safe threshold (~30-50). With few")
 out("  clusters, cluster-robust SEs can be anti-conservative (too small), so")
 out("  p-values near 0.05 should be read with caution. The wild-cluster bootstrap")
-out("  in script 20 (section G) is the recommended few-cluster robustness check.")
+out("  in script 19 (section G) is the recommended few-cluster robustness check.")
 out("  This is a known small-N limitation of the post-Soviet sample, not a coding issue.")
 
 # ----------------------------------------------------------------------------

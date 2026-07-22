@@ -1,5 +1,5 @@
 """
-20_robustness.py
+19_robustness.py
 ----------------
 Robustness checks for the Layer A Central Asia premium.
 
@@ -16,7 +16,7 @@ Outputs:
   data/processed/country_tfr_table.csv
   data/processed/robustness_results.txt
 
-Run from repo root:  python analysis/20_robustness.py
+Run from repo root:  python analysis/19_robustness.py
 """
 
 import os
@@ -236,7 +236,7 @@ f_urb = ("tfr ~ ca + urban_pop_pct_lag1_c + "
          + " + ".join([c for c in CONTROLS if c != "urban_pop_pct_lag1"])
          + " + ca_urb + C(year)")
 
-# M2h: Mundlak hybrid (between/within) — same construction as 19_results_table.py
+# M2h: Mundlak hybrid (between/within) — same construction as 20_results_table.py
 for c in CONTROLS:
     sample_b[f"{c}_mean"] = sample_b.groupby("country")[c].transform("mean")
     sample_b[f"{c}_dev"]  = sample_b[c] - sample_b[f"{c}_mean"]

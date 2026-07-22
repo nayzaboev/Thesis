@@ -3,11 +3,26 @@ Fetch World Development Indicators (WDI) covariates for Part 2 regressions.
 
 Salvaged from the old 03a_fetch_gdp.py wbgapi pattern (wb.data.DataFrame ->
 melt -> rename -> save), generalised to loop over all four Part 2 indicators.
+
+This script OVERWRITES the frozen data/raw/raw_wb_*.csv snapshots that the
+committed analysis reproduces from. It is opt-in maintenance, not part of the
+default pipeline (see run_all.py / README): run it only when you intend to
+refresh the snapshots with live World Bank data, e.g. to extend coverage to a
+new year. Pass --refresh to actually write; otherwise it is a no-op.
+
+Run from repo root:  python analysis/10_fetch_wdi.py --refresh
 """
 
 import os
+import sys
 import wbgapi as wb
 import pandas as pd
+
+if "--refresh" not in sys.argv:
+    print("Frozen World Bank snapshots are in use (data/raw/raw_wb_*.csv).")
+    print("The committed analysis reproduces from these frozen files, not live data.")
+    print("Pass --refresh to overwrite them with a fresh download. Exiting without writing.")
+    sys.exit(0)
 
 INDICATORS = {
     "NY.GDP.PCAP.PP.KD": "gdp_per_capita_ppp",
