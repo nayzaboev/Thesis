@@ -57,5 +57,5 @@ EQUAL for every regressor (not that the between coefficients are zero).
   14 clusters is below the commonly cited safe threshold (~30-50). With few
   clusters, cluster-robust SEs can be anti-conservative (too small), so
   p-values near 0.05 should be read with caution. The wild-cluster bootstrap
-  in script 20 (section G) is the recommended few-cluster robustness check.
+  in script 19 (section G) is the recommended few-cluster robustness check.
   This is a known small-N limitation of the post-Soviet sample, not a coding issue.

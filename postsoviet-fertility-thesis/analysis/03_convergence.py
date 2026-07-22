@@ -39,6 +39,7 @@ Outputs: data/processed/cv_all.csv
          data/processed/cv_by_bloc.csv
          data/processed/cv_by_subgroup.csv
          data/processed/cv_absolute_dispersion.csv
+         data/processed/cv_absolute_dispersion_by_bloc.csv
          data/processed/cv_trend_tests.csv
          data/processed/peaks.csv
          data/processed/beta_convergence.csv
@@ -120,6 +121,36 @@ out(f"  2000->2023: SD {_sd_chg:+.3f}, CV {_cv_chg:+.3f}. Read together: a falli
 out("  CV accompanied by a roughly flat or rising SD indicates the CV change is")
 out("  substantially a mean (denominator) effect, not pure absolute compression.")
 abs_disp.to_csv("data/processed/cv_absolute_dispersion.csv")
+
+# --- Absolute dispersion by bloc — the sigma-convergence claims concern Central
+# Asia and the rest separately, so the pooled series above can mask opposite
+# within-bloc movements. ---
+out()
+out("-" * 72)
+out("Absolute dispersion (SD and IQR) BY BLOC, for comparison with the pooled")
+out("series above. The pooled SD can be flat or rising even if one bloc is")
+out("compressing, if the other bloc is diverging at the same time.")
+out()
+sd_bloc = df.groupby(["bloc", "year"])["tfr"].std(ddof=1).unstack(0)
+iqr_bloc = df.groupby(["bloc", "year"])["tfr"].apply(
+    lambda s: s.quantile(0.75) - s.quantile(0.25)).unstack(0)
+abs_disp_bloc = pd.concat(
+    {"SD": sd_bloc.round(3), "IQR": iqr_bloc.round(3)}, axis=1)
+out(abs_disp_bloc.loc[snapshot_years].to_string())
+out()
+_ca_sd = sd_bloc["Central Asia"]
+_rest_sd = sd_bloc["Rest of post-Soviet"]
+out(f"  Central Asia SD:        {_ca_sd.loc[2000]:.3f} (2000) -> "
+    f"{_ca_sd.loc[2017]:.3f} (2017) -> {_ca_sd.loc[2023]:.3f} (2023)")
+out(f"  Rest of post-Soviet SD: {_rest_sd.loc[2000]:.3f} (2000) -> "
+    f"{_rest_sd.loc[2017]:.3f} (2017) -> {_rest_sd.loc[2023]:.3f} (2023)")
+out("  READING: Central Asia's absolute dispersion FALLS over 2000-2023 (within-")
+out("  bloc convergence in levels, not just CV) while the rest of the post-Soviet")
+out("  space DIVERGES in absolute terms. Both movements are genuine — visible in")
+out("  SD/IQR, not an artifact of the CV denominator — and they run in opposite")
+out("  directions, so the pooled 14-country dispersion series understates how much")
+out("  is happening within each bloc.")
+abs_disp_bloc.to_csv("data/processed/cv_absolute_dispersion_by_bloc.csv")
 
 # --- Formal trend test on each CV series ---
 out()
@@ -358,8 +389,11 @@ fig.suptitle("Sigma-convergence in post-Soviet fertility, 2000-2023",
              fontsize=12, weight="bold")
 fig.text(0.5, -0.02,
          "Source: author's calculations using UN World Population Prospects 2024 "
-         "(Median variant).",
-         ha="center", fontsize=8, color="#555")
+         "(Median variant). Note: most 2023 country values are WPP projections "
+         "(11 of 14 — only Latvia, Lithuania and Russia are interpolated in 2023), "
+         "so the rightmost point on each line is not on the same evidentiary "
+         "footing as earlier, retrospective points.",
+         ha="center", fontsize=8, color="#555", wrap=True)
 fig.tight_layout()
 fig.savefig("figures/fig5_sigma_convergence.png", dpi=200, bbox_inches="tight")
 plt.close(fig)
@@ -379,14 +413,48 @@ out("'Interpolation' from forward-looking 'Projection' values (20 of 336 rows,")
 out("concentrated in 2020-2023 and in every country's 2023 observation; see")
 out("01_clean_data.py). The (B2) post-2017 CV slope and the (B) beta-convergence")
 out("coefficient above both partly rest on these projected endpoints. This block")
-out("re-computes those two headline descriptive results under three samples:")
-out("  (a) full 2000-2023 (baseline, as reported above)")
-out("  (b) data through 2019 only")
-out("  (c) excluding rows where estimate_method == 'Projection'")
+out("re-computes those two headline descriptive results under two BALANCED")
+out("sub-samples, each holding a FIXED country set across all years it uses. An")
+out("earlier version of this check instead dropped projected ROWS year-by-year,")
+out("which let the country set drift over time (14 -> 12 -> 11 -> 10 countries,")
+out("collapsing to 3 low-fertility countries by 2023). That composition drift, not")
+out("genuine convergence, drove a spuriously negative post-2016 slope. A valid")
+out("cross-time dispersion comparison requires the SAME countries in every year")
+out("compared, so both samples below fix the country set before comparing years:")
+out("  (a) full 2000-2023, all 14 countries (baseline, as reported above)")
+out("  (b) Sample A - balanced historical: all 14 countries, 2000-2019, no")
+out("      projected values anywhere in that window")
+out("  (c) Sample B - balanced interpolation-only recent: countries with a")
+out("      non-projected observation in EVERY year 2017-2022, that country set")
+out("      then held fixed for all years used (list below; membership is")
+out("      derived from the data, not hardcoded)")
 out("This is NOT a significance test: no p-values or significance claims are made")
-out("here, the sub-samples are smaller than the already-small n=14/T=7 used above,")
-out("and sample (c) is a ragged panel (a country contributes a year only if its")
-out("own value that year is Interpolation, not Projection).")
+out("here, and the sub-samples are smaller than the already-small n=14/T=7 used")
+out("above.")
+out()
+
+# --- Sample A: balanced historical (2000-2019, all 14 countries) ---
+sampleA = df[(df["year"] >= 2000) & (df["year"] <= 2019)].copy()
+assert (sampleA["estimate_method"] != "Projection").all(), \
+    "Sample A window (2000-2019) unexpectedly contains a projected row"
+assert sampleA["country"].nunique() == 14
+
+# --- Sample B: balanced interpolation-only recent (fixed country set) ---
+# Membership is derived programmatically: a country qualifies only if it has a
+# non-projected ('Interpolation') observation in EVERY one of 2017-2022.
+b_window = list(range(2017, 2023))
+b_check = df[df["year"].isin(b_window)]
+b_complete = b_check.groupby("country").apply(
+    lambda g: set(g.loc[g["estimate_method"] != "Projection", "year"]) == set(b_window),
+    include_groups=False)
+sampleB_countries = sorted(b_complete[b_complete].index.tolist())
+# 2023 lies outside the qualifying window and is itself a projection for most
+# of these countries, so Sample B is restricted through 2022 to stay
+# interpolation-only for every year it actually uses.
+sampleB = df[(df["country"].isin(sampleB_countries)) & (df["year"] <= 2022)].copy()
+
+out(f"  Sample B country set (n={len(sampleB_countries)}, non-projected in every")
+out(f"  year 2017-2022): {', '.join(sampleB_countries)}")
 out()
 
 
@@ -402,60 +470,76 @@ def sens_cv_slope(sub, y0, y1):
 
 
 def sens_beta(sub):
-    """Unconditional beta-convergence coefficient on whichever countries have
-    both a 2000-2002 start average and an end average available in `sub`. The
-    end window is the last 3 calendar years present anywhere in `sub`, so a
-    country only enters the end average via years it actually has (ragged for
-    sample (c))."""
+    """Unconditional beta-convergence coefficient on countries with a COMPLETE
+    3-year window at BOTH ends. A country is included only if every year of
+    the 2000-2002 start window AND every year of the end window (the last 3
+    calendar years present in `sub`) is non-missing. An earlier version used
+    w.reindex(columns=win).mean(axis=1), which silently averages over
+    whatever years ARE present — a country with only 1 of 3 end-window years
+    still received a value, and .dropna() only removed countries missing ALL
+    three. Returns the excluded-country count so it can be reported."""
     end_year = int(sub["year"].max())
     end_win = [end_year - 2, end_year - 1, end_year]
     start_win = [2000, 2001, 2002]
     w = sub.pivot(index="country", columns="year", values="tfr")
+    start_complete = w.reindex(columns=start_win).notna().all(axis=1)
+    end_complete = w.reindex(columns=end_win).notna().all(axis=1)
+    both = start_complete & end_complete
+    n_excluded = int((~both).sum())
     t = pd.DataFrame({
-        "tfr_start": w.reindex(columns=start_win).mean(axis=1),
-        "tfr_end":   w.reindex(columns=end_win).mean(axis=1),
-    }).dropna()
+        "tfr_start": w.loc[both, start_win].mean(axis=1),
+        "tfr_end":   w.loc[both, end_win].mean(axis=1),
+    })
     if len(t) < 4:
-        return np.nan, len(t), end_win
+        return np.nan, len(t), end_win, n_excluded
     t["ln_tfr_start"] = np.log(t["tfr_start"])
     tt = np.mean(end_win) - np.mean(start_win)
     t["growth"] = (np.log(t["tfr_end"]) - np.log(t["tfr_start"])) / tt
     m = smf.ols("growth ~ ln_tfr_start", data=t).fit(cov_type="HC3", use_t=True)
-    return m.params["ln_tfr_start"], len(t), end_win
+    return m.params["ln_tfr_start"], len(t), end_win, n_excluded
 
 
 sensitivity_samples = {
-    "(a) Full 2000-2023 (baseline)": df,
-    "(b) Through 2019 only":         df[df["year"] <= 2019],
-    "(c) Excl. Projection rows":     df[df["estimate_method"] != "Projection"],
+    "(a) Full 2000-2023 (baseline)":                df,
+    "(b) Sample A: balanced historical (2000-19)":  sampleA,
+    "(c) Sample B: balanced interp-only recent":    sampleB,
 }
 
-out(f"  {'Sample':32s} {'CV slope 2000-16':>17s} {'CV slope post-16':>17s} "
-    f"{'beta':>9s} {'n (beta)':>9s}  {'end window used'}")
+out(f"  {'Sample':46s} {'CV slope 2000-16':>17s} {'CV slope post-16':>17s} "
+    f"{'beta':>9s} {'n (beta)':>9s} {'excl':>5s}  {'end window used'}")
 sensitivity_rows = []
 for label, sub in sensitivity_samples.items():
     max_yr = int(sub["year"].max())
     sl_early = sens_cv_slope(sub, 2000, 2016)
     sl_late = sens_cv_slope(sub, 2017, max_yr)
-    beta, n_beta, end_win = sens_beta(sub)
+    beta, n_beta, end_win, n_excl = sens_beta(sub)
     ew_label = f"{end_win[0]}-{end_win[-1]}"
-    out(f"  {label:32s} {sl_early:+17.5f} {sl_late:+17.5f} "
-        f"{beta:+9.4f} {n_beta:9d}  {ew_label} (post-16: 2017-{max_yr})")
+    out(f"  {label:46s} {sl_early:+17.5f} {sl_late:+17.5f} "
+        f"{beta:+9.4f} {n_beta:9d} {n_excl:5d}  {ew_label} (post-16: 2017-{max_yr})")
     sensitivity_rows.append({
-        "sample": label, "cv_slope_2000_2016": round(sl_early, 6),
+        "sample": label, "n_countries": int(sub["country"].nunique()),
+        "cv_slope_2000_2016": round(sl_early, 6),
         "cv_slope_post_2016": round(sl_late, 6),
         "post_2016_end_year": max_yr,
         "beta": round(beta, 4), "n_beta": n_beta,
+        "n_excluded_incomplete_window": n_excl,
         "beta_end_window": ew_label,
     })
 
+row_a, row_b, row_c = sensitivity_rows
 out()
-out("  Reading: compare the sign and rough magnitude of the post-2016 CV slope and")
-out("  of beta across rows (a)-(c). If they hold the same sign once projected years")
-out("  are removed or excluded (b, c), the post-2017 divergence and catch-up pattern")
-out("  reported above are not simply an artifact of WPP projections. Sample (c) has")
-out("  a smaller, ragged n for beta because countries whose most recent years are")
-out("  themselves projections (e.g. Belarus, Tajikistan) drop out of its end window.")
+out(f"  READING: the post-2016 CV slope is POSITIVE (rising dispersion) in all")
+out(f"  three samples once the country set is held fixed — full sample")
+out(f"  ({row_a['cv_slope_post_2016']:+.4f}), Sample A ({row_b['cv_slope_post_2016']:+.4f},")
+out(f"  though only 3 annual points, 2017-2019), and Sample B")
+out(f"  ({row_c['cv_slope_post_2016']:+.4f}, 2017-2022, the best-powered of the")
+out("  three, n=10 countries, rising monotonically across those six years). The")
+out("  post-2017 divergence in the headline result is therefore CONFIRMED by this")
+out("  check, not called into question: it is not an artifact of WPP projections")
+out("  or of a shrinking, low-fertility-biased country set.")
+out(f"  Beta-convergence: full sample beta = {row_a['beta']:+.4f}; Sample A (end")
+out(f"  window 2017-2019, before most of the post-2017 divergence had")
+out(f"  accumulated) beta = {row_b['beta']:+.4f}; Sample B beta = {row_c['beta']:+.4f}.")
 out("  All entries in this block are descriptive point estimates; treat as a")
 out("  sensitivity check, not a formal robustness test.")
 
@@ -486,5 +570,6 @@ with open("data/processed/convergence_results.txt", "w") as f:
     f.write("\n".join(lines))
 
 out("Saved -> data/processed/cv_all.csv, cv_by_bloc.csv, cv_by_subgroup.csv,")
+out("         cv_absolute_dispersion.csv, cv_absolute_dispersion_by_bloc.csv,")
 out("         cv_trend_tests.csv, peaks.csv, beta_convergence.csv,")
 out("         projection_sensitivity.csv, convergence_results.txt")

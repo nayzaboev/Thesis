@@ -1,38 +1,66 @@
-                                 M1: raw gap     M2: + controls    M2h: Mundlak    M4: two-way FE         FD          FD + year FE  
-                               Pooled, year FE  Pooled, year FE   Between/within  Country+year FE     Within (Δ)     Within (Δ)+yr  
-------------------------------------------------------------------------------------------------------------------------------------
-Central Asia dummy                +1.314***        +0.971***         +0.964**        (absorbed)       (absorbed)       (absorbed)   
-                                   (0.164)          (0.118)          (0.140)                                                        
-log GDP per capita PPP (lag)          —              +0.009           +0.182           +0.183          +0.125*           +0.054     
-                                                    (0.129)          (0.278)          (0.259)          (0.071)          (0.135)     
-Urban population %  (lag)             —             -0.012*           +0.006           +0.006           -0.004           +0.025     
-                                                    (0.007)          (0.025)          (0.025)          (0.013)          (0.017)     
-Remittances % GDP  (lag)              —              +0.001           +0.001           +0.000           +0.000           +0.001     
-                                                    (0.006)          (0.007)          (0.007)          (0.002)          (0.002)     
-Under-5 mortality  (lag)              —              +0.006           -0.004           -0.004          -0.008**          -0.000     
-                                                    (0.004)          (0.009)          (0.009)          (0.003)          (0.003)     
-------------------------------------------------------------------------------------------------------------------------------------
-Year FE                              Yes              Yes              Yes              Yes               No              Yes       
-Country effects                       No               No        means (between)   estimated (FE)  differenced out  differenced out 
-Observations                         315              315              315              315              301              301       
-R²                                  0.842            0.908            0.918            0.296            0.056            0.257      
-R² type                          R²(overall)      R²(overall)      R²(overall)       R²(within)    R²(differenced)  R²(differenced) 
-------------------------------------------------------------------------------------------------------------------------------------
-Cluster-robust SE (country) in parentheses.  *** p<0.01, ** p<0.05, * p<0.10.
-All columns estimated on the controls-complete sample (N=315).
-M2h: 'CA' row is the between-country premium; control rows are the WITHIN
-coefficients (deviations). The between-country control coefficients are
-collinear (see 17_diagnostics) and are not tabulated individually.
-M4: 'ca' absorbed by country FE; FD columns: 'ca' differenced away — by design.
+PANEL A — Regional fertility difference (Central Asia vs rest)
+======================================================================
+                                  M1: raw gap       M2: + controls      M2h: Mundlak   
+                                Pooled, year FE    Pooled, year FE     Between/within  
+---------------------------------------------------------------------------------------
+Central Asia dummy                   +1.314             +0.971             +0.964      
+                                [+0.994, +1.635]   [+0.740, +1.201]   [+0.689, +1.238] 
+  Bootstrap p (CA, script 19-G)     p = 0.001          p = 0.006          p = 0.033     
+log GDP per capita PPP (lag)           —                +0.009           +0.182(w)     
+                                                   [-0.244, +0.263]   [-0.362, +0.727] 
+Urban population %  (lag)              —                -0.012           +0.006(w)     
+                                                   [-0.026, +0.002]   [-0.043, +0.056] 
+Remittances % GDP  (lag)               —                +0.001           +0.001(w)     
+                                                   [-0.011, +0.013]   [-0.014, +0.015] 
+Under-5 mortality  (lag)               —                +0.006           -0.004(w)     
+                                                   [-0.003, +0.014]   [-0.021, +0.013] 
+---------------------------------------------------------------------------------------
+Year FE                               Yes                Yes                Yes        
+Country effects                        No                 No          means (between)  
+Observations                          315                315                315        
+R²                                   0.842              0.908              0.918       
+R² type                           R²(overall)        R²(overall)        R²(overall)    
+---------------------------------------------------------------------------------------
+
+PANEL B — Within-country associations
+======================================================================
+                                 M4: two-way FE           FD            FD + year FE   
+                                Country+year FE       Within (Δ)       Within (Δ)+yr   
+---------------------------------------------------------------------------------------
+log GDP per capita PPP (lag)         +0.183             +0.125             +0.054      
+                                [-0.328, +0.693]   [-0.014, +0.265]   [-0.210, +0.318] 
+Urban population %  (lag)            +0.006             -0.004             +0.025      
+                                [-0.043, +0.055]   [-0.030, +0.022]   [-0.007, +0.058] 
+Remittances % GDP  (lag)             +0.000             +0.000             +0.001      
+                                [-0.013, +0.014]   [-0.004, +0.005]   [-0.004, +0.005] 
+Under-5 mortality  (lag)             -0.004             -0.008             -0.000      
+                                [-0.021, +0.013]   [-0.015, -0.002]   [-0.007, +0.007] 
+---------------------------------------------------------------------------------------
+Year FE                               Yes                 No                Yes        
+Country effects                  estimated (FE)    differenced out    differenced out  
+Observations                          315                301                301        
+R²                                   0.296              0.056              0.257       
+R² type                            R²(within)      R²(differenced)    R²(differenced)  
+---------------------------------------------------------------------------------------
+Cluster-robust SE (country) in brackets are 95% confidence intervals, not raw SEs;
+significance stars are not used (see module docstring). Coefficient / [95% CI] per cell.
+All panels estimated on the controls-complete sample (N=315).
+Panel A: 'ca' is the between-country Central Asia premium in M1/M2/M2h. M2h's control
+rows are marked (w) — they are WITHIN-country deviations, not the same between-country
+estimand as the 'ca' row or as M1/M2's pooled control coefficients; M2h's between-country
+control coefficients are collinear (see 17_diagnostics) and are not tabulated.
+Panel B: within-country associations only — no between-country gap is estimated here.
+M4: 'ca' absorbed by country FE; FD / FD+yr: 'ca' differenced away — by design, not shown.
 FD / FD+yr R² is computed on first-differenced data, not the FE within-R².
-Cluster count = 14; wild-cluster bootstrap (script 20, section G) was run for the
-M1, M2, M2h, CA x remittances, and CA x urbanisation coefficients. The asymptotic
-clustered p-value for M2h 'ca' is < 0.01, but the wild-cluster bootstrap p-value
-is 0.033 (significant at 5%, not 1%); the stars for M2h 'ca' above
-use the bootstrap p-value, not the asymptotic one.
-Under-5 mortality is significant in the FD specification without year effects but
-not after year effects are added; the estimate is therefore sensitive to the
-inclusion of common year effects.
-Layer B provides little stable evidence of within-country associations for the
-selected macroeconomic indicators; it does not identify the mechanisms underlying
-the persistent between-country regional difference.
+Cluster count = 14; wild-cluster bootstrap (script 19, section G) was run for the CA
+coefficients in M1, M2, M2h (reported in the 'Bootstrap p (CA)' row of Panel A) and for
+CA x remittances / CA x urbanisation (not tabulated here). The asymptotic clustered
+p-value for M2h 'ca' is < 0.01, but its wild-cluster bootstrap p-value is 0.033
+(significant at 5%, not 1%) — the CI and bootstrap-p row for M2h above reflect that gap
+between asymptotic and few-cluster inference; the asymptotic p-value alone overstates it.
+Under-5 mortality is significant in the FD specification without year effects but not
+after year effects are added; the estimate is therefore sensitive to the inclusion of
+common year effects.
+Layer B (Panel B) provides little stable evidence of within-country associations for the
+selected macroeconomic indicators; it does not identify the mechanisms underlying the
+persistent between-country regional difference documented in Panel A.

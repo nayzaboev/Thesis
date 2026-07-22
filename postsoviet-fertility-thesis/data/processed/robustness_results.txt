@@ -21,8 +21,8 @@ Baseline M2 (14 countries, N=315): CA = +0.971 (p=0.000)
   Drop Uzbekistan    : CA = +1.004  (p=0.000, N=297)
 
   Range: [+0.778, +1.081]
-  All significant at 1%: Yes
-  The premium is not driven by any single country.
+  The premium is not driven by any single country: the coefficient stays
+  positive and of similar magnitude regardless of which country is dropped.
 
 ======================================================================
 (B) EXCLUSION SENSITIVITY
@@ -39,22 +39,25 @@ Baseline M2 (14 countries, N=315): CA = +0.971 (p=0.000)
 (C) DESCRIPTIVE COUNTRY TABLE — TFR at key time points
 ======================================================================
 
-                           bloc  TFR_2000  TFR_2010  TFR_2017  TFR_2023  change_2000_2023  change_2017_2023
-country                                                                                                    
-Kazakhstan         Central Asia      1.90      2.61      2.74      3.01              1.11              0.27
-Kyrgyzstan         Central Asia      2.58      3.10      3.04      2.80              0.22             -0.24
-Tajikistan         Central Asia      3.49      3.46      3.29      3.07             -0.42             -0.22
-Uzbekistan         Central Asia      2.70      2.44      2.57      3.50              0.80              0.93
-Armenia     Rest of post-Soviet      1.47      1.59      1.56      1.71              0.24              0.15
-Azerbaijan  Rest of post-Soviet      1.70      1.92      1.96      1.67             -0.03             -0.29
-Belarus     Rest of post-Soviet      1.27      1.48      1.55      1.21             -0.06             -0.34
-Estonia     Rest of post-Soviet      1.35      1.72      1.60      1.35              0.00             -0.25
-Georgia     Rest of post-Soviet      1.61      1.97      2.14      1.81              0.20             -0.33
-Latvia      Rest of post-Soviet      1.24      1.37      1.70      1.34              0.10             -0.36
-Lithuania   Rest of post-Soviet      1.38      1.50      1.63      1.20             -0.18             -0.43
-Moldova     Rest of post-Soviet      1.50      1.70      1.81      1.73              0.23             -0.08
-Russia      Rest of post-Soviet      1.19      1.59      1.63      1.45              0.26             -0.18
-Ukraine     Rest of post-Soviet      1.11      1.44      1.30      0.98             -0.13             -0.32
+                           bloc  TFR_2000  TFR_2010  TFR_2017  TFR_2023  change_2000_2023  change_2017_2023 estimate_method_2023
+country                                                                                                                         
+Kazakhstan         Central Asia      1.90      2.61      2.74      3.01              1.11              0.27           Projection
+Kyrgyzstan         Central Asia      2.58      3.10      3.04      2.80              0.22             -0.24           Projection
+Tajikistan         Central Asia      3.49      3.46      3.29      3.07             -0.42             -0.22           Projection
+Uzbekistan         Central Asia      2.70      2.44      2.57      3.50              0.80              0.93           Projection
+Armenia     Rest of post-Soviet      1.47      1.59      1.56      1.71              0.24              0.15           Projection
+Azerbaijan  Rest of post-Soviet      1.70      1.92      1.96      1.67             -0.03             -0.29           Projection
+Belarus     Rest of post-Soviet      1.27      1.48      1.55      1.21             -0.06             -0.34           Projection
+Estonia     Rest of post-Soviet      1.35      1.72      1.60      1.35              0.00             -0.25           Projection
+Georgia     Rest of post-Soviet      1.61      1.97      2.14      1.81              0.20             -0.33           Projection
+Latvia      Rest of post-Soviet      1.24      1.37      1.70      1.34              0.10             -0.36        Interpolation
+Lithuania   Rest of post-Soviet      1.38      1.50      1.63      1.20             -0.18             -0.43        Interpolation
+Moldova     Rest of post-Soviet      1.50      1.70      1.81      1.73              0.23             -0.08           Projection
+Russia      Rest of post-Soviet      1.19      1.59      1.63      1.45              0.26             -0.18        Interpolation
+Ukraine     Rest of post-Soviet      1.11      1.44      1.30      0.98             -0.13             -0.32           Projection
+
+  estimate_method_2023: 11 of 14 countries' 2023 TFR is a
+  WPP PROJECTION rather than a retrospective interpolated estimate.
 
 ======================================================================
 (D) COUNTRY-MEAN HC3 — country-level HC3 sensitivity
@@ -69,7 +72,9 @@ OLS on 14 country averages with HC3 SEs. Reduces reliance on cluster asymptotics
 (E) PERMUTATION TEST — nonparametric significance of the raw gap
 ======================================================================
   Observed gap: +1.324
-  Groupings with gap >= observed: 1 of 1001   permutation p = 0.0010
+  Groupings with gap >= observed: 1 of 1001   one-sided permutation p = 0.0010
+  (One-sided: the count is of groupings at least as far in the SAME direction
+  as the observed gap, i.e. gap >= observed, not |gap| >= |observed|.)
   The observed CA grouping is the most extreme of all 1,001 four-country splits.
   CAVEAT: this tests whether the grouping is unusual, not whether 'Central Asia'
   causes higher fertility. It is a nonparametric check on the raw gap only.
@@ -116,3 +121,11 @@ B = 1999 replications. Reference: Cameron, Gelbach & Miller (2008).
   and the interactions as suggestive only.
   CAVEAT: with only 4 treated clusters, even the wild bootstrap is
   approximate; treat interaction p-values as indicative, not definitive.
+
+  Exact Rademacher enumeration (M2h 'ca' coefficient, 2^14 = 16,384 sign
+  assignments — no Monte Carlo error):
+    t_obs = +6.873   exact p = 0.0329  (enumerated all 16,384 sign patterns)
+    Seeded 1999-draw Monte Carlo wild-cluster bootstrap (above): p = 0.033
+    The exact and simulated p-values agree closely, confirming B=1999 draws
+    were already sufficient and there is no residual simulation error in
+    the headline M2h wild-cluster bootstrap result.

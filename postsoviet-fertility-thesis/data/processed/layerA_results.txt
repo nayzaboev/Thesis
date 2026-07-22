@@ -49,7 +49,9 @@ R2: 0.908   Adj-R2: 0.899
   control coefficient. The Mundlak hybrid (M2h) below separates them cleanly.
 
 ===== M2h: MUNDLAK HYBRID — between/within separation (N=315) =====
-  CA coefficient: +0.964 (SE 0.140, p=0.000)
+  CA coefficient: +0.964 (SE 0.140, p=0.000 asymptotic clustered)
+  Wild-cluster bootstrap p-value (19_robustness.py, section G): 0.033
+  Preferred inference: the bootstrap p-value, not the asymptotic one above.
   R2: 0.918
 
   BETWEEN-country coefficients (country means):

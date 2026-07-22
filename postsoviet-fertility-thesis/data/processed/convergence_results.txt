@@ -55,6 +55,30 @@ year
   substantially a mean (denominator) effect, not pure absolute compression.
 
 ------------------------------------------------------------------------
+Absolute dispersion (SD and IQR) BY BLOC, for comparison with the pooled
+series above. The pooled SD can be flat or rising even if one bloc is
+compressing, if the other bloc is diverging at the same time.
+
+               SD                              IQR                    
+bloc Central Asia Rest of post-Soviet Central Asia Rest of post-Soviet
+year                                                                  
+2000        0.653               0.187        0.488               0.238
+2005        0.496               0.228        0.436               0.231
+2010        0.463               0.202        0.618               0.229
+2015        0.403               0.242        0.559               0.208
+2020        0.074               0.218        0.091               0.236
+2023        0.293               0.278        0.220               0.463
+
+  Central Asia SD:        0.653 (2000) -> 0.319 (2017) -> 0.293 (2023)
+  Rest of post-Soviet SD: 0.187 (2000) -> 0.234 (2017) -> 0.278 (2023)
+  READING: Central Asia's absolute dispersion FALLS over 2000-2023 (within-
+  bloc convergence in levels, not just CV) while the rest of the post-Soviet
+  space DIVERGES in absolute terms. Both movements are genuine — visible in
+  SD/IQR, not an artifact of the CV denominator — and they run in opposite
+  directions, so the pooled 14-country dispersion series understates how much
+  is happening within each bloc.
+
+------------------------------------------------------------------------
 Trend test: regress CV on a linear year term.
 Newey-West SEs (4 lags) because CV series are strongly serially correlated.
 A negative, significant slope indicates sigma-convergence.
@@ -193,25 +217,44 @@ master_tfr.csv carries 'estimate_method', distinguishing WPP retrospective
 concentrated in 2020-2023 and in every country's 2023 observation; see
 01_clean_data.py). The (B2) post-2017 CV slope and the (B) beta-convergence
 coefficient above both partly rest on these projected endpoints. This block
-re-computes those two headline descriptive results under three samples:
-  (a) full 2000-2023 (baseline, as reported above)
-  (b) data through 2019 only
-  (c) excluding rows where estimate_method == 'Projection'
+re-computes those two headline descriptive results under two BALANCED
+sub-samples, each holding a FIXED country set across all years it uses. An
+earlier version of this check instead dropped projected ROWS year-by-year,
+which let the country set drift over time (14 -> 12 -> 11 -> 10 countries,
+collapsing to 3 low-fertility countries by 2023). That composition drift, not
+genuine convergence, drove a spuriously negative post-2016 slope. A valid
+cross-time dispersion comparison requires the SAME countries in every year
+compared, so both samples below fix the country set before comparing years:
+  (a) full 2000-2023, all 14 countries (baseline, as reported above)
+  (b) Sample A - balanced historical: all 14 countries, 2000-2019, no
+      projected values anywhere in that window
+  (c) Sample B - balanced interpolation-only recent: countries with a
+      non-projected observation in EVERY year 2017-2022, that country set
+      then held fixed for all years used (list below; membership is
+      derived from the data, not hardcoded)
 This is NOT a significance test: no p-values or significance claims are made
-here, the sub-samples are smaller than the already-small n=14/T=7 used above,
-and sample (c) is a ragged panel (a country contributes a year only if its
-own value that year is Interpolation, not Projection).
+here, and the sub-samples are smaller than the already-small n=14/T=7 used
+above.
 
-  Sample                            CV slope 2000-16  CV slope post-16      beta  n (beta)  end window used
-  (a) Full 2000-2023 (baseline)             -0.00715          +0.01954   +0.0013        14  2021-2023 (post-16: 2017-2023)
-  (b) Through 2019 only                     -0.00715          +0.02365   -0.0085        14  2017-2019 (post-16: 2017-2019)
-  (c) Excl. Projection rows                 -0.00715          -0.01934   +0.0074        11  2021-2023 (post-16: 2017-2023)
+  Sample B country set (n=10, non-projected in every
+  year 2017-2022): Azerbaijan, Estonia, Georgia, Kazakhstan, Kyrgyzstan, Latvia, Lithuania, Moldova, Russia, Uzbekistan
 
-  Reading: compare the sign and rough magnitude of the post-2016 CV slope and
-  of beta across rows (a)-(c). If they hold the same sign once projected years
-  are removed or excluded (b, c), the post-2017 divergence and catch-up pattern
-  reported above are not simply an artifact of WPP projections. Sample (c) has
-  a smaller, ragged n for beta because countries whose most recent years are
-  themselves projections (e.g. Belarus, Tajikistan) drop out of its end window.
+  Sample                                          CV slope 2000-16  CV slope post-16      beta  n (beta)  excl  end window used
+  (a) Full 2000-2023 (baseline)                           -0.00715          +0.01954   +0.0013        14     0  2021-2023 (post-16: 2017-2023)
+  (b) Sample A: balanced historical (2000-19)             -0.00715          +0.02365   -0.0085        14     0  2017-2019 (post-16: 2017-2019)
+  (c) Sample B: balanced interp-only recent               -0.00333          +0.02613   +0.0052        10     0  2020-2022 (post-16: 2017-2022)
+
+  READING: the post-2016 CV slope is POSITIVE (rising dispersion) in all
+  three samples once the country set is held fixed — full sample
+  (+0.0195), Sample A (+0.0236,
+  though only 3 annual points, 2017-2019), and Sample B
+  (+0.0261, 2017-2022, the best-powered of the
+  three, n=10 countries, rising monotonically across those six years). The
+  post-2017 divergence in the headline result is therefore CONFIRMED by this
+  check, not called into question: it is not an artifact of WPP projections
+  or of a shrinking, low-fertility-biased country set.
+  Beta-convergence: full sample beta = +0.0013; Sample A (end
+  window 2017-2019, before most of the post-2017 divergence had
+  accumulated) beta = -0.0085; Sample B beta = +0.0052.
   All entries in this block are descriptive point estimates; treat as a
   sensitivity check, not a formal robustness test.

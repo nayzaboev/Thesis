@@ -92,7 +92,25 @@ m2h = smf.ols(f_mund, data=sample).fit(
     cov_type="cluster", cov_kwds={"groups": sample["country"]})
 
 out(f"  CA coefficient: {m2h.params['ca']:+.3f} (SE {m2h.bse['ca']:.3f}, "
-    f"p={m2h.pvalues['ca']:.3f})")
+    f"p={m2h.pvalues['ca']:.3f} asymptotic clustered)")
+# The asymptotic clustered p-value above can be anti-conservative with only 14
+# clusters. The preferred inference is the wild-cluster bootstrap computed in
+# 19_robustness.py (section G) — but THIS script runs BEFORE 19 in run_all.py,
+# so its output must not be required to exist. Read it only if present.
+_boot_path = "data/processed/robustness_wild_bootstrap.csv"
+if os.path.exists(_boot_path):
+    _boot = pd.read_csv(_boot_path).set_index("specification")
+    _boot_p = float(_boot.loc["M2h Mundlak CA premium", "p_wild_bootstrap"])
+    out(f"  Wild-cluster bootstrap p-value (19_robustness.py, section G): "
+        f"{_boot_p:.3f}")
+    out("  Preferred inference: the bootstrap p-value, not the asymptotic one above.")
+else:
+    out("  Wild-cluster bootstrap p-value not yet available (run "
+        "19_robustness.py to generate it).")
+    out("  NOTE: with only 14 clusters, the asymptotic clustered p-value above")
+    out("  may be anti-conservative. The preferred inference for this")
+    out("  coefficient is the wild-cluster bootstrap in 19_robustness.py")
+    out("  (section G), not the asymptotic p-value reported here.")
 out(f"  R2: {m2h.rsquared:.3f}\n")
 out("  BETWEEN-country coefficients (country means):")
 for v in between_vars:

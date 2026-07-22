@@ -56,7 +56,7 @@ Exploratory descriptive residual associations — country residuals vs cultural 
 (These are NOT formal two-stage hypothesis tests. The country residuals are
  generated from a first-stage regression; any second-stage SE would ignore
  first-stage estimation uncertainty. Read sign, magnitude and country
- sensitivity from the scatterplots, not p-values.)
+ sensitivity from figures/crosssection_residual_scatter.png, not p-values.)
   Muslim share (%)                    : r(TFR)=+0.880  |  r(resid)=+0.452
   Female SMAM (years)                 : r(TFR)=-0.568  |  r(resid)=-0.176
   Female mean schooling (years)       : r(TFR)=-0.581  |  r(resid)=+0.192
@@ -69,11 +69,10 @@ Exploratory descriptive residual associations — country residuals vs cultural 
     CA:           +0.941  (SE 1.868, p=0.624)
     Muslim share: +0.0048  (SE 0.0209, p=0.822)
 
-  Joint model on country residuals (HC3 SEs, small-sample t inference):
-  (descriptive; p-values omitted because these are generated-regressor
-   residuals — see section B):
-    CA:           +0.630  (SE 0.383)
-    Muslim share: -0.0024  (SE 0.0042)
+  Joint model on country residuals (coefficients only — no SEs or
+  p-values, since these are generated regressors; see section B):
+    CA:           +0.630
+    Muslim share: -0.0024
 
   FINDING: the analysis provides no evidence that Muslim share explains
   additional cross-country variation once Central Asian status is included.
@@ -84,6 +83,8 @@ Exploratory descriptive residual associations — country residuals vs cultural 
   (Spoorenberg, Kumo & Perugini, Dommaraju & Agadjanian), not on the
   cross-sectional regression. The regression documents the inseparability;
   the literature carries the interpretation.
+
+  Saved -> figures/crosssection_residual_scatter.png
 
   Saved -> figures/crosssection_scatter.png
 

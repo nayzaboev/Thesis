@@ -1,4 +1,4 @@
-sample,cv_slope_2000_2016,cv_slope_post_2016,post_2016_end_year,beta,n_beta,beta_end_window
-(a) Full 2000-2023 (baseline),-0.007147,0.019536,2023,0.0013,14,2021-2023
-(b) Through 2019 only,-0.007147,0.023647,2019,-0.0085,14,2017-2019
-(c) Excl. Projection rows,-0.007147,-0.019337,2023,0.0074,11,2021-2023
+sample,n_countries,cv_slope_2000_2016,cv_slope_post_2016,post_2016_end_year,beta,n_beta,n_excluded_incomplete_window,beta_end_window
+(a) Full 2000-2023 (baseline),14,-0.007147,0.019536,2023,0.0013,14,0,2021-2023
+(b) Sample A: balanced historical (2000-19),14,-0.007147,0.023647,2019,-0.0085,14,0,2017-2019
+(c) Sample B: balanced interp-only recent,10,-0.003328,0.026127,2022,0.0052,10,0,2020-2022

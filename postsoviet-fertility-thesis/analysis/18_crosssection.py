@@ -8,8 +8,9 @@ Three analyses:
 
   (A) Direct bivariate correlations + stepwise OLS (A1-A3).
 
-  (B) Residuals-based: strip economics + year FE (without CA dummy),
-      average country residuals, correlate with cultural variables.
+  (B) Residuals-based: residualise TFR using the selected macroeconomic
+      specification + year FE (without CA dummy), average country residuals,
+      correlate with cultural variables.
 
   (C) INSEPARABILITY TEST: regress residuals on CA + Muslim share jointly.
       If Muslim share adds nothing once CA is included, then the two are
@@ -20,6 +21,7 @@ Three analyses:
 Outputs:
   data/processed/crosssection_results.txt
   figures/crosssection_scatter.png
+  figures/crosssection_residual_scatter.png
 """
 
 import os
@@ -106,7 +108,7 @@ out("\nExploratory descriptive residual associations — country residuals vs cu
 out("(These are NOT formal two-stage hypothesis tests. The country residuals are")
 out(" generated from a first-stage regression; any second-stage SE would ignore")
 out(" first-stage estimation uncertainty. Read sign, magnitude and country")
-out(" sensitivity from the scatterplots, not p-values.)")
+out(" sensitivity from figures/crosssection_residual_scatter.png, not p-values.)")
 for var, label in pairs:
     r_raw = cs_r["mean_tfr"].corr(cs_r[var])
     r_resid = cs_r["mean_resid"].corr(cs_r[var])
@@ -128,14 +130,16 @@ out(f"    CA:           {m_joint_tfr.params['ca']:+.3f}  "
 out(f"    Muslim share: {m_joint_tfr.params['muslim_share']:+.4f}  "
     f"(SE {m_joint_tfr.bse['muslim_share']:.4f}, p={m_joint_tfr.pvalues['muslim_share']:.3f})")
 
-# On residuals
-m_joint_res = smf.ols("mean_resid ~ ca + muslim_share", data=cs_r).fit(
-    cov_type="HC3", use_t=True)
-out("\n  Joint model on country residuals (HC3 SEs, small-sample t inference):")
-out("  (descriptive; p-values omitted because these are generated-regressor")
-out("   residuals — see section B):")
-out(f"    CA:           {m_joint_res.params['ca']:+.3f}  (SE {m_joint_res.bse['ca']:.3f})")
-out(f"    Muslim share: {m_joint_res.params['muslim_share']:+.4f}  (SE {m_joint_res.bse['muslim_share']:.4f})")
+# On residuals — coefficients only, no SEs or p-values. The residuals are a
+# GENERATED regressor (output of the first-stage economic-controls
+# regression); any second-stage SE, HC3 or otherwise, ignores first-stage
+# estimation uncertainty, so reporting an SE here would reintroduce the same
+# overstated-precision problem that omitting only the p-value did not fix.
+m_joint_res = smf.ols("mean_resid ~ ca + muslim_share", data=cs_r).fit()
+out("\n  Joint model on country residuals (coefficients only — no SEs or")
+out("  p-values, since these are generated regressors; see section B):")
+out(f"    CA:           {m_joint_res.params['ca']:+.3f}")
+out(f"    Muslim share: {m_joint_res.params['muslim_share']:+.4f}")
 
 out("\n  FINDING: the analysis provides no evidence that Muslim share explains")
 out("  additional cross-country variation once Central Asian status is included.")
@@ -173,6 +177,35 @@ plt.tight_layout()
 os.makedirs("figures", exist_ok=True)
 fig.savefig("figures/crosssection_scatter.png", dpi=200)
 plt.close()
+
+# --- Residual scatterplots (mean_resid, not mean_tfr) — this is the figure
+# section (B)'s text above points readers to for residual sign/magnitude/
+# country sensitivity, so it must actually plot the residual, not raw TFR. ---
+fig, axes = plt.subplots(1, 3, figsize=(14, 4.5))
+ca_mask_r = cs_r["ca"] == 1
+for ax, (var, label) in zip(axes, pairs):
+    ax.scatter(cs_r.loc[~ca_mask_r, var], cs_r.loc[~ca_mask_r, "mean_resid"],
+               c="steelblue", s=50, zorder=3, label="Other post-Soviet")
+    ax.scatter(cs_r.loc[ca_mask_r, var], cs_r.loc[ca_mask_r, "mean_resid"],
+               c="tomato", s=70, marker="D", zorder=4, label="Central Asia")
+    for _, row in cs_r.iterrows():
+        offset = (3, 4) if row["ca"] else (3, -8)
+        ax.annotate(row["country"][:3].upper(), (row[var], row["mean_resid"]),
+                    fontsize=7, textcoords="offset points", xytext=offset)
+    ax.axhline(0, color="#999", lw=0.8, zorder=1)
+    r = cs_r["mean_resid"].corr(cs_r[var])
+    ax.set_xlabel(label)
+    ax.set_title(f"r = {r:+.2f}", fontsize=10)
+    ax.grid(alpha=0.3)
+
+axes[0].set_ylabel("Mean residual (TFR minus macroeconomic specification + year FE)")
+axes[0].legend(fontsize=7, loc="upper left")
+fig.suptitle("Cross-country cultural correlates of the country RESIDUAL (n=14)",
+             fontsize=12)
+plt.tight_layout()
+fig.savefig("figures/crosssection_residual_scatter.png", dpi=200)
+plt.close()
+out("\n  Saved -> figures/crosssection_residual_scatter.png")
 out("\n  Saved -> figures/crosssection_scatter.png")
 
 # =========================================================================
