@@ -4,7 +4,7 @@ CROSS-SECTION ANALYSIS — cultural correlates of the CA fertility premium (n=14
 Cross-section n=14 — cultural correlates of the fertility premium
 ====================================================================
 
-Upfront: corr(CA dummy, Muslim share) = +0.827.
+Upfront: corr(CA dummy, Muslim share) = +0.831.
 At this level of collinearity, the two variables cannot be
 separately identified with 14 observations.
 
@@ -13,24 +13,24 @@ separately identified with 14 observations.
 ====================================================================
 
 Bivariate correlations:
-  TFR vs Muslim share (%)                    : r = +0.875
+  TFR vs Muslim share (%)                    : r = +0.880
   TFR vs Female SMAM (years)                 : r = -0.568
   TFR vs Female mean schooling (years)       : r = -0.581
 
 Stepwise OLS:
 
   --- A1: Muslim share only (HC3 SEs, small-sample t inference) ---
-  R2 = 0.766   Adj-R2 = 0.746
-    muslim_share                : +0.0130  (HC3 SE 0.0033, p=0.002)
+  R2 = 0.774   Adj-R2 = 0.755
+    muslim_share                : +0.0130  (HC3 SE 0.0032, p=0.002)
 
   --- A2: SMAM only (HC3 SEs, small-sample t inference) ---
   R2 = 0.323   Adj-R2 = 0.267
     smam_female                 : -0.0897  (HC3 SE 0.0390, p=0.040)
 
   --- A3: Muslim + SMAM (HC3 SEs, small-sample t inference) ---
-  R2 = 0.776   Adj-R2 = 0.735
-    muslim_share                : +0.0120  (HC3 SE 0.0041, p=0.013)
-    smam_female                 : -0.0189  (HC3 SE 0.0247, p=0.459)
+  R2 = 0.783   Adj-R2 = 0.744
+    muslim_share                : +0.0120  (HC3 SE 0.0039, p=0.011)
+    smam_female                 : -0.0188  (HC3 SE 0.0238, p=0.447)
 
 ====================================================================
 (B) Residuals-based: cultural correlates of the unexplained premium
@@ -57,7 +57,7 @@ Exploratory descriptive residual associations — country residuals vs cultural 
  generated from a first-stage regression; any second-stage SE would ignore
  first-stage estimation uncertainty. Read sign, magnitude and country
  sensitivity from the scatterplots, not p-values.)
-  Muslim share (%)                    : r(TFR)=+0.875  |  r(resid)=+0.452
+  Muslim share (%)                    : r(TFR)=+0.880  |  r(resid)=+0.452
   Female SMAM (years)                 : r(TFR)=-0.568  |  r(resid)=-0.176
   Female mean schooling (years)       : r(TFR)=-0.581  |  r(resid)=+0.192
 
@@ -66,12 +66,12 @@ Exploratory descriptive residual associations — country residuals vs cultural 
 ====================================================================
 
   Joint model on mean TFR (HC3 SEs, small-sample t inference):
-    CA:           +0.953  (SE 1.646, p=0.574)
-    Muslim share: +0.0047  (SE 0.0185, p=0.804)
+    CA:           +0.941  (SE 1.868, p=0.624)
+    Muslim share: +0.0048  (SE 0.0209, p=0.822)
 
   Joint model on country residuals (HC3 SEs, small-sample t inference):
-    CA:           +0.620  (SE 0.224, p=0.018)
-    Muslim share: -0.0023  (SE 0.0023, p=0.349)
+    CA:           +0.630  (SE 0.383, p=0.128)
+    Muslim share: -0.0024  (SE 0.0042, p=0.580)
 
   FINDING: the analysis provides no evidence that Muslim share explains
   additional cross-country variation once Central Asian status is included.
@@ -88,8 +88,8 @@ Exploratory descriptive residual associations — country residuals vs cultural 
 ====================================================================
 (D) Summary interpretation
 ====================================================================
-  Muslim share alone: R2 = 0.766
-  Muslim + SMAM: R2 = 0.776
+  Muslim share alone: R2 = 0.774
+  Muslim + SMAM: R2 = 0.783
   Bivariate TFR-schooling: r = -0.581
 
   The cross-section documents strong bivariate associations between TFR
@@ -115,7 +115,7 @@ gives different correlations than a 2018-2022 window aligned with the
 cultural measurement dates, the results may be driven by temporal mismatch.
 
   Correlations: full period (2000-2023) vs aligned window (2018-2022):
-    Muslim share (%)                    : r(full)=+0.875  |  r(2018-22)=+0.852  |  Δ=-0.024
+    Muslim share (%)                    : r(full)=+0.880  |  r(2018-22)=+0.856  |  Δ=-0.023
     Female SMAM (years)                 : r(full)=-0.568  |  r(2018-22)=-0.541  |  Δ=+0.027
     Female mean schooling (years)       : r(full)=-0.581  |  r(2018-22)=-0.493  |  Δ=+0.088
 

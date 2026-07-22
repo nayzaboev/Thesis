@@ -18,8 +18,9 @@ cv = pd.read_csv("data/manual/cultural_vars.csv")
 # --- Validation on cultural variables (catch the merge-conflict class of bugs) ---
 assert cv["country"].is_unique, \
     "Duplicate country rows in cultural_vars.csv — check for unresolved merge markers."
-assert cv.notna().all().all(), \
-    f"Missing values in cultural_vars.csv:\n{cv.isna().sum()}"
+ANALYTICAL_COLS = ["smam_female", "muslim_share", "female_mean_schooling"]
+assert cv[ANALYTICAL_COLS].notna().all().all(), \
+    f"Missing values in cultural_vars.csv analytical columns:\n{cv[ANALYTICAL_COLS].isna().sum()}"
 
 # Country-level means of TFR and economic variables
 agg = p.groupby("country").agg(

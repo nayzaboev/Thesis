@@ -6,6 +6,8 @@ data/raw/*
 !data/raw/raw_wb_*.csv
 # Freeze the UN WPP export used by 01_clean_data.py as well.
 !data/raw/unpopulation_dataportal_*.csv
+# Freeze the Pew Research religious composition CSV used by build_muslim_share.py.
+!data/raw/Religious Composition 2010-2020 (percentages).csv
 
 # ── But DO keep the clean processed table ──
 !data/processed/
