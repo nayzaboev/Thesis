@@ -54,6 +54,8 @@ import pandas as pd
 import statsmodels.formula.api as smf
 from linearmodels.panel import PanelOLS, FirstDifferenceOLS
 
+from _assertions import assert_year_continuity
+
 # --------------------------------------------------------------------------- #
 # 1. Load panel and define the controls-complete estimation sample            #
 # --------------------------------------------------------------------------- #
@@ -73,6 +75,10 @@ LABELS = {
 }
 
 p = pd.read_csv("data/processed/panel.csv")
+# Year-continuity guard on the FULL panel (before the complete-case drop
+# below), so shift()/diff() downstream never silently treats a missing
+# country-year row as a one-year change.
+assert_year_continuity(p)
 sample = p.dropna(subset=["tfr"] + CONTROLS).copy()
 print(f"Estimation sample: N = {len(sample)}, "
       f"countries = {sample['country'].nunique()}, "
@@ -146,6 +152,12 @@ fd = FirstDifferenceOLS(s_idx["tfr"], s_idx[CONTROLS]
 
 # --- FD+yr: first-difference WITH year effects (manual differencing + OLS) ---
 fd_df = sample.sort_values(["country", "year"]).copy()
+# NOTE on year gaps: fd_df derives from `sample`, the controls-complete
+# subset of the full panel `p` (asserted gap-free above), so a country can
+# legitimately be missing a year here (e.g. a missing lagged control) and
+# diff() will then span more than one year for that pair. This is expected,
+# data-driven missingness, not a data error, so continuity is intentionally
+# not asserted at this site.
 for col in ["tfr"] + CONTROLS:
     fd_df[f"d_{col}"] = fd_df.groupby("country")[col].diff()
 fd_df = fd_df.dropna(subset=[f"d_{c}" for c in ["tfr"] + CONTROLS])

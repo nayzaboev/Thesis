@@ -121,7 +121,8 @@ piv["change_2017_2023"] = (piv.TFR_2023 - piv.TFR_2017).round(2)
 # (see 01_clean_data.py); record which per country so downstream readers of
 # this table cannot mistake one for the other.
 piv["estimate_method_2023"] = tfr.loc[tfr["year"] == 2023].set_index("country")["estimate_method"]
-piv = piv.merge(tfr.groupby("country")["bloc"].first(), left_index=True, right_index=True)
+piv = piv.merge(tfr.groupby("country")["bloc"].first(), left_index=True, right_index=True,
+                validate="many_to_one")
 piv = piv[["bloc"] + [c for c in piv.columns if c != "bloc"]].sort_values(["bloc", "country"])
 out("")
 out(piv.to_string())

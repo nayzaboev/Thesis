@@ -45,11 +45,21 @@ assert panel_countries == cv_countries, (
 )
 
 # Merge cultural variables
-cs = agg.merge(cv, on="country", how="left")
+cs = agg.merge(cv, on="country", how="left", validate="one_to_one")
 
 # --- Final validation ---
+# Scoped to the columns that actually feed the models, not the whole frame:
+# cultural_vars.csv also carries descriptive/provenance metadata columns
+# (year, source, and SMAM comparability notes) that are not required to be
+# non-null for every row, and a blanket whole-frame check would crash the
+# pipeline the moment a purely descriptive column had any empty cell.
+CS_ANALYTICAL_COLS = ["country", "bloc", "ca", "mean_tfr", "mean_log_gdp_ppp",
+                      "mean_urban", "mean_remittances", "mean_under5_mort"] + ANALYTICAL_COLS
 assert len(cs) == 14, f"Expected 14 rows, got {len(cs)}"
-assert cs.isnull().sum().sum() == 0, f"Missing values after merge:\n{cs.isnull().sum()}"
+assert cs[CS_ANALYTICAL_COLS].notna().all().all(), (
+    f"Missing values in analytical columns after merge:\n"
+    f"{cs[CS_ANALYTICAL_COLS].isna().sum()}"
+)
 
 os.makedirs("data/processed", exist_ok=True)
 cs.to_csv("data/processed/crosssection.csv", index=False)

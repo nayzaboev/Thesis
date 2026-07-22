@@ -46,6 +46,8 @@ import pandas as pd
 from linearmodels.panel import PanelOLS, FirstDifferenceOLS
 import statsmodels.formula.api as smf
 
+from _assertions import assert_year_continuity
+
 CONTROLS = ["log_gdp_ppp_lag1", "urban_pop_pct_lag1",
             "remittances_gdp_pct_lag1", "under5_mortality_lag1"]
 
@@ -53,6 +55,15 @@ p = pd.read_csv("data/processed/panel.csv")
 
 # linearmodels needs a MultiIndex (entity, time)
 p = p.sort_values(["country", "year"]).copy()
+
+# --- Year-continuity guard: p is the FULL rectangular panel (no rows dropped
+# yet), so shift()/diff() on it below should never see a country with a
+# missing year. This does NOT cover `d` / `fd_df` / `res_df` further down,
+# which are complete-case SUBSETS of p (rows with a missing lagged control
+# dropped) — those can legitimately skip a year, so they are documented at
+# the point of use instead of asserted here. ---
+assert_year_continuity(p)
+
 p_idx = p.set_index(["country", "year"])
 
 lines = []
@@ -106,6 +117,12 @@ out("(B2) FIRST-DIFFERENCE model — WITH year effects")
 out("="*70)
 
 fd_df = d.reset_index().sort_values(["country", "year"]).copy()
+# NOTE on year gaps: `d` is the controls-complete subset (rows with any
+# missing lagged control dropped from the full panel `p`, which is itself
+# asserted gap-free above), so a country CAN legitimately skip a year here
+# (e.g. a missing remittances observation) and diff() will then span more
+# than one year for that pair. This is EXPECTED, data-driven missingness, not
+# a data error, so continuity is intentionally not asserted at this site.
 # Difference TFR and controls within each country
 for col in ["tfr"] + CONTROLS:
     fd_df[f"d_{col}"] = fd_df.groupby("country")[col].diff()
@@ -183,6 +200,9 @@ for var in ["tfr"] + CONTROLS:
     out(f"  {var:28s}: avg ADF t = {tbar:+.3f}  (from {k} countries)")
 
 # Also summarise FIRST DIFFERENCES of TFR
+# p_idx_d derives from the full panel p_idx (asserted gap-free above), not
+# from a complete-case subset, so this diff() is already covered by the
+# assert_year_continuity(p) call near the top of the file.
 p_idx_d = p_idx.copy()
 p_idx_d["d_tfr"] = p_idx.groupby(level=0)["tfr"].diff()
 tbar_d, k_d = adf_tbar(p_idx_d, "d_tfr")
@@ -199,6 +219,10 @@ res_df = d.copy()
 res_df["resid"] = fe_res.resids
 res_df = res_df.reset_index()
 res_df = res_df.sort_values(["country", "year"])
+# NOTE on year gaps: as in B2 above, res_df derives from `d`, the controls-
+# complete subset, so a country can legitimately be missing a year here
+# (data-driven, not a data error) — continuity is intentionally not asserted
+# at this site; see the full-panel assert_year_continuity(p) above.
 res_df["resid_lag"] = res_df.groupby("country")["resid"].shift(1)
 ww = res_df.dropna(subset=["resid", "resid_lag"])
 ar1 = smf.ols("resid ~ resid_lag", data=ww).fit(

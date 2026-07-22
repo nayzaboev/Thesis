@@ -50,6 +50,10 @@ assert df["year"].max() == 2023, f"Year range ends at {df['year'].max()}, expect
 assert len(df) == 336, f"Expected 336 rows (14 countries x 24 years), got {len(df)}"
 assert df.groupby("country")["year"].nunique().eq(24).all(), \
     "Not all countries have complete 2000-2023 coverage"
+assert not df.duplicated(["country", "year"]).any(), (
+    "Duplicate (country, year) rows in master_tfr — check the raw WPP export "
+    "for repeated rows (e.g. a re-run indicator/variant filter)."
+)
 
 # --- Report estimate vs projection split ---
 print("EstimateMethod counts:")

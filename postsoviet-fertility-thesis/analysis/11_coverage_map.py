@@ -40,7 +40,8 @@ for path, var in FILES.items():
     # the value column is whatever isn't country/year
     val_col = [c for c in df.columns if c not in ("country", "year")][0]
     df = df.rename(columns={val_col: var})[["country", "year", var]]
-    merged = df if merged is None else merged.merge(df, on=["country", "year"], how="outer")
+    merged = df if merged is None else merged.merge(
+        df, on=["country", "year"], how="outer", validate="one_to_one")
 
 countries = sorted(merged["country"].unique())
 varnames = list(FILES.values())

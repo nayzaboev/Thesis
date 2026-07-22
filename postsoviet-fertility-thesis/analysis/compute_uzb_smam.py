@@ -22,6 +22,8 @@ Reads:               data/raw/wm.sav
 Updates:             data/manual/cultural_vars.csv (Uzbekistan row only)
 """
 
+import os
+
 import pandas as pd
 import pyreadstat
 
@@ -71,7 +73,16 @@ print(f"\n>>> Uzbekistan female SMAM (MICS6 2021-2022): {SMAM:.2f}")
 
 # Update cultural_vars.csv
 cv = pd.read_csv("data/manual/cultural_vars.csv")
-old = cv.loc[cv["country"]=="Uzbekistan","smam_female"].values[0]
-cv.loc[cv["country"]=="Uzbekistan","smam_female"] = round(SMAM, 2)
-cv.to_csv("data/manual/cultural_vars.csv", index=False)
+mask = cv["country"] == "Uzbekistan"
+assert mask.sum() == 1, (
+    f"Expected exactly one Uzbekistan row in cultural_vars.csv, found {mask.sum()}"
+)
+old = cv.loc[mask, "smam_female"].values[0]
+cv.loc[mask, "smam_female"] = round(SMAM, 2)
+
+# Atomic write: write to a temp file then rename, so an interrupted write
+# cannot leave cultural_vars.csv truncated or corrupted.
+tmp_path = "data/manual/cultural_vars.csv.tmp"
+cv.to_csv(tmp_path, index=False)
+os.replace(tmp_path, "data/manual/cultural_vars.csv")
 print(f"\nUpdated cultural_vars.csv: Uzbekistan SMAM {old} -> {round(SMAM,2)}")

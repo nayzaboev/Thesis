@@ -17,6 +17,8 @@ Reads:               data/raw/geo.wm.sav
 Updates:             data/manual/cultural_vars.csv (Georgia row only)
 """
 
+import os
+
 import pandas as pd
 import pyreadstat
 
@@ -46,6 +48,9 @@ print(grouped.to_string(index=False))
 
 age_groups = ["15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49"]
 prop = {r["age_group"]: r["prop_single"] for _, r in grouped.iterrows()}
+missing = [g for g in age_groups if g not in prop]
+if missing:
+    raise SystemExit(f"Missing age groups: {missing}")
 
 A = 15 + 5 * sum(prop[g] for g in age_groups)
 B = prop["45-49"]
@@ -64,7 +69,16 @@ print(f"    Previous (UN WMD 2019): 22.8 (year 2014)")
 
 # Update cultural_vars.csv
 cv = pd.read_csv("data/manual/cultural_vars.csv")
-old = cv.loc[cv["country"] == "Georgia", "smam_female"].values[0]
-cv.loc[cv["country"] == "Georgia", "smam_female"] = round(SMAM, 2)
-cv.to_csv("data/manual/cultural_vars.csv", index=False)
+mask = cv["country"] == "Georgia"
+assert mask.sum() == 1, (
+    f"Expected exactly one Georgia row in cultural_vars.csv, found {mask.sum()}"
+)
+old = cv.loc[mask, "smam_female"].values[0]
+cv.loc[mask, "smam_female"] = round(SMAM, 2)
+
+# Atomic write: write to a temp file then rename, so an interrupted write
+# cannot leave cultural_vars.csv truncated or corrupted.
+tmp_path = "data/manual/cultural_vars.csv.tmp"
+cv.to_csv(tmp_path, index=False)
+os.replace(tmp_path, "data/manual/cultural_vars.csv")
 print(f"\nUpdated cultural_vars.csv: Georgia SMAM {old} -> {round(SMAM, 2)}")

@@ -98,7 +98,8 @@ formula = "tfr ~ " + " + ".join(CONTROLS) + " + C(year)"
 econ_model = smf.ols(formula, data=est_df).fit()
 est_df["resid"] = econ_model.resid
 country_resid = est_df.groupby("country")["resid"].mean()
-cs_r = cs.merge(country_resid.rename("mean_resid").reset_index(), on="country")
+cs_r = cs.merge(country_resid.rename("mean_resid").reset_index(), on="country",
+                validate="many_to_one")
 
 out("\nCountry residuals (residual from the selected macroeconomic specification + year FE):")
 for _, r in cs_r.sort_values("mean_resid", ascending=False).iterrows():
@@ -247,7 +248,7 @@ out("cultural measurement dates, the results may be driven by temporal mismatch.
 
 panel_recent = panel[(panel["year"] >= 2018) & (panel["year"] <= 2022)]
 recent_means = panel_recent.groupby("country")["tfr"].mean().rename("mean_tfr_recent")
-cs_t = cs.merge(recent_means.reset_index(), on="country")
+cs_t = cs.merge(recent_means.reset_index(), on="country", validate="many_to_one")
 
 out("  Correlations: full period (2000-2023) vs aligned window (2018-2022):")
 for var, label in pairs:

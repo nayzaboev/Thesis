@@ -29,6 +29,8 @@ import os
 import numpy as np
 import pandas as pd
 
+from _assertions import assert_year_continuity
+
 ANNUAL_VARS = [
     "gdp_per_capita_ppp",
     "urban_pop_pct",
@@ -43,14 +45,28 @@ tfr = pd.read_csv("data/processed/master_tfr.csv")
 panel = tfr.copy()
 for var in ANNUAL_VARS:
     cov = pd.read_csv(f"data/raw/raw_wb_{var}.csv")
-    panel = panel.merge(cov[["country", "year", var]], on=["country", "year"], how="left")
+    panel = panel.merge(cov[["country", "year", var]], on=["country", "year"],
+                        how="left", validate="many_to_one")
 
 # --- Sort so lag/groupby operations are well-defined ---
 panel = panel.sort_values(["country", "year"]).reset_index(drop=True)
 
+# --- Key-integrity guard: the panel must stay one row per (country, year) ---
+assert not panel.duplicated(["country", "year"]).any(), (
+    "Duplicate (country, year) rows in panel — a covariate merge introduced "
+    "a fan-out; check the raw_wb_*.csv files for repeated country-year rows."
+)
+
 # --- Missingness flags (BEFORE creating lags, so flags reflect raw availability) ---
 for var in ANNUAL_VARS:
     panel[f"{var}_missing"] = panel[var].isna()
+
+# --- Year-continuity guard: shift(1) below silently treats a multi-year gap
+# as a one-year change. The panel is built directly from master_tfr.csv,
+# which is asserted rectangular (14 countries x 24 years, no gaps) in
+# 01_clean_data.py, so this should never fire; it guards against a future
+# change to that assumption. ---
+assert_year_continuity(panel)
 
 # --- 1-year lags (within country) ---
 # linearmodels and statsmodels both prefer the user to supply lags explicitly.

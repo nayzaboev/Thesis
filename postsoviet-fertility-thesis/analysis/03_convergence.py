@@ -208,7 +208,7 @@ bc = pd.DataFrame({
     "tfr_end":   wide[END_WIN].mean(axis=1),
 }).reset_index()
 bc = bc.merge(df.groupby("country")[["bloc", "subgroup"]].first().reset_index(),
-              on="country")
+              on="country", validate="many_to_one")
 bc["ca"] = (bc["bloc"] == "Central Asia").astype(int)
 bc["ln_tfr_start"] = np.log(bc["tfr_start"])
 bc["growth"] = (np.log(bc["tfr_end"]) - np.log(bc["tfr_start"])) / T
