@@ -47,3 +47,17 @@ venv/
 
 # ── Figures (optional — commit these if you want plots versioned) ──
 # figures/
+
+# LaTeX build artifacts
+thesis/*.aux
+thesis/*.bbl
+thesis/*.bcf
+thesis/*.blg
+thesis/*.log
+thesis/*.out
+thesis/*.toc
+thesis/*.run.xml
+thesis/*.fls
+thesis/*.fdb_latexmk
+thesis/*.synctex.gz
+thesis/main.pdf

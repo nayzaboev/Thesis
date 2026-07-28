@@ -1,0 +1,31 @@
+\begin{table}[htbp]
+\centering
+\caption{Cultural correlates of mean fertility, cross-section of 14 countries}
+\label{tab:crosssection}
+\small
+\begin{tabular}{lcccc}
+\toprule
+ & (1) & (2) & (3) & (4) \\
+\midrule
+Muslim share (\%)      & $+0.0130$ &          & $+0.0120$ & $+0.0048$ \\
+                       & (0.0032)  &          & (0.0039)  & (0.0209) \\
+Female SMAM (years)    &           & $-0.0897$ & $-0.0188$ &          \\
+                       &           & (0.0390)  & (0.0238)  &          \\
+Central Asia           &           &           &           & $+0.941$ \\
+                       &           &           &           & (1.868) \\
+\midrule
+$R^2$                  & 0.774 & 0.323 & 0.783 & 0.911 \\
+Observations           & 14 & 14 & 14 & 14 \\
+\bottomrule
+\end{tabular}
+
+\begin{minipage}{\textwidth}\footnotesize
+\vspace{4pt}
+\emph{Note:} Dependent variable is mean total fertility rate, 2000--2023. HC3 standard
+errors in parentheses, with small-sample $t$ inference. Column (4) is the inseparability
+test: $\mathrm{corr}(\text{Central Asia}, \text{Muslim share}) = +0.831$, and neither
+variable is distinguishable from zero when both are included
+($p = 0.822$ and $p = 0.624$ respectively) even though the specification fits better than
+any other column.
+\end{minipage}
+\end{table}

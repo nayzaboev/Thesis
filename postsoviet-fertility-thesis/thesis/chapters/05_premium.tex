@@ -1,0 +1,102 @@
+% =====================================================================
+%  Chapter 5 — Accounting for the Central Asian Fertility Difference
+%  Input with:  \input{chapters/05_premium}
+%  Requires: tables/tab_layerA.tex, tables/tab_layerB.tex,
+%            tables/tab_crosssection.tex, figures/crosssection_scatter.png
+% =====================================================================
+
+\section{Accounting for the Central Asian Fertility Difference}
+\label{sec:premium}
+
+Chapter~\ref{sec:trends} established that the difference exists, that it never closed, and that it ended the period wider than it began. This chapter asks what it is made of. The question is put in accounting terms rather than causal ones, for the reasons set out in Section~\ref{sec:interpretation}: how much of the difference moves together with the macroeconomic conditions the literature treats as the main correlates of fertility, and how much does not.
+
+\subsection{The difference, raw and conditional}
+\label{sec:raw-conditional}
+
+Table~\ref{tab:layerA} reports the three between-country specifications. Column (1) is the raw difference with year effects only. Column (2) adds the four lagged controls. Column (3) is the Mundlak hybrid of equation~\eqref{eq:m2h}, which separates between-country from within-country variation in each control and is the primary specification.
+
+\input{tables/tab_layerA}
+
+The raw difference is $+1.314$ children per woman. Adding controls brings it to $+0.971$, and the hybrid gives $+0.964$. The two controlled estimates are almost identical, which is itself informative: the attenuation is not an artefact of pooling two kinds of variation in the control coefficients, since separating them changes the result by seven thousandths of a child.
+
+All three columns are estimated on the 315 observations for which the controls are complete, so that the raw and conditional estimates are comparable. Dropping those twenty-one observations costs nothing: on the full 336-observation panel the raw difference is $+1.324$ rather than $+1.314$.
+
+So the four covariates account for about twenty-seven per cent of the raw difference. Nearly three quarters of it remains. It is worth pausing on what a residual difference of $0.96$ children per woman actually amounts to. The mean fertility rate of the ten non-Central-Asian countries moved between 1.34 and 1.77 over the twenty-four years, a total range of 0.43. The part of the Central Asian difference that survives economic controls is therefore more than twice the entire range of variation the comparison bloc displayed across the whole period, including the recovery of the 2000s and the decline after 2016.
+
+Two features of the control coefficients deserve comment. First, not one of the four is distinguishable from zero at conventional levels in either column. Log GDP per capita is essentially zero ($+0.009$, interval $[-0.244, +0.263]$). Urbanisation has the expected negative sign but its interval crosses zero. Remittances and under-five mortality are small and imprecise. The controls are jointly doing work --- $R^2$ rises from 0.842 to 0.908 when they enter --- but no individual variable can be credited with it.
+
+Second, the between-country components of these controls are severely collinear. Variance inflation factors computed on the country means are 17.1 for remittances, 14.3 for log GDP and 13.3 for urbanisation, all far above the conventional threshold of 10, while the within-country components are all below 4.5 (Appendix~\ref{app:vif}). This is why Table~\ref{tab:layerA} reports only the within-country coefficients for column (3) and leaves the between-country block untabulated: individually they are uninterpretable. The Central Asia indicator itself has a between-country variance inflation factor of only 3.06, and its coefficient barely moves between columns (2) and (3), so the collinearity that afflicts the controls does not reach the coefficient of interest.
+
+\paragraph{Inference.} With fourteen clusters and four of them treated, the asymptotic clustered p-value on the hybrid estimate is below 0.01. The wild-cluster bootstrap gives 0.033. The difference between those two numbers is the difference between claiming significance at the one per cent level and claiming it at five, and this thesis reports the second. To remove any residual doubt about simulation error, all $2^{14} = 16{,}384$ Rademacher sign assignments were enumerated exactly rather than sampled: the exact p-value is 0.0329, against 0.033 from the 1{,}999-draw simulation. The two agree, which confirms the simulated bootstrap had already converged.
+
+\paragraph{Fixed or random effects.} The Mundlak auxiliary regression tests whether the between and within coefficients are equal for all four regressors. It does not reject: $F(4,13) = 1.34$, $p = 0.31$. There is thus no statistical evidence that a random-effects specification would be inconsistent here. The hybrid is retained on substantive rather than test-based grounds, because the research question concerns a between-country difference and the hybrid is the specification that estimates it while still separating the two sources of variation in the controls. The classical Hausman statistic is not reported: the difference of the two variance matrices is not positive definite in this sample, with three of four eigenvalues negative, so the statistic is undefined.
+
+\subsection{Is the difference stable over time?}
+\label{sec:stability}
+
+Chapter~\ref{sec:trends} showed the raw difference widening after 2016. Interacting the Central Asia indicator with three period bands asks whether that widening survives the controls.
+
+The estimated difference is $+0.795$ in 2000--2007, $+0.888$ in 2008--2016 and $+1.174$ in 2017--2023. The point estimates rise monotonically and the increase in the final period is substantial --- almost half a child larger than in the base period. Neither interaction, however, is significant: the 2008--2016 shift is $+0.093$ with an interval from $-0.214$ to $+0.401$, and the 2017--2023 shift is $+0.379$ with an interval from $-0.074$ to $+0.831$.
+
+The honest statement is therefore narrow, and it is the one this thesis makes: \emph{the difference did not narrow, the point estimates suggest it widened after 2017, and the widening cannot be statistically distinguished from no change in this sample.} With fourteen clusters and a seven-year final band the test has little power, so the wide intervals are unsurprising. What can be said with more confidence is the descriptive fact from Chapter~\ref{sec:trends}, which does not depend on the model: the raw difference between bloc means was 1.19 in 2016 and 1.65 in 2023.
+
+\subsection{Does the difference vary with economic conditions?}
+\label{sec:interactions}
+
+If Central Asian fertility responded to income, urbanisation or migration differently from the rest of the region, that would be visible as an interaction. Three were estimated, each with the control mean-centred so the main effect is read at the sample mean.
+
+Two of the three are easily disposed of. The interaction with log GDP per capita is $-0.090$ with a p-value of 0.455. The interaction with urbanisation is $-0.012$ and looks marginal on asymptotic inference ($p = 0.054$), but the wild-cluster bootstrap returns $p = 0.313$. It is a null result, and it is a good illustration of why the bootstrap is the preferred inference here rather than a formality.
+
+The remittances interaction is more interesting. It is $+0.0157$ per percentage point of GDP, with an asymptotic p-value of 0.001 and a bootstrap p-value of 0.026. The sign is the notable part. In the broader post-communist literature the association between remittances and fertility is generally negative and varies with household vulnerability \parencite{tokhirov2024}; here it is positive, and positive specifically within Central Asia. Given that Tajikistan averaged 31 per cent of GDP in remittances over the period and Kyrgyzstan 21 per cent, against a sample mean of 8.9, the implied magnitudes are not trivial.
+
+But the estimate rests on those same two countries, and it should not be reported without saying so. Dropping Tajikistan leaves it at $+0.0143$ ($p = 0.008$) and dropping Kyrgyzstan at $+0.0164$ ($p = 0.002$), but dropping both raises the point estimate to $+0.0265$ while the p-value collapses to 0.268. The interaction is identified off two of the four Central Asian countries, and remittance coverage is weakest exactly where it matters most: all eight missing observations in the panel are Central Asian, five of them Uzbek.
+
+One further caution the regression does not capture. Moldova averaged 21.5 per cent of GDP in remittances, almost identical to Kyrgyzstan, and has the most negative country residual in the entire sample (Section~\ref{sec:crosssection}). High remittance dependence on its own clearly does not produce high fertility. The correct reading is that this is suggestive of a labour-migration channel operating in the high-remittance Central Asian economies, not a general Central Asian regularity and certainly not a general post-Soviet one.
+
+\subsection{Within-country evidence}
+\label{sec:within}
+
+Everything so far has used differences between countries. Layer B asks a different question: within a given country, do year-to-year movements in the four covariates track year-to-year movements in fertility?
+
+\input{tables/tab_layerB}
+
+The answer is essentially no. In the two-way fixed-effects model none of the four coefficients comes close to conventional significance. In first differences, under-five mortality is significant ($-0.008$, $p = 0.013$) and log GDP is marginal ($p = 0.078$) --- but adding year effects removes both, taking under-five mortality to $-0.0001$ with a p-value of 0.968. A coefficient that reverses this completely on the inclusion of common year effects cannot be interpreted, and this thesis does not interpret it.
+
+The choice between the levels and differenced specifications is not arbitrary. An AR(1) regression on the fixed-effects residuals returns a coefficient of $0.948$. Residuals that persistent mean the levels model is at serious risk of picking up shared trending behaviour rather than a relationship, so the first-difference results are treated as the more cautious evidence and the levels model as descriptive. The differenced specification explains 5.6 per cent of the variation in fertility changes without year effects and 25.7 per cent with them, which tells its own story: most of what moves fertility from year to year in these countries is common across them, not driven by their individual macroeconomic trajectories.
+
+It matters to be clear about what this does and does not show. It does not show that economic conditions are unimportant for fertility. It shows that these four indicators, at annual frequency, in this fourteen-country panel, over twenty-four years, do not have stable measurable within-country associations with the period fertility rate. Annual macro series are noisy, fertility decisions respond with lags of uncertain length, and a first-differenced specification discards precisely the long-run level information that the between-country layer exploits. What the two layers together establish is where the Central Asian difference lives: it is a persistent difference in levels between countries, not something that can be recovered from the year-to-year co-movement of fertility and macroeconomic conditions inside them.
+
+\subsection{Cultural correlates and the limits of identification}
+\label{sec:crosssection}
+
+The literature on Central Asian fertility does not explain the region's position primarily through income or urbanisation. It points to near-universal and early marriage \parencite{dommaraju2008}, to ethnic composition and the differential fertility of titular groups \parencite{spoorenberg2013,agadjanian2013}, and to religiosity operating through gender norms \parencite{kumo2024}. This section asks how far a country-level cross-section can take those explanations.
+
+Collapsing the panel to fourteen country averages and correlating mean fertility with three indicators gives a picture that looks, at first, like strong support. Muslim population share correlates at $+0.880$, female singulate mean age at marriage at $-0.568$, and female mean years of schooling at $-0.581$. Appendix~\ref{app:crossscatter} plots all three.
+
+Table~\ref{tab:crosssection} takes this into regression form. Muslim share alone explains 77 per cent of the cross-country variation in mean fertility. Age at marriage alone explains 32 per cent, and when both enter, marriage age loses all of its explanatory power to Muslim share.
+
+\input{tables/tab_crosssection}
+
+Column (4) is where the exercise stops. The correlation between the Central Asia indicator and Muslim share is $+0.831$. Put both in the same regression and neither survives: the Central Asia coefficient is $+0.941$ with a standard error of 1.868 ($p = 0.624$), and Muslim share is $+0.005$ with a standard error of 0.021 ($p = 0.822$). The specification fits better than any other column, at $R^2 = 0.911$, and yet it cannot attribute that fit to either variable. This is textbook collinearity, and at $n = 14$ there is no way around it. The two variables are measuring nearly the same thing in this sample.
+
+Azerbaijan makes the point without any statistics. It is 95 per cent Muslim and its mean fertility over the period is 1.88 --- below every Central Asian country by more than 0.7 children, and comfortably inside the range of the Christian-majority successor states. If Muslim share were doing the work by itself, Azerbaijan would not look like this. What distinguishes it is not religious affiliation but a different history of female labour force participation and Soviet-era gender institutions, which is precisely the mechanism \textcite{kumo2024} model as a two-stage chain from religiosity to gender norms to fertility, with Soviet exposure weakening the chain.
+
+A second diagnostic points the same way. Taking the country-level residuals from the macroeconomic specification and correlating those with the same three indicators, Muslim share weakens from $+0.880$ to $+0.452$, marriage age from $-0.568$ to $-0.176$, and female schooling flips sign entirely, from $-0.581$ to $+0.192$. The schooling result is the most instructive: a bivariate correlation of $-0.58$ looks like evidence for an education effect, and the fact that it not only vanishes but reverses once the regional division is accounted for shows it was tracking the regional split rather than an independent relationship. These residual correlations carry no p-values by construction, since the residuals are generated regressors, and are reported as descriptive.
+
+The residual ranking is worth reading directly. Kazakhstan sits highest at $+0.591$, followed by Tajikistan at $+0.290$ and Uzbekistan at $+0.205$ --- but Russia is fourth at $+0.204$, above Kyrgyzstan, while Moldova is lowest at $-0.676$ and Azerbaijan second-lowest at $-0.303$. The regional split dominates without being clean, and a story treating Central Asia as internally uniform would overstate what the data show.
+
+One check reduces a competing worry. The cultural variables are measured around 2020 while the fertility average spans 2000--2023, which raises the possibility that the correlations are an artefact of temporal mismatch. Recomputing them against mean fertility for 2018--2022 alone changes little: Muslim share moves from $+0.880$ to $+0.856$, marriage age from $-0.568$ to $-0.541$, schooling from $-0.581$ to $-0.493$. The concern is reduced, not eliminated.
+
+What this section establishes is a boundary. The cross-section is entirely consistent with the literature's emphasis on nuptiality regimes and religious-cultural context. It cannot identify them, because at fourteen observations regional identity and Muslim share are the same variable, and because both are correlated with everything else that distinguishes the two groups. The interpretation of what the Central Asian indicator contains must therefore come from the micro-level literature, which observes individuals and ethnic groups within countries and can separate what a country-level cross-section cannot. Chapter~\ref{sec:discussion} takes that up.
+
+\subsection{Robustness}
+\label{sec:robustness}
+
+Four checks were run on the controlled difference, and all are reported in full in Appendix~\ref{app:projection-check}. Dropping one country at a time moves it within $[+0.778, +1.081]$, the extremes being Moldova and Kazakhstan; it stays positive and significant in all fourteen re-estimations. Four targeted exclusions --- Ukraine's war years, Uzbekistan's post-2017 surge, Tajikistan entirely and Azerbaijan entirely --- give $+0.965$, $+0.938$, $+0.951$ and $+1.054$, so the result is not an artefact of any one episode or borderline case. A country-mean regression with HC3 errors, which avoids cluster asymptotics altogether, returns $+1.324$ for the raw difference. And a permutation test across all $\binom{14}{4} = 1{,}001$ possible four-country groupings finds the observed Central Asian grouping the single most extreme of the 1{,}001, giving a one-sided p-value of 0.001 --- a test of whether the grouping is unusual, not of whether the region causes anything.
+
+\subsection{What this chapter establishes}
+\label{sec:premium-summary}
+
+The Central Asian fertility difference is large, it is not an artefact of the specification, and it does not depend on any single country or episode. Approximately a quarter of it moves together with income, urbanisation, remittances and child survival. The remaining $0.96$ children per woman does not. Year-to-year variation within countries offers no stable evidence on what accounts for it, which locates the difference firmly in persistent between-country variation. And a country-level cross-section can show that the surviving difference is correlated with markers of religious-cultural and nuptiality regimes while being unable to separate those markers from regional identity itself.
+
+That is a bounded result rather than an explanation, and it is the result the data support. Chapter~\ref{sec:discussion} turns to what the micro-level literature says is inside the boundary.

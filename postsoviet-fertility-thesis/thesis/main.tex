@@ -1,0 +1,194 @@
+\documentclass[11pt, a4paper]{article}
+
+% =====================================================================
+%  THESIS: Fertility Trends in the Post-Soviet Space (2000–2023)
+%  University of Bonn — M.Sc. Economics
+%  
+%  LIVES AT:  postsoviet-fertility-thesis/thesis/main.tex
+%  FIGURES:   reads from ../figures/ (shared with analysis scripts)
+%
+%  TO COMPILE:
+%    cd postsoviet-fertility-thesis/thesis
+%    latexmk -pdf main.tex
+%
+%  OR just push to GitHub — the workflow in
+%  .github/workflows/build-thesis.yml builds the PDF automatically.
+% =====================================================================
+
+% --- Page layout (Bonn guidelines) ---
+\usepackage[left=2.5cm, right=4.0cm, 
+            top=2.8cm,  bottom=2.8cm]{geometry}
+
+% --- Font ---
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+
+% --- Line spacing (Bonn: 19.5pt) ---
+\usepackage{setspace}
+\setstretch{1.4338}      % => baselineskip 19.5pt exactly (Bonn spec: 35 lines/page)
+
+% --- Packages ---
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[hyphens]{url}
+
+% --- Figures live one level up, shared with the analysis pipeline ---
+\graphicspath{{../figures/}{figures/}}
+
+% --- Bibliography: Chicago author-date via BibLaTeX + Biber ---
+\usepackage[authordate, backend=biber]{biblatex-chicago}
+\addbibresource{references.bib}
+
+% --- Cross-references ---
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks  = true,
+  linkcolor   = black,
+  citecolor   = black,
+  urlcolor    = blue
+}
+
+% --- Placeholder labels (prevent undefined-ref errors) ---
+\newcommand{\missinglabel}[1]{%
+  \expandafter\ifx\csname r@#1\endcsname\relax
+    \label{#1}%
+  \fi
+}
+
+% =====================================================================
+\begin{document}
+
+% =====================================================================
+%  TITLE PAGE
+% =====================================================================
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+
+{\LARGE\bfseries Fertility Trends in the Post-Soviet Space: \\[6pt]
+A Comparative Analysis of Central Asia \\[6pt]
+and Other Former Soviet Countries (2000--2023) \par}
+
+\vspace{2cm}
+
+{\large Master's Thesis presented to the \\
+Department of Economics at the \\
+Rheinische Friedrich-Wilhelms-Universit\"at Bonn \\[12pt]
+in partial fulfillment of the requirements for the degree of \\[12pt]
+Master of Science (M.Sc.) \\
+in Economics \par}
+
+\vspace{2cm}
+
+Supervisor: [name of supervisor]       % TODO
+
+\vspace{1.5cm}
+
+Submitted in July 2026 by: \\[6pt]
+Shokhrukh Nayzaboev \\[6pt]
+Matriculation number: [number]         % TODO
+
+\vfill
+\end{titlepage}
+
+% =====================================================================
+%  TABLE OF CONTENTS
+% =====================================================================
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+% =====================================================================
+%  CHAPTERS
+% =====================================================================
+
+% --- Ch 1: Introduction ---
+\input{chapters/01_introduction}
+
+% --- Ch 2: Background and Literature ---
+\input{chapters/02_background}
+
+% --- Ch 3: Data and Methods ---
+\input{chapters/03_data_and_methods}
+
+% --- Ch 4: Fertility Trends ---
+\input{chapters/04_trends}
+
+% --- Ch 5: Accounting for the Difference ---
+\input{chapters/05_premium}
+
+% --- Ch 6: Discussion ---
+\input{chapters/06_discussion}
+
+% --- Ch 7: Conclusion ---
+\input{chapters/07_conclusion}
+\newpage
+
+% =====================================================================
+%  REFERENCES
+% =====================================================================
+\printbibliography[title={References}]
+\newpage
+
+% =====================================================================
+%  APPENDIX
+% =====================================================================
+\appendix
+\section{Appendix}
+
+\subsection{Missing observations}
+\label{app:missingness}
+\textit{[To be added.]}
+
+\subsection{SMAM sources by country}
+\label{app:smam}
+\textit{[To be added.]}
+
+\subsection{Sub-group mean fertility}
+\label{app:subgroups}
+\textit{[To be added.]}
+
+\subsection{Leave-one-out convergence trends}
+\label{app:loo-convergence}
+\textit{[To be added.]}
+
+\subsection{Projection sensitivity check}
+\label{app:projection-check}
+\textit{[To be added.]}
+
+\subsection{Variance inflation factors}
+\label{app:vif}
+\textit{[From diagnostics\_results.txt \S A — to be added.]}
+
+\subsection{Cross-section scatter plots}
+\label{app:crossscatter}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{crosssection_scatter}
+  \caption{Mean total fertility rate 2000--2023 against three country-level
+           indicators, $n = 14$.}
+\end{figure}
+
+\newpage
+
+% =====================================================================
+%  DECLARATION (Bonn requirement — signed, last page)
+% =====================================================================
+\section*{Declaration}
+\addcontentsline{toc}{section}{Declaration}
+
+I hereby affirm that I have written the above thesis independently and have
+used no sources or aids other than those indicated; that the submitted work
+has not previously been submitted for examination at any other university;
+and that it has not been published, either in whole or in part. I have clearly
+indicated all direct quotations and passages paraphrased from other works
+as such.
+
+\vspace{2cm}
+
+\noindent Bonn, \today \hfill Shokhrukh Nayzaboev
+
+\end{document}

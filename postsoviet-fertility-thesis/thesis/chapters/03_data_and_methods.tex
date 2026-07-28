@@ -1,0 +1,120 @@
+% =====================================================================
+%  Chapter 3 — Data and Methods
+%  Fertility Trends in the Post-Soviet Space (2000–2023)
+%  Input with:  \input{chapters/03_data_and_methods}
+%
+%  Heading levels: uses \section / \subsection. If your master file
+%  uses \chapter for level-1 headings, shift everything down one level.
+% =====================================================================
+
+\section{Data and Methods}
+\label{sec:data-methods}
+
+\subsection{Countries, period, and scope}
+\label{sec:scope}
+
+The analysis covers fourteen post-Soviet states from 2000 to 2023, a balanced panel of 336 country--year observations. Countries are assigned to four sub-groups that recur throughout the thesis (Table~\ref{tab:grouping}). For the comparisons that carry the main argument, the three non-Central-Asian sub-groups are pooled into a single reference bloc, referred to below as the rest of the post-Soviet space.
+
+\begin{table}[htbp]
+\centering
+\caption{Country grouping}
+\label{tab:grouping}
+\small
+\begin{tabular}{ll}
+\toprule
+Sub-group & Countries \\
+\midrule
+Central Asia & Kazakhstan, Kyrgyzstan, Tajikistan, Uzbekistan \\
+Eastern European & Belarus, Moldova, Russia, Ukraine \\
+Baltic & Estonia, Latvia, Lithuania \\
+Caucasus & Armenia, Azerbaijan, Georgia \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Turkmenistan, the fifth Central Asian successor state, is left out, and the reason is measurement rather than convenience. Three of the four World Bank indicators used as controls are missing or only sparsely reported for it across the study period, so it could not enter the panel models on the same footing as the other fourteen. Its demographic reporting is also hard to verify independently: \textcite{spoorenberg2015} notes that access to survey data and final reports is usually restricted for Turkmenistan, and \textcite{nedoluzhko2012} describes it as a country that hardly releases any statistics for open use. Including it to reach nominal five-country coverage would have imported non-comparable measurement into both halves of the analysis, so it is excluded from every calculation reported here rather than selectively, and the scope of the thesis is four comparable Central Asian states.
+
+The window opens in 2000 because that is roughly where the post-Soviet fertility decline bottomed out across the region, which makes it the natural starting point for a study of what happened next rather than of the collapse itself. It closes in 2023, the last year with harmonised estimates in the source data.
+
+\subsection{Data sources and measurement}
+\label{sec:data}
+
+\paragraph{Fertility.} The dependent variable is the period total fertility rate, taken from the United Nations \textcite{wpp2024}, median variant. A single harmonised source matters more here than it would elsewhere: vital registration differs in completeness across the region, and Uzbekistan has operated without a population census for three decades. Applying the same estimation procedure everywhere is what makes cross-country comparison defensible at all. Two features need flagging. The values are model-based estimates rather than raw registration counts. And the series distinguishes retrospective interpolated estimates from forward-looking projections: twenty of the 336 observations are projections, concentrated at the end of the window, and eleven of the fourteen countries have a projected value in 2023, all except Latvia, Lithuania and Russia. Because two descriptive results in Chapter~\ref{sec:trends} depend on the endpoint of the series, this distinction is carried through as a flag and tested directly in Section~\ref{sec:proj-check}.
+
+\paragraph{Controls.} Four annual indicators come from the World Bank's World Development Indicators \parencite{wdi2024}: GDP per capita at purchasing power parity in constant 2021 international dollars (\texttt{NY.GDP.PCAP.PP.KD}), the urban population share (\texttt{SP.URB.TOTL.IN.ZS}), personal remittances received as a percentage of GDP (\texttt{BX.TRF.PWKR.DT.GD.ZS}), and under-five mortality per thousand live births (\texttt{SH.DYN.MORT}). GDP per capita enters in logs. These four map onto the mechanisms the post-communist fertility literature emphasises --- income and the opportunity cost of children, structural modernisation, the migration and remittance economy, and child survival --- and they are the only such measures available annually and comparably for all fourteen countries across the full window.
+
+\paragraph{No interpolation.} Missing values are left missing. GDP per capita, urbanisation and under-five mortality are complete for all 336 country--years. Remittances have eight gaps: Uzbekistan 2000--2004, Tajikistan 2000--2001, and Kyrgyzstan 2023. Filling them would have looked tidier, but every filled cell is an invented observation and seven of the eight fall in the group whose behaviour the thesis is trying to describe. They are left as gaps, which makes the estimation sample unbalanced and reduces it to 315 observations once the one-year lag is applied. Kyrgyzstan's missing 2023 value costs nothing, since it would affect only a 2024 lag outside the window. Appendix~\ref{app:missingness} lists every missing cell.
+
+\paragraph{Cultural and nuptiality indicators.} Three further variables enter only the country-level cross-section of Section~\ref{sec:crosssection}, where each country contributes one observation. Muslim population share for 2020 comes from \textcite{pew2020}; female mean years of schooling for ages 25 and over, also for 2020, from the Wittgenstein Centre Data Explorer \parencite{wittgenstein2018}, SSP2 scenario. The singulate mean age at marriage for women (SMAM) is assembled from three sources: nine countries from \textcite{wmd2019}, observed between 2012 and 2018; four computed by the author from MICS6 women's microdata \parencite{mics} using the indirect estimator of \textcite{hajnal1953}, for Belarus (2019), Georgia (2018), Kyrgyzstan (2018) and Uzbekistan (2021--22); and Russia, computed by the author from the 2021 census \parencite{rosstat2021}.
+
+That mixed construction carries a cost worth stating plainly. The nine United Nations values rest on legal marital status, while the four MICS values rest on whether a woman reports being married or in union, a broader category. Where informal or religious unions are common, an in-union SMAM sits below a legal-marriage SMAM for the same population, and that gap is widest in precisely the countries where informal marriage is most prevalent. The direction of the bias is therefore known, and it works towards understating Central Asian SMAM, which is the pattern of interest. Observation years also span 2012 to 2022 rather than a single date. Mixing sources and years this way follows the closest published work \parencite{dommaraju2008,spoorenberg2013,kumo2024}; the per-country source, year, marital-status basis and computation method are documented in Appendix~\ref{app:smam}.
+
+\paragraph{What the fertility measure does and does not capture.} The period total fertility rate is a synthetic quantity. It reports the completed family size a hypothetical cohort would reach under the current year's age-specific rates, so it responds to changes in the \emph{timing} of births as well as their number \parencite{bongaarts1998}. When women postpone childbearing the period rate falls below what cohorts will eventually reach; when postponement slows it rises again with no underlying change in family size. This matters here, because tempo effects have been identified as one force behind the fertility recovery in Central Asia \parencite{spoorenberg2015} and behind the postponement and recuperation pattern in the European successor states \parencite{grigoras2019}.
+
+Three considerations justify using the period measure anyway. It is the only fertility indicator available annually, comparably and completely for all fourteen countries over 2000--2023, and cohort measures would in any case be unavailable for the most recent cohorts. The object of interest is a difference in twenty-four-year averages between two groups, not a level in any single year, and averaging over a long window attenuates timing distortions that are transitory by construction. Finally, for tempo alone to generate the between-bloc difference documented in Chapter~\ref{sec:premium}, the two blocs' postponement dynamics would have to differ systematically and in the same direction for a quarter of a century --- which would itself be a substantive finding about family-formation regimes rather than a measurement artefact. The limitation is real and is taken up again in Section~\ref{sec:limitations}. What follows is a statement about period fertility rates, not about completed family size.
+
+\subsection{Descriptive methods}
+\label{sec:descriptive-methods}
+
+Chapter~\ref{sec:trends} asks how the fourteen trajectories moved relative to one another, using two standard measures from the convergence literature applied to fertility rather than income \parencite{barro1992,salaimartin1996}.
+
+$\sigma$-convergence measures whether countries became more alike. For each year the coefficient of variation of fertility is computed across countries, first for all fourteen and then within each bloc and sub-group; a falling series means the group is growing more homogeneous. Because the coefficient of variation is a ratio, it can fall simply because its denominator rises, so the standard deviation and interquartile range are reported alongside it: a decline not matched in absolute dispersion is a mean effect rather than genuine compression, and is reported as such. Trends are summarised by regressing the dispersion series on a linear year term with Newey--West standard errors at four lags \parencite{newey1987}, since the annual series are strongly serially correlated. The same trend is fitted separately on 2000--2016 and 2017--2023, because one line through the full window averages two phases moving in opposite directions; no significance is claimed for the later sub-period, which has only seven annual observations. Each bloc trend is also refitted dropping one country at a time, so that trends resting on a single country can be identified rather than presented as group-wide regularities.
+
+$\beta$-convergence asks whether initially higher-fertility countries declined faster:
+\begin{equation}
+\frac{1}{21}\ln\!\left(\frac{\overline{TFR}_{i,2021\text{--}23}}{\overline{TFR}_{i,2000\text{--}02}}\right)
+= \alpha + \beta \ln \overline{TFR}_{i,2000\text{--}02} + u_i ,
+\label{eq:beta}
+\end{equation}
+with three-year averages at each endpoint to limit sensitivity to single-year fluctuations, HC3 standard errors and small-sample $t$ inference at $n=14$. A conditional version adds the Central Asia indicator. A negative $\beta$ indicates catch-up. Two cautions are repeated where the results appear: $\beta$-convergence is necessary but not sufficient for $\sigma$-convergence, and a negative coefficient can arise mechanically from regression to the mean if initial fertility is measured with error \parencite{quah1993}.
+
+\paragraph{Sensitivity to projected values.}
+\label{sec:proj-check}
+Because the post-2016 dispersion trend and the $\beta$ estimate both depend on the end of the series, and eleven of fourteen 2023 values are projections, both are recomputed on two balanced sub-samples: all fourteen countries over 2000--2019, a window free of projected values; and the ten countries with a non-projected observation in every year from 2017 to 2022, with that country set held fixed across all years compared. Holding the set fixed is essential. An earlier version dropped projected rows year by year, which let the sample shrink from fourteen countries to three low-fertility ones by 2023 and produced a convergence result driven entirely by composition. The check is descriptive and carries no p-values.
+
+\subsection{Estimation framework}
+\label{sec:estimation}
+
+Chapter~\ref{sec:premium} turns to the size and persistence of the Central Asian difference. The analysis has two layers, which answer different questions and are not competing specifications of the same one. Layer A uses variation \emph{between} countries and asks how large the difference is and how much of it moves together with observable macroeconomic conditions. Layer B uses variation \emph{within} countries over time and asks whether year-to-year movements in those conditions track year-to-year movements in fertility.
+
+\paragraph{Layer A.} Let $TFR_{it}$ be the fertility rate of country $i$ in year $t$, $CA_i$ an indicator equal to one for the four Central Asian states, $\mathbf{X}_{i,t-1}$ the four controls lagged one year, and $\delta_t$ a full set of year effects. The baseline is
+\begin{equation}
+TFR_{it} = \alpha + \beta_{CA}\, CA_i + \delta_t + \varepsilon_{it},
+\label{eq:m1}
+\end{equation}
+estimated by pooled OLS, and adding the controls gives
+\begin{equation}
+TFR_{it} = \alpha + \beta_{CA}\, CA_i + \mathbf{X}_{i,t-1}'\boldsymbol{\gamma} + \delta_t + \varepsilon_{it}.
+\label{eq:m2}
+\end{equation}
+Equation~\eqref{eq:m2} pools between- and within-country variation in every control coefficient, which makes those coefficients hard to read and can distort the coefficient of interest. The preferred specification separates the two using the correlated random effects formulation of \textcite{mundlak1978}, in the within--between form of \textcite{bell2015}:
+\begin{equation}
+TFR_{it} = \alpha + \beta_{CA}\, CA_i
++ \big(\mathbf{X}_{i,t-1}-\bar{\mathbf{X}}_i\big)'\boldsymbol{\gamma}_W
++ \bar{\mathbf{X}}_i'\boldsymbol{\gamma}_B
++ \delta_t + \varepsilon_{it},
+\label{eq:m2h}
+\end{equation}
+where $\bar{\mathbf{X}}_i$ is the country mean of each control. Equation~\eqref{eq:m2h} is the primary specification throughout. Note that $CA_i$ is time-invariant and can only be estimated in a between-country design; a two-way fixed-effects model absorbs it entirely, which is why Layer B estimates no fertility difference at all. Two extensions follow: interactions between $CA_i$ and each mean-centred control, testing whether the difference varies with economic conditions, and interactions with three period indicators (2000--2007, 2008--2016, 2017--2023), testing whether it is stable over time.
+
+\paragraph{Layer B.} The within-country layer estimates a two-way fixed-effects model,
+\begin{equation}
+TFR_{it} = \mu_i + \delta_t + \mathbf{X}_{i,t-1}'\boldsymbol{\gamma} + \varepsilon_{it},
+\label{eq:fe}
+\end{equation}
+and a first-difference model with and without year effects. Both are needed. Fertility and most controls are highly persistent and the residuals from equation~\eqref{eq:fe} are themselves strongly autocorrelated, so a levels regression on trending series risks recovering a shared time pattern rather than a relationship. First differencing removes that risk at the cost of discarding all level information, and is treated as the more cautious specification. Comparing a coefficient across the two first-difference variants also reveals whether it depends on the treatment of common year shocks; an estimate significant without year effects but not with them is flagged as specification-sensitive and not interpreted.
+
+\paragraph{Cross-section.} Section~\ref{sec:crosssection} collapses the panel to fourteen country averages and regresses mean fertility on the cultural and nuptiality indicators, with HC3 standard errors and small-sample $t$ inference. A joint model including both $CA_i$ and Muslim share tests whether the two can be told apart. They cannot, and that is reported as a finding rather than worked around.
+
+\paragraph{Inference with fourteen clusters.} Panel standard errors are clustered on country. Fourteen clusters is well below the range in which cluster-robust asymptotics can be relied on, and with only four treated clusters the problem is sharper still, so conventional clustered p-values are likely too small \parencite{cameron2008,mackinnon2018}. Preferred inference is therefore a Rademacher wild-cluster bootstrap with 1{,}999 replications, and for the coefficient from equation~\eqref{eq:m2h} all $2^{14}=16{,}384$ sign assignments are enumerated exactly, removing simulation error. Where bootstrap and asymptotic p-values disagree, the bootstrap is reported. Three further checks support the main estimate and are reported in Section~\ref{sec:robustness}: a country-mean regression with HC3 errors, which avoids cluster asymptotics entirely; leave-one-country-out re-estimation; and a permutation test over all $\binom{14}{4}=1{,}001$ possible four-country groupings. Variance inflation factors are reported separately for the pooled, between and within components, since collinearity here is concentrated in the between-country block. The choice between fixed and random effects is assessed with the Mundlak auxiliary-regression test rather than the classical Hausman statistic, which is undefined in this sample because the difference of the two variance matrices is not positive definite.
+
+\subsection{Interpretation: association, not causation}
+\label{sec:interpretation}
+
+Nothing in this thesis identifies a causal effect, and no result should be read as one. The design has no experiment, no instrument, no policy discontinuity and no plausible source of exogenous variation in any regressor. It has fourteen countries observed over twenty-four years, and what it can establish is the size, stability and robustness of an \emph{association}.
+
+Three consequences follow and are applied consistently below. First, when the estimated difference falls after controls are added, that movement is described as accounting rather than explanation: a stated share of the raw difference moves together with observable macroeconomic conditions and the remainder does not. It is not a decomposition into causal components. The controls are plausibly consequences of fertility regimes as much as correlates of them --- urbanisation and remittances most clearly, since both are shaped by the same family-formation and migration decisions that shape fertility --- and lagging them by one year mitigates simultaneity within a given year without addressing a relationship that runs both ways over a longer horizon.
+
+Second, $CA_i$ is not a variable in any substantive sense. It is a label for a bundle of history, institutions, religion, ethnic composition, marriage patterns and migration structures that happens to coincide with a geographic boundary. Its coefficient measures how much fertility differs across that boundary once the controls are held constant, and says nothing about which element of the bundle is responsible. Section~\ref{sec:crosssection} shows directly that the components cannot be separated with fourteen observations, and Chapter~\ref{sec:discussion} turns to the literature rather than the regressions for an account of what the bundle contains.
+
+Third, significance is reported but is not the organising device. Coefficients are given with ninety-five per cent confidence intervals rather than significance stars, so magnitude and precision can be read together. Where a point estimate moves in an interesting direction but its interval includes zero --- as with the widening of the difference after 2017 --- the text says exactly that, and does not call the movement significant.

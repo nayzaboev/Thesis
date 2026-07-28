@@ -1,0 +1,43 @@
+\begin{table}[htbp]
+\centering
+\caption{The Central Asian fertility difference: between-country estimates}
+\label{tab:layerA}
+\small
+\begin{tabular}{lccc}
+\toprule
+ & (1) M1 & (2) M2 & (3) M2h \\
+ & Raw & + controls & Mundlak hybrid \\
+\midrule
+Central Asia            & $+1.314$ & $+0.971$ & $+0.964$ \\
+                        & [$+0.994$, $+1.635$] & [$+0.740$, $+1.201$] & [$+0.689$, $+1.238$] \\
+\addlinespace
+\quad \emph{Bootstrap p} & 0.001 & 0.006 & 0.033 \\
+\midrule
+log GDP p.c.\ PPP (lag) & --- & $+0.009$ & $+0.182$\textsuperscript{w} \\
+                        &     & [$-0.244$, $+0.263$] & [$-0.362$, $+0.727$] \\
+Urban population \% (lag) & --- & $-0.012$ & $+0.006$\textsuperscript{w} \\
+                        &     & [$-0.026$, $+0.002$] & [$-0.043$, $+0.056$] \\
+Remittances \% GDP (lag) & --- & $+0.001$ & $+0.001$\textsuperscript{w} \\
+                        &     & [$-0.011$, $+0.013$] & [$-0.014$, $+0.015$] \\
+Under-5 mortality (lag) & --- & $+0.006$ & $-0.004$\textsuperscript{w} \\
+                        &     & [$-0.003$, $+0.014$] & [$-0.021$, $+0.013$] \\
+\midrule
+Year effects            & Yes & Yes & Yes \\
+Country means           & No  & No  & Yes \\
+Observations            & 315 & 315 & 315 \\
+$R^2$ (overall)         & 0.842 & 0.908 & 0.918 \\
+\bottomrule
+\end{tabular}
+
+\begin{minipage}{\textwidth}\footnotesize
+\vspace{4pt}
+\emph{Note:} Dependent variable is the period total fertility rate. Ninety-five per cent
+confidence intervals in brackets, from standard errors clustered on country (14 clusters).
+\emph{Bootstrap p} is the Rademacher wild-cluster bootstrap p-value for the Central Asia
+coefficient ($B = 1{,}999$); for column (3) all $2^{14} = 16{,}384$ sign assignments were
+enumerated exactly, giving $p = 0.0329$. Controls are lagged one year.
+\textsuperscript{w}\,In column (3) the control coefficients shown are \emph{within}-country
+deviations; the between-country control coefficients are highly collinear
+(Appendix~\ref{app:vif}) and are not tabulated. Column (3) is the primary specification.
+\end{minipage}
+\end{table}

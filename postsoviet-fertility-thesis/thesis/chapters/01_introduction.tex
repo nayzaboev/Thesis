@@ -1,0 +1,59 @@
+% =====================================================================
+%  Chapter 1 — Introduction
+%  Input with:  \input{chapters/01_introduction}
+%  No tables or figures.
+% =====================================================================
+
+\section{Introduction}
+\label{sec:introduction}
+
+In 2023 the total fertility rate in Ukraine was 0.98 children per woman, among the lowest ever recorded for a national population. In the same year Uzbekistan recorded 3.50. Thirty-two years earlier the two had been republics of the same state, governed under the same constitution, with the same school system, the same health service, the same pension architecture and the same family-policy regime.
+
+That contrast is not an artefact of picking the extremes. Across the fourteen post-Soviet countries examined here and the twenty-four years from 2000 to 2023 --- 336 country-year observations --- the lowest-fertility Central Asian country sits above the highest-fertility country outside Central Asia in every single year. There is not one crossing. The two groups come closest in 2012, and even then they are separated by 0.195 children per woman.
+
+The more surprising fact is what has happened to the distance between them. If a common institutional inheritance were pulling these countries towards a common demographic pattern, the difference should have narrowed. It has not. The gap between the Central Asian mean and the mean of the other ten countries was 1.29 children in 2000, reached its narrowest at 1.19 in 2016, and then widened to 1.65 by 2023 --- wider than at any point since the Soviet Union dissolved.
+
+\subsection{Why this matters}
+\label{sec:why-it-matters}
+
+Fertility differences of this size do not stay confined to demography. They determine the size of successive cohorts, and through that the supply of labour, the ratio of workers to dependants, the solvency of pension systems and the timing of any demographic dividend.
+
+The divergence is already visible in population totals. Between 1990 and 2024 the combined population of Central Asia rose from about 50 to about 80 million and is projected to exceed 103 million by 2050 \parencite{tukumov2024}. Over roughly the same period several comparison countries lost a fifth of their populations: between 1989 and 2008 Georgia fell by almost 19 per cent and Moldova by almost 18, with Latvia and Estonia each down about 15 per cent \parencite{brainerd2010}. One part of the former Soviet Union is adding people fast enough to require enormous investment in schooling and job creation; another is shrinking fast enough to threaten the arithmetic on which its welfare systems were built, with elderly dependency ratios in the Baltic states already near 35 per cent.
+
+Two features make this an economic problem rather than only a demographic one. The adjustment is slow and largely irreversible: Russia had 12 million women aged 20 to 29 in 2008 and around 7 million by 2020, and no plausible increase in the fertility rate can offset a cohort that was not born twenty years earlier \parencite{brainerd2010}. And the two halves of the region are becoming complementary in a way that shapes migration, remittance flows and labour markets across the whole post-Soviet space, with young workers produced in one part of it and demanded in another.
+
+Understanding whether the difference is closing, and what sustains it, is therefore a question with direct implications for growth accounting, fiscal projection and migration policy in fourteen countries.
+
+\subsection{What is known, and where it stops}
+\label{sec:what-is-known}
+
+Two bodies of research speak to this, and neither was designed to answer it.
+
+The comparative literature on post-communist fertility has developed a set of competing explanations --- ideational change, postponement under uncertainty, and reaction to economic crisis --- and tested them across the region \parencite{billingsley2010}. But it has largely left Central Asia out of the formal analysis: of the five republics, only Kazakhstan enters Billingsley's regression sample, and her window closes in 2003. The region most capable of falsifying a general account of post-communist fertility is the region least represented in the tests of it.
+
+The literature on Central Asia is the mirror image. It is detailed, careful and mostly micro-level, working with census and survey microdata to identify mechanisms --- ethnic composition, marriage patterns, religiosity and gender norms --- that country-level data cannot reach \parencite{spoorenberg2013,spoorenberg2015,dommaraju2008,kumo2024}. But its comparisons are internal to the region, and its principal analyses end around 2011. The reversal documented in this thesis, which begins around 2016, falls outside every one of those windows.
+
+\subsection{Research question}
+\label{sec:research-question}
+
+This thesis asks how fertility trends have evolved in Central Asia and the other post-Soviet states between 2000 and 2023, and what accounts for the persistence of comparatively higher fertility in Central Asia. The two halves are treated separately, because they can be answered with different degrees of confidence.
+
+The first is descriptive and the data answer it directly. The second cannot be answered by this design, and it is worth being explicit at the outset about why, and about what is offered instead.
+
+With fourteen countries there is no way to separate Central Asian regional identity from the things that correlate with it. The correlation between the Central Asia indicator and Muslim population share across these fourteen countries is $+0.831$; put both in the same regression and neither can be distinguished from zero, even though the specification fits better than any alternative. The same problem applies to marriage patterns, ethnic composition and migration structures, all of which line up along the same regional boundary. No amount of care with standard errors fixes a sample that contains fourteen observations.
+
+What can be done is to establish the boundary precisely. This thesis measures how large the difference is, whether it has been narrowing, how much of it moves together with the macroeconomic conditions the comparative literature relies on, and how much does not. The answer to the second half of the research question is therefore an elimination rather than an identification: the Central Asian fertility difference is large, stable across a quarter-century, robust to dropping any single country, and \emph{not accounted for} by income, urbanisation, remittances or child survival. What sustains it operates through channels that these variables do not proxy and that a country-level panel cannot separate from regional identity itself. Establishing the size of what remains, and showing that the standard macroeconomic account does not reach it, is the contribution --- and it is what makes the micro-level literature's mechanisms the right place to look.
+
+Nothing here identifies a cause. The design has no experiment, no instrument and no exogenous variation in any regressor, and every result should be read as a statement about association.
+
+\subsection{What the analysis finds}
+\label{sec:preview}
+
+On the first question, there is no convergence to report. Initially higher-fertility countries did not decline faster: the $\beta$-convergence coefficient is $+0.0013$ with a p-value of 0.911. Dispersion across all fourteen countries looks flat over the full period, but that flatness conceals two movements in opposite directions --- the four Central Asian countries grew significantly more alike, while the other ten grew significantly less alike, and the two effects cancel in the pooled series. The pattern breaks around 2016, when dispersion reaches its minimum and begins to rise. Roughly seventy per cent of the subsequent widening comes from the comparison countries declining rather than from Central Asia rising, which means the divergence is as much a story about Ukraine, Lithuania and Belarus as about Uzbekistan.
+
+On the second, the raw difference between the two groups is $+1.314$ children per woman. Adding lagged controls for income, urbanisation, remittances and child mortality reduces it to $+0.964$, so about a quarter of the raw difference moves together with observable macroeconomic conditions and roughly three quarters does not. Not one of the four control variables is individually distinguishable from zero. Within countries, year-to-year movements in these same variables show no stable association with fertility at all. The surviving difference is more than twice the entire range of variation the ten comparison countries displayed among themselves across the whole period. It survives dropping any country, four targeted exclusions, a permutation test over all 1{,}001 possible four-country groupings, and a wild-cluster bootstrap in which all 16{,}384 sign assignments were enumerated exactly.
+
+\subsection{Structure}
+\label{sec:structure}
+
+Chapter~\ref{sec:background} sets out the Soviet inheritance these countries shared, the theoretical accounts developed to explain post-communist fertility decline, and what the Central Asian literature has established. Chapter~\ref{sec:data-methods} describes the data, the measurement decisions and the estimation framework, including why inference in a fourteen-country panel requires more than conventional clustered standard errors. Chapter~\ref{sec:trends} answers the first half of the research question. Chapter~\ref{sec:premium} answers the second half in the bounded form described above. Chapter~\ref{sec:discussion} turns to the channels the literature identifies and this design cannot test, and Chapter~\ref{sec:conclusion} concludes.
