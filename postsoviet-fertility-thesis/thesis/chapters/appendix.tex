@@ -1,0 +1,240 @@
+% =====================================================================
+%  Appendix — all sections
+%  Input with:  \input{chapters/appendix}
+%  Replaces the placeholder stubs in main.tex
+% =====================================================================
+
+\appendix
+\section{Appendix}
+
+% =====================================================================
+\subsection{Missing observations}
+\label{app:missingness}
+
+Table~\ref{tab:missingness} reports the coverage of each panel variable. Three of the four controls are complete for all 336 country--year observations. Remittances have eight gaps, all in Central Asia.
+
+\begin{table}[htbp]
+\centering
+\caption{Variable coverage in the panel, 2000--2023}
+\label{tab:missingness}
+\small
+\begin{tabular}{lccl}
+\toprule
+Variable & Present & Missing & Missing country--years \\
+\midrule
+GDP per capita, PPP & 336 & 0 & --- \\
+Urban population (\%) & 336 & 0 & --- \\
+Under-5 mortality & 336 & 0 & --- \\
+Remittances (\% GDP) & 328 & 8 & UZB 2000--04; TJK 2000--01; KGZ 2023 \\
+\bottomrule
+\end{tabular}
+
+\begin{minipage}{\textwidth}\footnotesize
+\vspace{4pt}
+\emph{Note:} All eight missing remittance observations fall in Central Asia. Seven affect the estimation sample (the Kyrgyzstan 2023 value would enter only as a 2024 lag, outside the window). No interpolation is applied.
+\end{minipage}
+\end{table}
+
+% =====================================================================
+\subsection{SMAM sources by country}
+\label{app:smam}
+
+Table~\ref{tab:smam} documents the source, observation year, marital-status definition and computation method for each country's singulate mean age at marriage.
+
+\begin{table}[htbp]
+\centering
+\caption{Female SMAM: sources and comparability}
+\label{tab:smam}
+\small
+\begin{tabular}{lrcll}
+\toprule
+Country & SMAM & Year & Source & Marital basis \\
+\midrule
+\multicolumn{5}{l}{\textit{Central Asia}} \\
+Kazakhstan  & 22.40 & 2015 & UN WMD 2019 & Legal \\
+Kyrgyzstan  & 21.40 & 2018 & Author, MICS6 & Married/in-union \\
+Tajikistan  & 20.70 & 2017 & UN WMD 2019 & Legal \\
+Uzbekistan  & 21.69 & 2022 & Author, MICS6 & Married/in-union \\
+\addlinespace
+\multicolumn{5}{l}{\textit{Eastern European}} \\
+Belarus     & 23.08 & 2019 & Author, MICS6 & Married/in-union \\
+Moldova     & 25.00 & 2014 & UN WMD 2019 & Legal \\
+Russia      & 24.86 & 2021 & Author, Census & Legal \\
+Ukraine     & 23.00 & 2012 & UN WMD 2019 & Legal \\
+\addlinespace
+\multicolumn{5}{l}{\textit{Baltic}} \\
+Estonia     & 33.60 & 2018 & UN WMD 2019 & Legal \\
+Latvia      & 30.40 & 2018 & UN WMD 2019 & Legal \\
+Lithuania   & 32.70 & 2018 & UN WMD 2019 & Legal \\
+\addlinespace
+\multicolumn{5}{l}{\textit{Caucasus}} \\
+Armenia     & 24.10 & 2015 & UN WMD 2019 & Legal \\
+Azerbaijan  & 24.20 & 2018 & UN WMD 2019 & Legal \\
+Georgia     & 22.16 & 2018 & Author, MICS6 & Married/in-union \\
+\bottomrule
+\end{tabular}
+
+\begin{minipage}{\textwidth}\footnotesize
+\vspace{4pt}
+\emph{Note:} UN WMD values are published UN Statistics Division indirect Hajnal estimates from national census or survey tabulations. Author-computed values use the standard \textcite{hajnal1953} formula applied to MICS6 women's survey microdata (Belarus 2019, Georgia 2018, Kyrgyzstan 2018, Uzbekistan 2021--22) or to the 2021 Russian census tabulation. The married/in-union basis typically yields a lower SMAM than the legal-marriage basis where informal or religious unions are common; that gap is expected to be largest for Kyrgyzstan and Uzbekistan. Observation years span 2012--2022.
+\end{minipage}
+\end{table}
+
+% =====================================================================
+\subsection{Sub-group mean fertility}
+\label{app:subgroups}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig3_subgroups}
+  \caption{Mean total fertility rate by sub-group, 2000--2023. The Caucasus sits consistently between Central Asia and the Baltic and Eastern European groups. Source: UN World Population Prospects 2024; author's calculations.}
+  \label{fig:app-subgroups}
+\end{figure}
+
+% =====================================================================
+\subsection{Leave-one-out convergence trends}
+\label{app:loo-convergence}
+
+Table~\ref{tab:loo-convergence} re-fits each bloc's full-period CV trend dropping one country at a time. A trend that loses significance when a single country is removed is country-sensitive rather than a group-wide regularity.
+
+\begin{table}[htbp]
+\centering
+\caption{Leave-one-out $\sigma$-convergence trends by bloc}
+\label{tab:loo-convergence}
+\small
+\begin{tabular}{llrr}
+\toprule
+Bloc & Dropped country & CV slope/yr & p-value \\
+\midrule
+\multicolumn{4}{l}{\textit{Rest of post-Soviet} (baseline: $+0.00163$, $p = 0.025$)} \\
+ & Armenia    & $+0.00155$ & 0.034 \\
+ & Azerbaijan & $+0.00332$ & 0.001 \\
+ & Belarus    & $+0.00177$ & 0.008 \\
+ & Estonia    & $+0.00164$ & 0.047 \\
+ & Georgia    & $+0.00074$ & 0.485 \\
+ & Latvia     & $+0.00191$ & 0.021 \\
+ & Lithuania  & $+0.00168$ & 0.009 \\
+ & Moldova    & $+0.00158$ & 0.023 \\
+ & Russia     & $+0.00198$ & 0.008 \\
+ & Ukraine    & $+0.00026$ & 0.632 \\
+\addlinespace
+\multicolumn{4}{l}{\textit{Central Asia} (baseline: $-0.00751$, $p < 0.001$)} \\
+ & Kazakhstan & $-0.00470$ & $<0.001$ \\
+ & Kyrgyzstan & $-0.01046$ & $<0.001$ \\
+ & Tajikistan & $-0.00205$ & 0.132 \\
+ & Uzbekistan & $-0.01077$ & $<0.001$ \\
+\bottomrule
+\end{tabular}
+
+\begin{minipage}{\textwidth}\footnotesize
+\vspace{4pt}
+\emph{Note:} Newey--West standard errors with four lags. The rest-bloc divergence trend loses significance when Georgia ($p = 0.485$) or Ukraine ($p = 0.632$) is dropped. Central Asia's convergence trend loses significance when Tajikistan is dropped ($p = 0.132$).
+\end{minipage}
+\end{table}
+
+% =====================================================================
+\subsection{Projection sensitivity check}
+\label{app:projection-check}
+
+Table~\ref{tab:proj-check} recomputes the post-2016 dispersion slope and the $\beta$-convergence coefficient on two balanced sub-samples, each holding a fixed country set. Sample A uses all fourteen countries over 2000--2019, a window containing no projected values. Sample B uses the ten countries with a non-projected observation in every year from 2017 to 2022 (Azerbaijan, Estonia, Georgia, Kazakhstan, Kyrgyzstan, Latvia, Lithuania, Moldova, Russia, Uzbekistan), with that set held fixed across all years compared.
+
+\begin{table}[htbp]
+\centering
+\caption{Projection sensitivity: dispersion slopes and $\beta$-convergence}
+\label{tab:proj-check}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Sample & CV slope 2000--16 & CV slope post-2016 & $\beta$ & $n$ \\
+\midrule
+Full (baseline) & $-0.0072$ & $+0.0195$ & $+0.0013$ & 14 \\
+Sample A (2000--19) & $-0.0072$ & $+0.0237$ & $-0.0085$ & 14 \\
+Sample B (interp.\ only) & $-0.0033$ & $+0.0261$ & $+0.0052$ & 10 \\
+\bottomrule
+\end{tabular}
+
+\begin{minipage}{\textwidth}\footnotesize
+\vspace{4pt}
+\emph{Note:} The post-2016 dispersion slope is positive in all three samples. Sample B covers six annual points (2017--2022) and rises monotonically. The $\beta$ sign is not stable, but in all three samples it is small, imprecise and consistent with no detectable catch-up. No p-values are attached; the sub-samples are too small for reliable inference.
+\end{minipage}
+\end{table}
+
+% =====================================================================
+\subsection{Variance inflation factors}
+\label{app:vif}
+
+Table~\ref{tab:vif} reports variance inflation factors for the four lagged controls, computed three ways to locate the source of collinearity.
+
+\begin{table}[htbp]
+\centering
+\caption{Variance inflation factors: pooled, between and within components}
+\label{tab:vif}
+\small
+\begin{tabular}{lrrrl}
+\toprule
+Variable & Pooled & Between & Within & Flag \\
+\midrule
+log GDP p.c.\ PPP (lag) & 5.60 & 14.34 & 3.86 & Between: serious \\
+Urban population \% (lag) & 4.87 & 13.34 & 1.55 & Between: serious \\
+Remittances \% GDP (lag) & 4.13 & 17.05 & 1.39 & Between: serious \\
+Under-5 mortality (lag) & 3.94 & 5.51 & 4.40 & Between: concerning \\
+Central Asia indicator & --- & 3.06 & --- & OK \\
+\bottomrule
+\end{tabular}
+
+\begin{minipage}{\textwidth}\footnotesize
+\vspace{4pt}
+\emph{Note:} Conventional thresholds: VIF $> 5$ concerning, $> 10$ serious. Between-country VIFs for GDP, urbanisation and remittances are all above 10, indicating severe collinearity among country means. Within-country VIFs are all below 5. The Central Asia indicator has a moderate between VIF of 3.06, and its coefficient is stable across pooled and hybrid specifications. The between-country control coefficients in the Mundlak model are individually uninterpretable and are not tabulated in the body.
+\end{minipage}
+\end{table}
+
+% =====================================================================
+\subsection{Leave-one-out regression estimates}
+\label{app:loo-regression}
+
+Table~\ref{tab:loo-m2} re-estimates the controlled difference (M2) dropping one country at a time.
+
+\begin{table}[htbp]
+\centering
+\caption{Leave-one-out: M2 Central Asia coefficient}
+\label{tab:loo-m2}
+\small
+\begin{tabular}{lrrl}
+\toprule
+Dropped country & CA coef. & p-value & $N$ \\
+\midrule
+None (baseline) & $+0.971$ & $<0.001$ & 315 \\
+\addlinespace
+Armenia    & $+0.972$ & $<0.001$ & 292 \\
+Azerbaijan & $+1.054$ & $<0.001$ & 292 \\
+Belarus    & $+0.971$ & $<0.001$ & 292 \\
+Estonia    & $+0.968$ & $<0.001$ & 292 \\
+Georgia    & $+1.041$ & $<0.001$ & 292 \\
+Kazakhstan & $+1.081$ & $<0.001$ & 292 \\
+Kyrgyzstan & $+0.963$ & $<0.001$ & 292 \\
+Latvia     & $+0.969$ & $<0.001$ & 292 \\
+Lithuania  & $+0.968$ & $<0.001$ & 292 \\
+Moldova    & $+0.778$ & $<0.001$ & 292 \\
+Russia     & $+0.959$ & $<0.001$ & 292 \\
+Tajikistan & $+0.951$ & $<0.001$ & 294 \\
+Ukraine    & $+0.955$ & $<0.001$ & 292 \\
+Uzbekistan & $+1.004$ & $<0.001$ & 297 \\
+\bottomrule
+\end{tabular}
+
+\begin{minipage}{\textwidth}\footnotesize
+\vspace{4pt}
+\emph{Note:} Range: $[+0.778, +1.081]$. The coefficient is positive and significant in all fourteen re-estimations. The extremes are Moldova (lowest, $+0.778$) and Kazakhstan (highest, $+1.081$).
+\end{minipage}
+\end{table}
+
+% =====================================================================
+\subsection{Cross-section scatter plots}
+\label{app:crossscatter}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{crosssection_scatter}
+  \caption{Mean total fertility rate 2000--2023 against three country-level indicators ($n = 14$). Left: Muslim population share (Pew 2020). Centre: female singulate mean age at marriage (sources in Table~\ref{tab:smam}). Right: female mean years of schooling (Wittgenstein Centre, SSP2, 2020). Central Asian countries shown as diamonds. Source: author's calculations.}
+  \label{fig:app-crossscatter}
+\end{figure}
