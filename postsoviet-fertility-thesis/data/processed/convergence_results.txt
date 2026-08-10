@@ -95,6 +95,23 @@ A negative, significant slope indicates sigma-convergence.
   alike; a positive slope means they diverged. Note that dispersion can fall
   within a bloc while the gap BETWEEN blocs widens - these are separate facts.
 
+------------------------------------------------------------------------
+War-period sensitivity: CV trend on year <= 2021 vs. full period 2000-2023
+Same Newey-West (HAC, 4 lags) specification as the trend test above.
+
+  All 14 countries          : full = -0.00070 (p=0.758)   <=2021 = -0.00280 (p=0.143)
+  Bloc: Central Asia        : full = -0.00751 (p=0.000)   <=2021 = -0.00815 (p=0.000)
+  Bloc: Rest of post-Soviet : full = +0.00163 (p=0.025)   <=2021 = +0.00068 (p=0.088)
+
+  Excluding the 2022-2023 war-period observations leaves Central Asian
+  convergence essentially unchanged (slope -0.008, p = 0.000). The
+  non-Central-Asian divergence slope weakens (+0.00163 -> +0.00068) and
+  loses conventional significance (p = 0.088). The bifurcation reported
+  above is therefore driven primarily by robust Central Asian convergence;
+  the divergence within the rest of the sample is partly attributable to
+  the 2022-2023 fertility declines and should be interpreted with
+  corresponding caution.
+
 ========================================================================
 (B) BETA-CONVERGENCE — catch-up across the 14 countries
 ========================================================================

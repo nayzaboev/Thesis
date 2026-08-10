@@ -41,6 +41,7 @@ Outputs: data/processed/cv_all.csv
          data/processed/cv_absolute_dispersion.csv
          data/processed/cv_absolute_dispersion_by_bloc.csv
          data/processed/cv_trend_tests.csv
+         data/processed/cv_war_sensitivity.csv
          data/processed/peaks.csv
          data/processed/beta_convergence.csv
          data/processed/projection_sensitivity.csv
@@ -185,6 +186,51 @@ out()
 out("  Reading: a negative slope means the countries in that grouping grew more")
 out("  alike; a positive slope means they diverged. Note that dispersion can fall")
 out("  within a bloc while the gap BETWEEN blocs widens - these are separate facts.")
+
+# --- War-period sensitivity: does excluding 2022-2023 change the trend? ---
+# The 2022-2023 Russian invasion of Ukraine was a region-wide shock (Russian
+# remittance outflows to Central Asia, migration flows, macro conditions
+# across the whole sample), not just a Ukraine-specific event. This re-fits
+# the pooled and by-bloc CV trends above on year <= 2021, same Newey-West
+# (HAC, 4 lags) specification as the full-period trend test, to check whether
+# the bifurcation (CA convergence vs. rest-of-sample divergence) survives
+# dropping the war years.
+out()
+out("-" * 72)
+out("War-period sensitivity: CV trend on year <= 2021 vs. full period 2000-2023")
+out("Same Newey-West (HAC, 4 lags) specification as the trend test above.")
+out()
+
+war_rows = []
+war_labels = ["All 14 countries", "Bloc: Central Asia", "Bloc: Rest of post-Soviet"]
+for label in war_labels:
+    s = series[label]
+    d_full = pd.DataFrame({"cv": s.values, "year": s.index.astype(int)}).dropna()
+    d_full["t"] = d_full["year"] - d_full["year"].min()
+    m_full = smf.ols("cv ~ t", data=d_full).fit(cov_type="HAC", cov_kwds={"maxlags": 4})
+    slope_full, p_full = m_full.params["t"], m_full.pvalues["t"]
+
+    d_war = d_full[d_full.year <= 2021].copy()
+    d_war["t"] = d_war["year"] - d_war["year"].min()
+    m_war = smf.ols("cv ~ t", data=d_war).fit(cov_type="HAC", cov_kwds={"maxlags": 4})
+    slope_war, p_war = m_war.params["t"], m_war.pvalues["t"]
+
+    out(f"  {label:26s}: full = {slope_full:+.5f} (p={p_full:.3f})   "
+        f"<=2021 = {slope_war:+.5f} (p={p_war:.3f})")
+    war_rows.append({"series": label,
+                     "slope_full": round(slope_full, 6), "p_full": round(p_full, 4),
+                     "slope_excl_2022_2023": round(slope_war, 6),
+                     "p_excl_2022_2023": round(p_war, 4)})
+
+out()
+out("  Excluding the 2022-2023 war-period observations leaves Central Asian")
+out("  convergence essentially unchanged (slope -0.008, p = 0.000). The")
+out("  non-Central-Asian divergence slope weakens (+0.00163 -> +0.00068) and")
+out("  loses conventional significance (p = 0.088). The bifurcation reported")
+out("  above is therefore driven primarily by robust Central Asian convergence;")
+out("  the divergence within the rest of the sample is partly attributable to")
+out("  the 2022-2023 fertility declines and should be interpreted with")
+out("  corresponding caution.")
 
 # =========================================================================
 # (B) BETA-CONVERGENCE — do initially high-fertility countries fall faster?
@@ -562,6 +608,7 @@ beta_out[["tfr_start", "tfr_end", "abs_change"]] = \
 beta_out["growth"] = beta_out["growth"].round(5)
 beta_out.to_csv("data/processed/beta_convergence.csv", index=False)
 pd.DataFrame(trend_rows).to_csv("data/processed/cv_trend_tests.csv", index=False)
+pd.DataFrame(war_rows).to_csv("data/processed/cv_war_sensitivity.csv", index=False)
 pd.DataFrame(split_rows).to_csv("data/processed/cv_period_split.csv", index=False)
 pd.DataFrame(loo_conv_rows).to_csv("data/processed/cv_leave_one_out.csv", index=False)
 pd.DataFrame(sensitivity_rows).to_csv("data/processed/projection_sensitivity.csv", index=False)
@@ -574,5 +621,5 @@ with open("data/processed/convergence_results.txt", "w") as f:
 
 out("Saved -> data/processed/cv_all.csv, cv_by_bloc.csv, cv_by_subgroup.csv,")
 out("         cv_absolute_dispersion.csv, cv_absolute_dispersion_by_bloc.csv,")
-out("         cv_trend_tests.csv, peaks.csv, beta_convergence.csv,")
+out("         cv_trend_tests.csv, cv_war_sensitivity.csv, peaks.csv, beta_convergence.csv,")
 out("         projection_sensitivity.csv, convergence_results.txt")

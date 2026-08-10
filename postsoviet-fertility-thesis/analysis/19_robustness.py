@@ -4,7 +4,8 @@
 Robustness checks for the Layer A Central Asia premium.
 
   (A) Leave-one-country-out on M2.
-  (B) Exclusion sensitivity (Ukraine war years, Uzbekistan surge, Tajikistan, Azerbaijan).
+  (B) Exclusion sensitivity (Ukraine war years, Uzbekistan surge, Tajikistan, Azerbaijan,
+      plus period-wide war and war+COVID exclusions across all countries on M1/M2/M2h).
   (C) Descriptive country table: TFR 2000/2010/2017/2023 + period changes.
   (D) Country-mean HC3 inference — collapses to 14 country-level observations
       and applies a small-sample heteroskedasticity correction there. This
@@ -21,6 +22,7 @@ Robustness checks for the Layer A Central Asia premium.
 Outputs:
   data/processed/robustness_leave_one_out.csv
   data/processed/robustness_exclusions.csv
+  data/processed/robustness_war_exclusions.csv
   data/processed/country_tfr_table.csv
   data/processed/robustness_wild_bootstrap.csv
   data/processed/robustness_results.txt
@@ -101,6 +103,48 @@ for label, sub in excl_specs.items():
         f"(SE {m.bse['ca']:.3f}, p={m.pvalues['ca']:.3f}, N={int(m.nobs)})")
 excl_df = pd.DataFrame(excl)
 out("\n  The premium is robust to all four exclusions.")
+
+# --- Period-wide war exclusions ---------------------------------------
+# The check above ("Excl. Ukraine 2022-2023") drops only Ukraine's two
+# war-year observations. The supervisor's request ("post Ukraine war time")
+# is read here as period-wide: the war was a region-wide shock (Russian
+# remittance outflows to Central Asia, migration flows, macro conditions
+# across the whole sample), so these two additional rows drop the WAR YEARS
+# THEMSELVES for ALL 14 countries, not just Ukraine's rows. Reported on the
+# fuller M1/M2/M2h specification set (the four rows above report M2 only).
+out("")
+out("  Period-wide war exclusions (all countries, fuller spec set: M1, M2, M2h):")
+out("")
+war_excl_specs = {
+    "Excl. 2022-2023, all countries (war period)":       sample[sample.year <= 2021],
+    "Excl. 2020-2023, all countries (war + COVID)":       sample[sample.year <= 2019],
+}
+war_excl = []
+for label, sub in war_excl_specs.items():
+    sub_h = sub.copy()
+    for c in CONTROLS:
+        sub_h[f"{c}_mean"] = sub_h.groupby("country")[c].transform("mean")
+        sub_h[f"{c}_dev"]  = sub_h[c] - sub_h[f"{c}_mean"]
+    f_m2h_sub = ("tfr ~ ca + "
+                 + " + ".join([f"{c}_mean" for c in CONTROLS] + [f"{c}_dev" for c in CONTROLS])
+                 + " + C(year)")
+    row = {"specification": label, "n_obs": int(sub["tfr"].notna().sum())}
+    for spec_label, f, d in [("M1", "tfr ~ ca + C(year)", sub),
+                              ("M2", formula, sub),
+                              ("M2h", f_m2h_sub, sub_h)]:
+        m = smf.ols(f, data=d).fit(cov_type="cluster", cov_kwds={"groups": d["country"]})
+        row[f"{spec_label.lower()}_coef"] = round(m.params["ca"], 4)
+        row[f"{spec_label.lower()}_se"] = round(m.bse["ca"], 4)
+        row[f"{spec_label.lower()}_pvalue"] = round(m.pvalues["ca"], 4)
+        row["n_obs"] = int(m.nobs)
+        out(f"  {label:44s} [{spec_label:3s}]: CA = {m.params['ca']:+.3f} "
+            f"(SE {m.bse['ca']:.3f}, p={m.pvalues['ca']:.3f}, N={int(m.nobs)})")
+    war_excl.append(row)
+war_excl_df = pd.DataFrame(war_excl)
+out("")
+out("  READING: the Central Asia premium is robust to period-wide exclusion of the")
+out("  war years and to the harsher war-plus-COVID exclusion; the point estimate on")
+out("  M2h moves from +0.964 to +0.898, all specifications remain significant.")
 
 # ---------------------------------------------------------------- (C)
 out("\n" + "=" * 70)
@@ -398,11 +442,12 @@ boot_df.loc[boot_df.specification == "M2h Mundlak CA premium", "p_exact_rademach
 os.makedirs("data/processed", exist_ok=True)
 loo_df.to_csv("data/processed/robustness_leave_one_out.csv", index=False)
 excl_df.to_csv("data/processed/robustness_exclusions.csv", index=False)
+war_excl_df.to_csv("data/processed/robustness_war_exclusions.csv", index=False)
 piv.to_csv("data/processed/country_tfr_table.csv")
 boot_df.to_csv("data/processed/robustness_wild_bootstrap.csv", index=False)
 with open("data/processed/robustness_results.txt", "w") as f:
     f.write("ROBUSTNESS — leave-one-out, exclusions, descriptive table, HC3 inference, "
             "permutation test, interaction fragility\n\n")
     f.write("\n".join(lines))
-out("\nSaved -> data/processed/robustness_{leave_one_out,exclusions}.csv, "
+out("\nSaved -> data/processed/robustness_{leave_one_out,exclusions,war_exclusions}.csv, "
     "country_tfr_table.csv, robustness_results.txt")

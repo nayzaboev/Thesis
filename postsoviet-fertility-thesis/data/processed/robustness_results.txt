@@ -35,6 +35,19 @@ Baseline M2 (14 countries, N=315): CA = +0.971 (p=0.000)
 
   The premium is robust to all four exclusions.
 
+  Period-wide war exclusions (all countries, fuller spec set: M1, M2, M2h):
+
+  Excl. 2022-2023, all countries (war period)  [M1 ]: CA = +1.282 (SE 0.181, p=0.000, N=287)
+  Excl. 2022-2023, all countries (war period)  [M2 ]: CA = +0.916 (SE 0.129, p=0.000, N=287)
+  Excl. 2022-2023, all countries (war period)  [M2h]: CA = +0.898 (SE 0.136, p=0.000, N=287)
+  Excl. 2020-2023, all countries (war + COVID) [M1 ]: CA = +1.250 (SE 0.201, p=0.000, N=259)
+  Excl. 2020-2023, all countries (war + COVID) [M2 ]: CA = +0.860 (SE 0.141, p=0.000, N=259)
+  Excl. 2020-2023, all countries (war + COVID) [M2h]: CA = +0.846 (SE 0.138, p=0.000, N=259)
+
+  READING: the Central Asia premium is robust to period-wide exclusion of the
+  war years and to the harsher war-plus-COVID exclusion; the point estimate on
+  M2h moves from +0.964 to +0.898, all specifications remain significant.
+
 ======================================================================
 (C) DESCRIPTIVE COUNTRY TABLE — TFR at key time points
 ======================================================================

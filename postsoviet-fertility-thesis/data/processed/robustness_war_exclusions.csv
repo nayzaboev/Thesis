@@ -1,0 +1,3 @@
+specification,n_obs,m1_coef,m1_se,m1_pvalue,m2_coef,m2_se,m2_pvalue,m2h_coef,m2h_se,m2h_pvalue
+"Excl. 2022-2023, all countries (war period)",287,1.2815,0.1809,0.0,0.9159,0.1292,0.0,0.8975,0.1358,0.0
+"Excl. 2020-2023, all countries (war + COVID)",259,1.2497,0.2005,0.0,0.8597,0.1411,0.0,0.8464,0.138,0.0
