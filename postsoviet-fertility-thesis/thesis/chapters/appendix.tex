@@ -7,6 +7,15 @@
 \appendix
 \section{Appendix}
 
+% Force every pending figure/table to place before the subsection heading
+% that introduces it, so no appendix subsection ever appears after its own
+% float has already floated onto an earlier page. Scoped to this file only:
+% \subsection is restored to its normal definition nowhere, but chapters 1-7
+% are typeset (and their \subsection calls already resolved) before this
+% file is \input, so the redefinition has no effect outside the appendix.
+\let\oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\oldsubsection}
+
 % =====================================================================
 \subsection{Descriptive statistics}
 \label{app:summary-stats}
@@ -211,22 +220,22 @@ Table~\ref{tab:loo-m2} re-estimates the controlled difference (M2) dropping one 
 \toprule
 Dropped country & CA coef. & Exact $p$ & $N$ \\
 \midrule
-None (baseline) & $+0.971$ & $<0.001$ & 315 \\
+None (baseline) & $+0.971$ & 0.0054 & 315 \\
 \addlinespace
 Armenia    & $+0.972$ & 0.0055 & 292 \\
-Azerbaijan & $+1.054$ & 0.0001 & 292 \\
-Belarus    & $+0.971$ & 0.0081 & 292 \\
+Azerbaijan & $+1.054$ & 0.0000 & 292 \\
+Belarus    & $+0.971$ & 0.0083 & 292 \\
 Estonia    & $+0.968$ & 0.0034 & 292 \\
 Georgia    & $+1.041$ & 0.0153 & 292 \\
-Kazakhstan & $+1.081$ & 0.0002 & 292 \\
+Kazakhstan & $+1.081$ & 0.0001 & 292 \\
 Kyrgyzstan & $+0.963$ & 0.0081 & 292 \\
 Latvia     & $+0.969$ & 0.0057 & 292 \\
-Lithuania  & $+0.968$ & 0.0082 & 292 \\
-Moldova    & $+0.778$ & 0.0024 & 292 \\
-Russia     & $+0.959$ & 0.0088 & 292 \\
+Lithuania  & $+0.968$ & 0.0081 & 292 \\
+Moldova    & $+0.778$ & 0.0023 & 292 \\
+Russia     & $+0.959$ & 0.0087 & 292 \\
 Tajikistan & $+0.951$ & 0.0065 & 294 \\
 Ukraine    & $+0.955$ & 0.0045 & 292 \\
-Uzbekistan & $+1.004$ & 0.0173 & 297 \\
+Uzbekistan & $+1.004$ & 0.0175 & 297 \\
 \bottomrule
 \end{tabular}
 
@@ -256,7 +265,7 @@ Baseline (all data)               & $+0.971$ & (0.118) & 0.0054 & 315 \\
 Excl.\ Ukraine 2022--2023 (war)    & $+0.965$ & (0.114) & 0.0054 & 313 \\
 Excl.\ Uzbekistan 2018--2023 (surge) & $+0.938$ & (0.126) & 0.0032 & 309 \\
 Excl.\ Tajikistan entirely         & $+0.951$ & (0.117) & 0.0065 & 294 \\
-Excl.\ Azerbaijan entirely         & $+1.054$ & (0.134) & 0.0001 & 292 \\
+Excl.\ Azerbaijan entirely         & $+1.054$ & (0.134) & 0.0000 & 292 \\
 \addlinespace
 \multicolumn{5}{l}{\emph{Panel B: period-wide exclusions, all countries}} \\
 Excl.\ 2022--2023 (war period), M1  & $+1.282$ & (0.181) & 0.0001 & 287 \\
@@ -270,7 +279,7 @@ Excl.\ 2020--2023 (war + COVID), M2h & $+0.846$ & (0.138) & 0.0607 & 259 \\
 
 \begin{minipage}{\textwidth}\footnotesize
 \vspace{4pt}
-\emph{Note:} $p$-values reported are exact Rademacher wild-cluster $p$-values from full enumeration of all $2^{14} = 16{,}384$ sign assignments, matching the inference standard used for the headline M2h coefficient in Chapter~\ref{sec:premium}. Panel A drops country-episodes from the controlled specification of equation~\eqref{eq:m2}. Panel B removes the stated years for every country, leaving the primary hybrid estimate at $+0.898$ under the milder cut against $+0.964$ in the full sample; the M1 and M2 estimates clear five per cent under both cuts, but the M2h estimate does not. The corresponding check on the descriptive dispersion trends appears in Section~\ref{sec:desc-robust}: Central Asian internal convergence is unaffected, while the divergence among the other ten countries weakens from $+0.0016$ to $+0.0007$ per year and falls below conventional significance ($p=0.088$).
+\emph{Note:} Exact $p$-values enumerate all $2^G$ Rademacher sign assignments, where $G$ is the number of countries retained: 14 in the baseline, the year-restricted exclusions and the period-wide exclusions, and 13 where an entire country is removed. Panel A drops country-episodes from the controlled specification of equation~\eqref{eq:m2}. Panel B removes the stated years for every country, leaving the primary hybrid estimate at $+0.898$ under the milder cut against $+0.964$ in the full sample; the M1 and M2 estimates clear five per cent under both cuts, but the M2h estimate does not. The corresponding check on the descriptive dispersion trends appears in Section~\ref{sec:desc-robust}: Central Asian internal convergence is unaffected, while the divergence among the other ten countries weakens from $+0.0016$ to $+0.0007$ per year and falls below conventional significance ($p=0.088$). Boundary ties in the enumeration can shift the fourth decimal place of an exact $p$-value by one or two sign assignments across BLAS builds; this has no bearing on any inference reported here.
 \end{minipage}
 \end{table}
 
@@ -281,6 +290,6 @@ Excl.\ 2020--2023 (war + COVID), M2h & $+0.846$ & (0.138) & 0.0607 & 259 \\
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{crosssection_scatter}
-  \caption{Mean total fertility rate 2000--2023 against three country-level indicators ($n = 14$). Left: Muslim population share (Pew 2020). Centre: female singulate mean age at marriage (sources in Table~\ref{tab:smam}). Right: female mean years of schooling (Wittgenstein Centre, SSP2, 2020). Central Asian countries shown as diamonds. Source: author's calculations.}
+  \caption{Mean total fertility rate 2000--2023 against three country-level indicators ($n = 14$). Left: Muslim population share, 2020 (\textcite{pew2025}). Centre: female singulate mean age at marriage (sources in Table~\ref{tab:smam}). Right: female mean years of schooling (Wittgenstein Centre, SSP2, 2020). Central Asian countries shown as diamonds. Source: author's calculations.}
   \label{fig:app-crossscatter}
 \end{figure}
