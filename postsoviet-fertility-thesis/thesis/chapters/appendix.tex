@@ -229,6 +229,44 @@ Uzbekistan & $+1.004$ & $<0.001$ & 297 \\
 \end{table}
 
 % =====================================================================
+\subsection{Exclusion and war-period robustness}
+\label{app:exclusions}
+
+Table~\ref{tab:exclusions} reports the targeted exclusions and the period-wide war exclusions discussed in Section~\ref{sec:robustness}. The upper panel drops specific country-episodes from the controlled specification. The lower panel removes the war years for all fourteen countries simultaneously, since the 2022 invasion of Ukraine was a regional rather than a national shock, and reports all three between-country specifications.
+
+\begin{table}[htbp]
+\centering
+\caption{Exclusion sensitivity and period-wide war exclusions}
+\label{tab:exclusions}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Specification & CA coef. & (SE) & $N$ \\
+\midrule
+\multicolumn{4}{l}{\emph{Panel A: targeted exclusions (M2)}} \\
+Baseline (all data)               & $+0.971$ & (0.118) & 315 \\
+Excl.\ Ukraine 2022--2023 (war)    & $+0.965$ & (0.114) & 313 \\
+Excl.\ Uzbekistan 2018--2023 (surge) & $+0.938$ & (0.126) & 309 \\
+Excl.\ Tajikistan entirely         & $+0.951$ & (0.117) & 294 \\
+Excl.\ Azerbaijan entirely         & $+1.054$ & (0.134) & 292 \\
+\addlinespace
+\multicolumn{4}{l}{\emph{Panel B: period-wide exclusions, all countries}} \\
+Excl.\ 2022--2023 (war period), M1  & $+1.282$ & (0.181) & 287 \\
+Excl.\ 2022--2023 (war period), M2  & $+0.916$ & (0.129) & 287 \\
+Excl.\ 2022--2023 (war period), M2h & $+0.898$ & (0.136) & 287 \\
+Excl.\ 2020--2023 (war + COVID), M1  & $+1.250$ & (0.201) & 259 \\
+Excl.\ 2020--2023 (war + COVID), M2  & $+0.860$ & (0.141) & 259 \\
+Excl.\ 2020--2023 (war + COVID), M2h & $+0.846$ & (0.138) & 259 \\
+\bottomrule
+\end{tabular}
+
+\begin{minipage}{\textwidth}\footnotesize
+\vspace{4pt}
+\emph{Note:} All coefficients significant at $p<0.001$ on clustered standard errors. Panel A drops country-episodes from the controlled specification of equation~\eqref{eq:m2}. Panel B removes the stated years for every country, leaving the primary hybrid estimate at $+0.898$ under the milder cut against $+0.964$ in the full sample. The corresponding check on the descriptive dispersion trends appears in Section~\ref{sec:desc-robust}: Central Asian internal convergence is unaffected, while the divergence among the other ten countries weakens from $+0.0016$ to $+0.0007$ per year and falls below conventional significance ($p=0.088$).
+\end{minipage}
+\end{table}
+
+% =====================================================================
 \subsection{Cross-section scatter plots}
 \label{app:crossscatter}
 

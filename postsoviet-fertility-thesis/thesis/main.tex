@@ -34,6 +34,19 @@
 \usepackage{float}
 \usepackage[hyphens]{url}
 
+% --- Bonn font sizes for non-body text ---------------------------------
+%  Guidelines: tables, captions and references 10pt on 15pt leading;
+%  footnotes 9pt on 13.5pt. The body remains 11pt on 19.5pt (setstretch above).
+\usepackage{caption}
+\DeclareCaptionFont{bonncap}{\fontsize{10pt}{15pt}\selectfont}
+\captionsetup{font=bonncap, labelfont=bf, skip=6pt}
+
+% Footnotes: 9pt on 13.5pt
+\renewcommand{\footnotesize}{\fontsize{9pt}{13.5pt}\selectfont}
+
+% Reference list: 10pt on 15pt
+\AtBeginBibliography{\fontsize{10pt}{15pt}\selectfont}
+
 % --- Figures live one level up, shared with the analysis pipeline ---
 \graphicspath{{../figures/}}
 
