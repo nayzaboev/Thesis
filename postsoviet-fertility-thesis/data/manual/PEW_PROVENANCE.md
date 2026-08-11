@@ -5,6 +5,10 @@
 - **Dataset title:** Religious Composition by Country, 2010-2020 (Pew Research
   Center, Pew-Templeton Global Religious Futures project), accompanying the
   report "How the Global Religious Landscape Changed From 2010 to 2020."
+- **Cited in thesis as:** Hackett, Conrad, Marcin Stonawski, Yunping Tong,
+  Stephanie Kramer, Anne Fengyan Shi and Nick Zanetti. 2025. "Religious
+  Composition by Country, 2010-2020." Pew Research Center. (BibTeX key
+  `pew2025`; dataset first published 9 June 2025.)
 - **URL:** https://www.pewresearch.org/religion/feature/religious-composition-by-country-2010-2020/
 - **File used:** `Religious Composition 2010-2020 (percentages).csv`, one of
   four CSVs bundled in the dataset ZIP downloaded from that page
