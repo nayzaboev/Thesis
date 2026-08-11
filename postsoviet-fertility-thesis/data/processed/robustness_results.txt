@@ -5,20 +5,20 @@ ROBUSTNESS — leave-one-out, exclusions, descriptive table, HC3 inference, perm
 ======================================================================
 Baseline M2 (14 countries, N=315): CA = +0.971 (p=0.000)
 
-  Drop Armenia       : CA = +0.972  (p=0.000, N=292, exact p=0.0055)
-  Drop Azerbaijan    : CA = +1.054  (p=0.000, N=292, exact p=0.0000)
+  Drop Armenia       : CA = +0.972  (p=0.000, N=292, exact p=0.0056)
+  Drop Azerbaijan    : CA = +1.054  (p=0.000, N=292, exact p=0.0002)
   Drop Belarus       : CA = +0.971  (p=0.000, N=292, exact p=0.0083)
-  Drop Estonia       : CA = +0.968  (p=0.000, N=292, exact p=0.0034)
-  Drop Georgia       : CA = +1.041  (p=0.000, N=292, exact p=0.0153)
-  Drop Kazakhstan    : CA = +1.081  (p=0.000, N=292, exact p=0.0001)
-  Drop Kyrgyzstan    : CA = +0.963  (p=0.000, N=292, exact p=0.0081)
-  Drop Latvia        : CA = +0.969  (p=0.000, N=292, exact p=0.0057)
-  Drop Lithuania     : CA = +0.968  (p=0.000, N=292, exact p=0.0081)
-  Drop Moldova       : CA = +0.778  (p=0.000, N=292, exact p=0.0023)
-  Drop Russia        : CA = +0.959  (p=0.000, N=292, exact p=0.0087)
-  Drop Tajikistan    : CA = +0.951  (p=0.000, N=294, exact p=0.0065)
-  Drop Ukraine       : CA = +0.955  (p=0.000, N=292, exact p=0.0045)
-  Drop Uzbekistan    : CA = +1.004  (p=0.000, N=297, exact p=0.0175)
+  Drop Estonia       : CA = +0.968  (p=0.000, N=292, exact p=0.0037)
+  Drop Georgia       : CA = +1.041  (p=0.000, N=292, exact p=0.0154)
+  Drop Kazakhstan    : CA = +1.081  (p=0.000, N=292, exact p=0.0002)
+  Drop Kyrgyzstan    : CA = +0.963  (p=0.000, N=292, exact p=0.0083)
+  Drop Latvia        : CA = +0.969  (p=0.000, N=292, exact p=0.0059)
+  Drop Lithuania     : CA = +0.968  (p=0.000, N=292, exact p=0.0083)
+  Drop Moldova       : CA = +0.778  (p=0.000, N=292, exact p=0.0024)
+  Drop Russia        : CA = +0.959  (p=0.000, N=292, exact p=0.0088)
+  Drop Tajikistan    : CA = +0.951  (p=0.000, N=294, exact p=0.0066)
+  Drop Ukraine       : CA = +0.955  (p=0.000, N=292, exact p=0.0046)
+  Drop Uzbekistan    : CA = +1.004  (p=0.000, N=297, exact p=0.0176)
 
   Range: [+0.778, +1.081]
   The premium is not driven by any single country: the coefficient stays
@@ -27,22 +27,22 @@ Baseline M2 (14 countries, N=315): CA = +0.971 (p=0.000)
 ======================================================================
 (B) EXCLUSION SENSITIVITY
 ======================================================================
-  Baseline (all data)                   : CA = +0.971 (SE 0.118, p=0.000, N=315, exact p=0.0054)
+  Baseline (all data)                   : CA = +0.971 (SE 0.118, p=0.000, N=315, exact p=0.0055)
   Excl. Ukraine 2022-2023 (war)         : CA = +0.965 (SE 0.114, p=0.000, N=313, exact p=0.0054)
-  Excl. Uzbekistan 2018-2023 (surge)    : CA = +0.938 (SE 0.126, p=0.000, N=309, exact p=0.0032)
-  Excl. Tajikistan entirely             : CA = +0.951 (SE 0.117, p=0.000, N=294, exact p=0.0065)
-  Excl. Azerbaijan entirely             : CA = +1.054 (SE 0.134, p=0.000, N=292, exact p=0.0000)
+  Excl. Uzbekistan 2018-2023 (surge)    : CA = +0.938 (SE 0.126, p=0.000, N=309, exact p=0.0033)
+  Excl. Tajikistan entirely             : CA = +0.951 (SE 0.117, p=0.000, N=294, exact p=0.0066)
+  Excl. Azerbaijan entirely             : CA = +1.054 (SE 0.134, p=0.000, N=292, exact p=0.0002)
 
   The premium is robust to all four exclusions.
 
   Period-wide war exclusions (all countries, fuller spec set: M1, M2, M2h):
 
   Excl. 2022-2023, all countries (war period)  [M1 ]: CA = +1.282 (SE 0.181, p=0.000, N=287, exact p=0.0001)
-  Excl. 2022-2023, all countries (war period)  [M2 ]: CA = +0.916 (SE 0.129, p=0.000, N=287, exact p=0.0072)
+  Excl. 2022-2023, all countries (war period)  [M2 ]: CA = +0.916 (SE 0.129, p=0.000, N=287, exact p=0.0073)
   Excl. 2022-2023, all countries (war period)  [M2h]: CA = +0.898 (SE 0.136, p=0.000, N=287, exact p=0.0507)
   Excl. 2020-2023, all countries (war + COVID) [M1 ]: CA = +1.250 (SE 0.201, p=0.000, N=259, exact p=0.0001)
   Excl. 2020-2023, all countries (war + COVID) [M2 ]: CA = +0.860 (SE 0.141, p=0.000, N=259, exact p=0.0139)
-  Excl. 2020-2023, all countries (war + COVID) [M2h]: CA = +0.846 (SE 0.138, p=0.000, N=259, exact p=0.0607)
+  Excl. 2020-2023, all countries (war + COVID) [M2h]: CA = +0.846 (SE 0.138, p=0.000, N=259, exact p=0.0608)
 
   READING: the Central Asia premium is robust to period-wide exclusion of the
   war years and to the harsher war-plus-COVID exclusion; the point estimate on
@@ -140,7 +140,7 @@ B = 1999 replications. Reference: Cameron, Gelbach & Miller (2008).
 
   Exact Rademacher enumeration (M2h 'ca' coefficient, 2^14 = 16,384 sign
   assignments — no Monte Carlo error):
-    t_obs = +6.873   exact p = 0.0329  (enumerated all 16,384 sign patterns)
+    t_obs = +6.873   exact p = 0.0330  (enumerated all 16,384 sign patterns)
     Seeded 1999-draw Monte Carlo wild-cluster bootstrap (above): p = 0.033
     The exact and simulated p-values agree closely, confirming B=1999 draws
     were already sufficient and there is no residual simulation error in

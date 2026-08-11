@@ -107,7 +107,12 @@ def exact_rademacher_pvalue(data, formula, coef_name):
     beta_k_star = Beta_star[k_idx, :]                           # (2^G,)
     t_star = cluster_t(beta_k_star, Ustar)                      # (2^G,)
 
-    p_exact = float(np.mean(np.abs(t_star) >= abs(t_obs)))
+    # Ties with the observed statistic are counted as extreme. The all-(+1)
+    # and all-(-1) sign assignments reconstruct |t_obs| exactly, so the exact
+    # p-value has a floor of 2/2^G; a strict comparison drops one of the two
+    # depending on floating-point rounding.
+    TIE_TOL = 1e-9
+    p_exact = float(np.mean(np.abs(t_star) >= abs(t_obs) * (1 - TIE_TOL)))
     return t_obs, p_exact, 2 ** G
 
 

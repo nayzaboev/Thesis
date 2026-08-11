@@ -220,28 +220,28 @@ Table~\ref{tab:loo-m2} re-estimates the controlled difference (M2) dropping one 
 \toprule
 Dropped country & CA coef. & Exact $p$ & $N$ \\
 \midrule
-None (baseline) & $+0.971$ & 0.0054 & 315 \\
+None (baseline) & $+0.971$ & 0.0055 & 315 \\
 \addlinespace
-Armenia    & $+0.972$ & 0.0055 & 292 \\
-Azerbaijan & $+1.054$ & 0.0000 & 292 \\
+Armenia    & $+0.972$ & 0.0056 & 292 \\
+Azerbaijan & $+1.054$ & 0.0002 & 292 \\
 Belarus    & $+0.971$ & 0.0083 & 292 \\
-Estonia    & $+0.968$ & 0.0034 & 292 \\
-Georgia    & $+1.041$ & 0.0153 & 292 \\
-Kazakhstan & $+1.081$ & 0.0001 & 292 \\
-Kyrgyzstan & $+0.963$ & 0.0081 & 292 \\
-Latvia     & $+0.969$ & 0.0057 & 292 \\
-Lithuania  & $+0.968$ & 0.0081 & 292 \\
-Moldova    & $+0.778$ & 0.0023 & 292 \\
-Russia     & $+0.959$ & 0.0087 & 292 \\
-Tajikistan & $+0.951$ & 0.0065 & 294 \\
-Ukraine    & $+0.955$ & 0.0045 & 292 \\
-Uzbekistan & $+1.004$ & 0.0175 & 297 \\
+Estonia    & $+0.968$ & 0.0037 & 292 \\
+Georgia    & $+1.041$ & 0.0154 & 292 \\
+Kazakhstan & $+1.081$ & 0.0002 & 292 \\
+Kyrgyzstan & $+0.963$ & 0.0083 & 292 \\
+Latvia     & $+0.969$ & 0.0059 & 292 \\
+Lithuania  & $+0.968$ & 0.0083 & 292 \\
+Moldova    & $+0.778$ & 0.0024 & 292 \\
+Russia     & $+0.959$ & 0.0088 & 292 \\
+Tajikistan & $+0.951$ & 0.0066 & 294 \\
+Ukraine    & $+0.955$ & 0.0046 & 292 \\
+Uzbekistan & $+1.004$ & 0.0176 & 297 \\
 \bottomrule
 \end{tabular}
 
 \begin{minipage}{\textwidth}\footnotesize
 \vspace{4pt}
-\emph{Note:} Range: $[+0.778, +1.081]$. The coefficient is positive in all fourteen re-estimations, with exact Rademacher $p$-values below $0.02$ throughout. The extremes are Moldova (lowest, $+0.778$) and Kazakhstan (highest, $+1.081$).
+\emph{Note:} Range: $[+0.778, +1.081]$. The coefficient is positive in all fourteen re-estimations, with exact Rademacher $p$-values below $0.02$ throughout. The extremes are Moldova (lowest, $+0.778$) and Kazakhstan (highest, $+1.081$). Ties with the observed statistic are counted as extreme, so the exact $p$-value has a floor of $2/2^G$. Residual boundary sensitivity may shift the fourth decimal place by one sign assignment across BLAS builds, with no bearing on any inference reported here.
 \end{minipage}
 \end{table}
 
@@ -261,25 +261,25 @@ Table~\ref{tab:exclusions} reports the targeted exclusions and the period-wide w
 Specification & CA coef. & (SE) & Exact $p$ & $N$ \\
 \midrule
 \multicolumn{5}{l}{\emph{Panel A: targeted exclusions (M2)}} \\
-Baseline (all data)               & $+0.971$ & (0.118) & 0.0054 & 315 \\
+Baseline (all data)               & $+0.971$ & (0.118) & 0.0055 & 315 \\
 Excl.\ Ukraine 2022--2023 (war)    & $+0.965$ & (0.114) & 0.0054 & 313 \\
-Excl.\ Uzbekistan 2018--2023 (surge) & $+0.938$ & (0.126) & 0.0032 & 309 \\
-Excl.\ Tajikistan entirely         & $+0.951$ & (0.117) & 0.0065 & 294 \\
-Excl.\ Azerbaijan entirely         & $+1.054$ & (0.134) & 0.0000 & 292 \\
+Excl.\ Uzbekistan 2018--2023 (surge) & $+0.938$ & (0.126) & 0.0033 & 309 \\
+Excl.\ Tajikistan entirely         & $+0.951$ & (0.117) & 0.0066 & 294 \\
+Excl.\ Azerbaijan entirely         & $+1.054$ & (0.134) & 0.0002 & 292 \\
 \addlinespace
 \multicolumn{5}{l}{\emph{Panel B: period-wide exclusions, all countries}} \\
 Excl.\ 2022--2023 (war period), M1  & $+1.282$ & (0.181) & 0.0001 & 287 \\
-Excl.\ 2022--2023 (war period), M2  & $+0.916$ & (0.129) & 0.0072 & 287 \\
+Excl.\ 2022--2023 (war period), M2  & $+0.916$ & (0.129) & 0.0073 & 287 \\
 Excl.\ 2022--2023 (war period), M2h & $+0.898$ & (0.136) & 0.0507 & 287 \\
 Excl.\ 2020--2023 (war + COVID), M1  & $+1.250$ & (0.201) & 0.0001 & 259 \\
 Excl.\ 2020--2023 (war + COVID), M2  & $+0.860$ & (0.141) & 0.0139 & 259 \\
-Excl.\ 2020--2023 (war + COVID), M2h & $+0.846$ & (0.138) & 0.0607 & 259 \\
+Excl.\ 2020--2023 (war + COVID), M2h & $+0.846$ & (0.138) & 0.0608 & 259 \\
 \bottomrule
 \end{tabular}
 
 \begin{minipage}{\textwidth}\footnotesize
 \vspace{4pt}
-\emph{Note:} Exact $p$-values enumerate all $2^G$ Rademacher sign assignments, where $G$ is the number of countries retained: 14 in the baseline, the year-restricted exclusions and the period-wide exclusions, and 13 where an entire country is removed. Panel A drops country-episodes from the controlled specification of equation~\eqref{eq:m2}. Panel B removes the stated years for every country, leaving the primary hybrid estimate at $+0.898$ under the milder cut against $+0.964$ in the full sample; the M1 and M2 estimates clear five per cent under both cuts, but the M2h estimate does not. The corresponding check on the descriptive dispersion trends appears in Section~\ref{sec:desc-robust}: Central Asian internal convergence is unaffected, while the divergence among the other ten countries weakens from $+0.0016$ to $+0.0007$ per year and falls below conventional significance ($p=0.088$). Boundary ties in the enumeration can shift the fourth decimal place of an exact $p$-value by one or two sign assignments across BLAS builds; this has no bearing on any inference reported here.
+\emph{Note:} Exact $p$-values enumerate all $2^G$ Rademacher sign assignments, where $G$ is the number of countries retained: 14 in the baseline, the year-restricted exclusions and the period-wide exclusions, and 13 where an entire country is removed. Panel A drops country-episodes from the controlled specification of equation~\eqref{eq:m2}. Panel B removes the stated years for every country, leaving the primary hybrid estimate at $+0.898$ under the milder cut against $+0.964$ in the full sample; the M1 and M2 estimates clear five per cent under both cuts, but the M2h estimate does not. The corresponding check on the descriptive dispersion trends appears in Section~\ref{sec:desc-robust}: Central Asian internal convergence is unaffected, while the divergence among the other ten countries weakens from $+0.0016$ to $+0.0007$ per year and falls below conventional significance ($p=0.088$). Exact $p$-values follow the tie convention described under Table~\ref{tab:loo-m2}.
 \end{minipage}
 \end{table}
 
