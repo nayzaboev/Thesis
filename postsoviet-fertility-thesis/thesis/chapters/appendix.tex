@@ -8,6 +8,14 @@
 \section{Appendix}
 
 % =====================================================================
+\subsection{Descriptive statistics}
+\label{app:summary-stats}
+
+Table~\ref{tab:summary_stats} reports summary statistics for the dependent variable and the four control variables across all 336 country--year observations (328 for remittances, which has eight missing values). GDP per capita enters the regressions in logs.
+
+\input{tables/tab_summary_stats}
+
+% =====================================================================
 \subsection{Missing observations}
 \label{app:missingness}
 
@@ -201,30 +209,30 @@ Table~\ref{tab:loo-m2} re-estimates the controlled difference (M2) dropping one 
 \small
 \begin{tabular}{lrrl}
 \toprule
-Dropped country & CA coef. & p-value & $N$ \\
+Dropped country & CA coef. & Exact $p$ & $N$ \\
 \midrule
 None (baseline) & $+0.971$ & $<0.001$ & 315 \\
 \addlinespace
-Armenia    & $+0.972$ & $<0.001$ & 292 \\
-Azerbaijan & $+1.054$ & $<0.001$ & 292 \\
-Belarus    & $+0.971$ & $<0.001$ & 292 \\
-Estonia    & $+0.968$ & $<0.001$ & 292 \\
-Georgia    & $+1.041$ & $<0.001$ & 292 \\
-Kazakhstan & $+1.081$ & $<0.001$ & 292 \\
-Kyrgyzstan & $+0.963$ & $<0.001$ & 292 \\
-Latvia     & $+0.969$ & $<0.001$ & 292 \\
-Lithuania  & $+0.968$ & $<0.001$ & 292 \\
-Moldova    & $+0.778$ & $<0.001$ & 292 \\
-Russia     & $+0.959$ & $<0.001$ & 292 \\
-Tajikistan & $+0.951$ & $<0.001$ & 294 \\
-Ukraine    & $+0.955$ & $<0.001$ & 292 \\
-Uzbekistan & $+1.004$ & $<0.001$ & 297 \\
+Armenia    & $+0.972$ & 0.0055 & 292 \\
+Azerbaijan & $+1.054$ & 0.0001 & 292 \\
+Belarus    & $+0.971$ & 0.0081 & 292 \\
+Estonia    & $+0.968$ & 0.0034 & 292 \\
+Georgia    & $+1.041$ & 0.0153 & 292 \\
+Kazakhstan & $+1.081$ & 0.0002 & 292 \\
+Kyrgyzstan & $+0.963$ & 0.0081 & 292 \\
+Latvia     & $+0.969$ & 0.0057 & 292 \\
+Lithuania  & $+0.968$ & 0.0082 & 292 \\
+Moldova    & $+0.778$ & 0.0024 & 292 \\
+Russia     & $+0.959$ & 0.0088 & 292 \\
+Tajikistan & $+0.951$ & 0.0065 & 294 \\
+Ukraine    & $+0.955$ & 0.0045 & 292 \\
+Uzbekistan & $+1.004$ & 0.0173 & 297 \\
 \bottomrule
 \end{tabular}
 
 \begin{minipage}{\textwidth}\footnotesize
 \vspace{4pt}
-\emph{Note:} Range: $[+0.778, +1.081]$. The coefficient is positive and significant in all fourteen re-estimations. The extremes are Moldova (lowest, $+0.778$) and Kazakhstan (highest, $+1.081$).
+\emph{Note:} Range: $[+0.778, +1.081]$. The coefficient is positive in all fourteen re-estimations, with exact Rademacher $p$-values below $0.02$ throughout. The extremes are Moldova (lowest, $+0.778$) and Kazakhstan (highest, $+1.081$).
 \end{minipage}
 \end{table}
 
@@ -239,30 +247,30 @@ Table~\ref{tab:exclusions} reports the targeted exclusions and the period-wide w
 \caption{Exclusion sensitivity and period-wide war exclusions}
 \label{tab:exclusions}
 \small
-\begin{tabular}{lrrr}
+\begin{tabular}{lrrrr}
 \toprule
-Specification & CA coef. & (SE) & $N$ \\
+Specification & CA coef. & (SE) & Exact $p$ & $N$ \\
 \midrule
-\multicolumn{4}{l}{\emph{Panel A: targeted exclusions (M2)}} \\
-Baseline (all data)               & $+0.971$ & (0.118) & 315 \\
-Excl.\ Ukraine 2022--2023 (war)    & $+0.965$ & (0.114) & 313 \\
-Excl.\ Uzbekistan 2018--2023 (surge) & $+0.938$ & (0.126) & 309 \\
-Excl.\ Tajikistan entirely         & $+0.951$ & (0.117) & 294 \\
-Excl.\ Azerbaijan entirely         & $+1.054$ & (0.134) & 292 \\
+\multicolumn{5}{l}{\emph{Panel A: targeted exclusions (M2)}} \\
+Baseline (all data)               & $+0.971$ & (0.118) & 0.0054 & 315 \\
+Excl.\ Ukraine 2022--2023 (war)    & $+0.965$ & (0.114) & 0.0054 & 313 \\
+Excl.\ Uzbekistan 2018--2023 (surge) & $+0.938$ & (0.126) & 0.0032 & 309 \\
+Excl.\ Tajikistan entirely         & $+0.951$ & (0.117) & 0.0065 & 294 \\
+Excl.\ Azerbaijan entirely         & $+1.054$ & (0.134) & 0.0001 & 292 \\
 \addlinespace
-\multicolumn{4}{l}{\emph{Panel B: period-wide exclusions, all countries}} \\
-Excl.\ 2022--2023 (war period), M1  & $+1.282$ & (0.181) & 287 \\
-Excl.\ 2022--2023 (war period), M2  & $+0.916$ & (0.129) & 287 \\
-Excl.\ 2022--2023 (war period), M2h & $+0.898$ & (0.136) & 287 \\
-Excl.\ 2020--2023 (war + COVID), M1  & $+1.250$ & (0.201) & 259 \\
-Excl.\ 2020--2023 (war + COVID), M2  & $+0.860$ & (0.141) & 259 \\
-Excl.\ 2020--2023 (war + COVID), M2h & $+0.846$ & (0.138) & 259 \\
+\multicolumn{5}{l}{\emph{Panel B: period-wide exclusions, all countries}} \\
+Excl.\ 2022--2023 (war period), M1  & $+1.282$ & (0.181) & 0.0001 & 287 \\
+Excl.\ 2022--2023 (war period), M2  & $+0.916$ & (0.129) & 0.0072 & 287 \\
+Excl.\ 2022--2023 (war period), M2h & $+0.898$ & (0.136) & 0.0507 & 287 \\
+Excl.\ 2020--2023 (war + COVID), M1  & $+1.250$ & (0.201) & 0.0001 & 259 \\
+Excl.\ 2020--2023 (war + COVID), M2  & $+0.860$ & (0.141) & 0.0139 & 259 \\
+Excl.\ 2020--2023 (war + COVID), M2h & $+0.846$ & (0.138) & 0.0607 & 259 \\
 \bottomrule
 \end{tabular}
 
 \begin{minipage}{\textwidth}\footnotesize
 \vspace{4pt}
-\emph{Note:} All coefficients significant at $p<0.001$ on clustered standard errors. Panel A drops country-episodes from the controlled specification of equation~\eqref{eq:m2}. Panel B removes the stated years for every country, leaving the primary hybrid estimate at $+0.898$ under the milder cut against $+0.964$ in the full sample. The corresponding check on the descriptive dispersion trends appears in Section~\ref{sec:desc-robust}: Central Asian internal convergence is unaffected, while the divergence among the other ten countries weakens from $+0.0016$ to $+0.0007$ per year and falls below conventional significance ($p=0.088$).
+\emph{Note:} $p$-values reported are exact Rademacher wild-cluster $p$-values from full enumeration of all $2^{14} = 16{,}384$ sign assignments, matching the inference standard used for the headline M2h coefficient in Chapter~\ref{sec:premium}. Panel A drops country-episodes from the controlled specification of equation~\eqref{eq:m2}. Panel B removes the stated years for every country, leaving the primary hybrid estimate at $+0.898$ under the milder cut against $+0.964$ in the full sample; the M1 and M2 estimates clear five per cent under both cuts, but the M2h estimate does not. The corresponding check on the descriptive dispersion trends appears in Section~\ref{sec:desc-robust}: Central Asian internal convergence is unaffected, while the divergence among the other ten countries weakens from $+0.0016$ to $+0.0007$ per year and falls below conventional significance ($p=0.088$).
 \end{minipage}
 \end{table}
 
