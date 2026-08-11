@@ -44,15 +44,15 @@
 % Footnotes: 9pt on 13.5pt
 \renewcommand{\footnotesize}{\fontsize{9pt}{13.5pt}\selectfont}
 
-% Reference list: 10pt on 15pt
-\AtBeginBibliography{\fontsize{10pt}{15pt}\selectfont}
-
 % --- Figures live one level up, shared with the analysis pipeline ---
 \graphicspath{{../figures/}}
 
 % --- Bibliography: Chicago author-date via BibLaTeX + Biber ---
 \usepackage[authordate, backend=biber]{biblatex-chicago}
 \addbibresource{references.bib}
+
+% Reference list: 10pt on 15pt
+\AtBeginBibliography{\fontsize{10pt}{15pt}\selectfont}
 
 % --- Cross-references ---
 \usepackage{hyperref}
