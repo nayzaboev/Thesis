@@ -48,6 +48,69 @@ lines = []
 def out(s):
     print(s); lines.append(s)
 
+
+def exact_rademacher_pvalue(data, formula, coef_name):
+    """Exact wild-cluster bootstrap p-value via full enumeration of all
+    2^G Rademacher sign assignments (G = number of clusters). Matches the
+    statsmodels cov_type='cluster' small-sample adjustment
+    (N-1)/(N-K) * G/(G-1) used elsewhere in this script, so t_obs here
+    reproduces the asymptotic clustered t-statistic exactly."""
+    y_df, X_df = patsy.dmatrices(formula, data=data, return_type="dataframe")
+    Xm = X_df.values
+    ym = y_df.values.flatten()
+    col_names = list(X_df.columns)
+    k_idx = col_names.index(coef_name)
+    N, K = Xm.shape
+
+    clusters = data["country"].values
+    uniq = np.unique(clusters)
+    G = len(uniq)
+    cluster_of = {c: i for i, c in enumerate(uniq)}
+    row_cluster = np.array([cluster_of[c] for c in clusters])
+
+    XtX_inv = np.linalg.inv(Xm.T @ Xm)
+    e_k = np.zeros(K); e_k[k_idx] = 1.0
+    v_k = Xm @ (XtX_inv @ e_k)          # X (X'X)^-1 e_k  ->  N-vector
+    cluster_ind = np.zeros((G, N))       # cluster indicator/summation matrix
+    cluster_ind[row_cluster, np.arange(N)] = 1.0
+    dof_adj = (N - 1) / (N - K) * G / (G - 1)
+
+    def cluster_t(beta_k, resid):
+        # resid: (N,) or (N, B); returns cluster-robust t-stat(s) for coef_name
+        contrib = resid * v_k[:, None] if resid.ndim == 2 else resid * v_k
+        s = cluster_ind @ contrib
+        var = dof_adj * np.sum(s ** 2, axis=0)
+        return beta_k / np.sqrt(var)
+
+    # Observed (unrestricted) fit
+    beta_obs = XtX_inv @ Xm.T @ ym
+    resid_obs = ym - Xm @ beta_obs
+    t_obs = float(cluster_t(beta_obs[k_idx], resid_obs))
+
+    # Restricted (null-imposed) fit: drop coef_name from the RHS
+    rhs_terms = [t.strip() for t in formula.split("~")[1].split("+")]
+    rhs_restr = [t for t in rhs_terms if t != coef_name]
+    f_restr = formula.split("~")[0] + "~ " + " + ".join(rhs_restr)
+    _, Xr_df = patsy.dmatrices(f_restr, data=data, return_type="dataframe")
+    Xrm = Xr_df.values
+    beta_r = np.linalg.solve(Xrm.T @ Xrm, Xrm.T @ ym)
+    fitted_r = Xrm @ beta_r
+    resid_r = ym - fitted_r
+
+    # All 2^G sign patterns, one column per pattern
+    signs = np.array(list(product([-1.0, 1.0], repeat=G)))   # (2^G, G)
+    W = signs[:, row_cluster].T                               # (N, 2^G)
+    Ystar = fitted_r[:, None] + resid_r[:, None] * W           # (N, 2^G)
+
+    Beta_star = XtX_inv @ (Xm.T @ Ystar)                       # (K, 2^G)
+    Ustar = Ystar - Xm @ Beta_star                              # (N, 2^G)
+    beta_k_star = Beta_star[k_idx, :]                           # (2^G,)
+    t_star = cluster_t(beta_k_star, Ustar)                      # (2^G,)
+
+    p_exact = float(np.mean(np.abs(t_star) >= abs(t_obs)))
+    return t_obs, p_exact, 2 ** G
+
+
 # ---------------------------------------------------------------- (A)
 out("=" * 70)
 out("(A) LEAVE-ONE-COUNTRY-OUT — M2 CA coefficient stability")
@@ -62,11 +125,14 @@ for c in sorted(sample["country"].unique()):
     sub = sample[sample["country"] != c]
     m = smf.ols(formula, data=sub).fit(
         cov_type="cluster", cov_kwds={"groups": sub["country"]})
+    _, p_exact_loo, _ = exact_rademacher_pvalue(sub, formula, "ca")
     loo.append({"excluded_country": c,
                 "ca_coefficient": round(m.params["ca"], 4),
                 "ca_pvalue": round(m.pvalues["ca"], 4),
-                "n_obs": int(m.nobs)})
-    out(f"  Drop {c:14s}: CA = {m.params['ca']:+.3f}  (p={m.pvalues['ca']:.3f}, N={int(m.nobs)})")
+                "n_obs": int(m.nobs),
+                "exact_p": round(p_exact_loo, 4)})
+    out(f"  Drop {c:14s}: CA = {m.params['ca']:+.3f}  (p={m.pvalues['ca']:.3f}, N={int(m.nobs)}, "
+        f"exact p={p_exact_loo:.4f})")
 loo_df = pd.DataFrame(loo)
 # The coefficient RANGE across the 14 leave-one-out refits is the informative
 # quantity here. A "significant at 1%" summary would rest on the conventional
@@ -94,13 +160,16 @@ excl = []
 for label, sub in excl_specs.items():
     m = smf.ols(formula, data=sub).fit(
         cov_type="cluster", cov_kwds={"groups": sub["country"]})
+    _, p_exact_excl, _ = exact_rademacher_pvalue(sub, formula, "ca")
     excl.append({"specification": label,
                  "ca_coefficient": round(m.params["ca"], 4),
                  "ca_se": round(m.bse["ca"], 4),
                  "ca_pvalue": round(m.pvalues["ca"], 4),
-                 "n_obs": int(m.nobs)})
+                 "n_obs": int(m.nobs),
+                 "p_exact": round(p_exact_excl, 4)})
     out(f"  {label:38s}: CA = {m.params['ca']:+.3f} "
-        f"(SE {m.bse['ca']:.3f}, p={m.pvalues['ca']:.3f}, N={int(m.nobs)})")
+        f"(SE {m.bse['ca']:.3f}, p={m.pvalues['ca']:.3f}, N={int(m.nobs)}, "
+        f"exact p={p_exact_excl:.4f})")
 excl_df = pd.DataFrame(excl)
 out("\n  The premium is robust to all four exclusions.")
 
@@ -133,18 +202,22 @@ for label, sub in war_excl_specs.items():
                               ("M2", formula, sub),
                               ("M2h", f_m2h_sub, sub_h)]:
         m = smf.ols(f, data=d).fit(cov_type="cluster", cov_kwds={"groups": d["country"]})
+        _, p_exact_war, _ = exact_rademacher_pvalue(d, f, "ca")
         row[f"{spec_label.lower()}_coef"] = round(m.params["ca"], 4)
         row[f"{spec_label.lower()}_se"] = round(m.bse["ca"], 4)
         row[f"{spec_label.lower()}_pvalue"] = round(m.pvalues["ca"], 4)
+        row[f"{spec_label.lower()}_p_exact"] = round(p_exact_war, 4)
         row["n_obs"] = int(m.nobs)
         out(f"  {label:44s} [{spec_label:3s}]: CA = {m.params['ca']:+.3f} "
-            f"(SE {m.bse['ca']:.3f}, p={m.pvalues['ca']:.3f}, N={int(m.nobs)})")
+            f"(SE {m.bse['ca']:.3f}, p={m.pvalues['ca']:.3f}, N={int(m.nobs)}, "
+            f"exact p={p_exact_war:.4f})")
     war_excl.append(row)
 war_excl_df = pd.DataFrame(war_excl)
 out("")
 out("  READING: the Central Asia premium is robust to period-wide exclusion of the")
 out("  war years and to the harsher war-plus-COVID exclusion; the point estimate on")
-out("  M2h moves from +0.964 to +0.898, all specifications remain significant.")
+out("  M2h moves from +0.964 to +0.898; exact Rademacher p-values for M2h "
+    "rise above five per cent under both cuts (see the CSV output).")
 
 # ---------------------------------------------------------------- (C)
 out("\n" + "=" * 70)
@@ -157,10 +230,20 @@ except FileNotFoundError:
 if "estimate_method" not in tfr.columns:
     tfr = tfr.assign(estimate_method="Unknown")
 yrs = [2000, 2010, 2017, 2023]
-piv = tfr.pivot(index="country", columns="year", values="tfr")[yrs].round(2)
-piv.columns = [f"TFR_{y}" for y in yrs]
-piv["change_2000_2023"] = (piv.TFR_2023 - piv.TFR_2000).round(2)
-piv["change_2017_2023"] = (piv.TFR_2023 - piv.TFR_2017).round(2)
+
+def round_half_up(x, ndp=2):
+    """Round half away from zero (up for positive values), unlike numpy's
+    round-half-to-even, so e.g. 2.745 -> 2.75 rather than 2.74 regardless of
+    numpy version / float representation. Used for display columns only."""
+    return np.floor(x * 10 ** ndp + 0.5) / 10 ** ndp
+
+piv_full = tfr.pivot(index="country", columns="year", values="tfr")[yrs]
+piv_full.columns = [f"TFR_{y}" for y in yrs]
+change_00_23 = (piv_full.TFR_2023 - piv_full.TFR_2000).round(2)
+change_17_23 = (piv_full.TFR_2023 - piv_full.TFR_2017).round(2)
+piv = round_half_up(piv_full)
+piv["change_2000_2023"] = change_00_23
+piv["change_2017_2023"] = change_17_23
 # Most 2023 values are WPP projections, not retrospective interpolations
 # (see 01_clean_data.py); record which per country so downstream readers of
 # this table cannot mistake one for the other.
@@ -361,69 +444,6 @@ out("  approximate; treat interaction p-values as indicative, not definitive.")
 out("")
 out("  Exact Rademacher enumeration (M2h 'ca' coefficient, 2^14 = 16,384 sign")
 out("  assignments — no Monte Carlo error):")
-
-
-def exact_rademacher_pvalue(data, formula, coef_name):
-    """Exact wild-cluster bootstrap p-value via full enumeration of all
-    2^G Rademacher sign assignments (G = number of clusters). Matches the
-    statsmodels cov_type='cluster' small-sample adjustment
-    (N-1)/(N-K) * G/(G-1) used elsewhere in this script, so t_obs here
-    reproduces the asymptotic clustered t-statistic exactly."""
-    y_df, X_df = patsy.dmatrices(formula, data=data, return_type="dataframe")
-    Xm = X_df.values
-    ym = y_df.values.flatten()
-    col_names = list(X_df.columns)
-    k_idx = col_names.index(coef_name)
-    N, K = Xm.shape
-
-    clusters = data["country"].values
-    uniq = np.unique(clusters)
-    G = len(uniq)
-    cluster_of = {c: i for i, c in enumerate(uniq)}
-    row_cluster = np.array([cluster_of[c] for c in clusters])
-
-    XtX_inv = np.linalg.inv(Xm.T @ Xm)
-    e_k = np.zeros(K); e_k[k_idx] = 1.0
-    v_k = Xm @ (XtX_inv @ e_k)          # X (X'X)^-1 e_k  ->  N-vector
-    cluster_ind = np.zeros((G, N))       # cluster indicator/summation matrix
-    cluster_ind[row_cluster, np.arange(N)] = 1.0
-    dof_adj = (N - 1) / (N - K) * G / (G - 1)
-
-    def cluster_t(beta_k, resid):
-        # resid: (N,) or (N, B); returns cluster-robust t-stat(s) for coef_name
-        contrib = resid * v_k[:, None] if resid.ndim == 2 else resid * v_k
-        s = cluster_ind @ contrib
-        var = dof_adj * np.sum(s ** 2, axis=0)
-        return beta_k / np.sqrt(var)
-
-    # Observed (unrestricted) fit
-    beta_obs = XtX_inv @ Xm.T @ ym
-    resid_obs = ym - Xm @ beta_obs
-    t_obs = float(cluster_t(beta_obs[k_idx], resid_obs))
-
-    # Restricted (null-imposed) fit: drop coef_name from the RHS
-    rhs_terms = [t.strip() for t in formula.split("~")[1].split("+")]
-    rhs_restr = [t for t in rhs_terms if t != coef_name]
-    f_restr = formula.split("~")[0] + "~ " + " + ".join(rhs_restr)
-    _, Xr_df = patsy.dmatrices(f_restr, data=data, return_type="dataframe")
-    Xrm = Xr_df.values
-    beta_r = np.linalg.solve(Xrm.T @ Xrm, Xrm.T @ ym)
-    fitted_r = Xrm @ beta_r
-    resid_r = ym - fitted_r
-
-    # All 2^G sign patterns, one column per pattern
-    signs = np.array(list(product([-1.0, 1.0], repeat=G)))   # (2^G, G)
-    W = signs[:, row_cluster].T                               # (N, 2^G)
-    Ystar = fitted_r[:, None] + resid_r[:, None] * W           # (N, 2^G)
-
-    Beta_star = XtX_inv @ (Xm.T @ Ystar)                       # (K, 2^G)
-    Ustar = Ystar - Xm @ Beta_star                              # (N, 2^G)
-    beta_k_star = Beta_star[k_idx, :]                           # (2^G,)
-    t_star = cluster_t(beta_k_star, Ustar)                      # (2^G,)
-
-    p_exact = float(np.mean(np.abs(t_star) >= abs(t_obs)))
-    return t_obs, p_exact, 2 ** G
-
 
 t_obs_exact, p_exact, n_enum = exact_rademacher_pvalue(sample_b, f_m2h, "ca")
 _seeded_boot_p = boot_df.loc[boot_df.specification == "M2h Mundlak CA premium",

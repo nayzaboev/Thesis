@@ -29,6 +29,13 @@ Reported three ways so the source of any collinearity is transparent:
   interpreted one at a time.
 
 ================================================================
+(D) Joint significance of the four controls in M2 (clustered)
+================================================================
+  F(4, 13) = 6.524   p = 0.0042
+  The four lagged controls are jointly significant at the one per cent
+  level under cluster-robust inference; individual coefficients are not.
+
+================================================================
 (B) Mundlak test — fixed effects vs random effects
 ================================================================
 Classical Hausman is NOT reported: Var(b_FE) - Var(b_RE) is not positive

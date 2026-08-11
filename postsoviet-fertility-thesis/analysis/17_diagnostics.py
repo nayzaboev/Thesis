@@ -26,6 +26,7 @@ Run from repo root:  python analysis/17_diagnostics.py
 import os
 import numpy as np
 import pandas as pd
+import statsmodels.formula.api as smf
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.tools.tools import add_constant
 
@@ -102,6 +103,20 @@ out("  between-country control coefficients are collinear and must not be")
 out("  interpreted one at a time.")
 
 # ----------------------------------------------------------------------------
+# (D) Joint significance of the four controls in M2 (clustered)
+# ----------------------------------------------------------------------------
+out("\n" + "="*64)
+out("(D) Joint significance of the four controls in M2 (clustered)")
+out("="*64)
+formula_m2 = "tfr ~ ca + " + " + ".join(CONTROLS) + " + C(year)"
+m2 = smf.ols(formula_m2, data=d).fit(cov_type="cluster", cov_kwds={"groups": d["country"]})
+ftest_controls = m2.f_test(" , ".join([f"{c} = 0" for c in CONTROLS]))
+out(f"  F({int(ftest_controls.df_num)}, {int(ftest_controls.df_denom)}) = "
+    f"{float(ftest_controls.fvalue):.3f}   p = {float(ftest_controls.pvalue):.4f}")
+out("  The four lagged controls are jointly significant at the one per cent")
+out("  level under cluster-robust inference; individual coefficients are not.")
+
+# ----------------------------------------------------------------------------
 # (B) Mundlak test for FE vs RE  (replaces the classical Hausman test)
 # ----------------------------------------------------------------------------
 # WHY NOT THE CLASSICAL HAUSMAN TEST:
@@ -126,7 +141,6 @@ out("The Mundlak auxiliary-regression test is used instead.")
 out("Correct restriction: H0 is that the between and within coefficients are")
 out("EQUAL for every regressor (not that the between coefficients are zero).\n")
 
-import statsmodels.formula.api as smf
 between = [f"{c}_mean" for c in CONTROLS]
 within  = [f"{c}_dev"  for c in CONTROLS]
 f_m = "tfr ~ ca + " + " + ".join(between + within) + " + C(year)"

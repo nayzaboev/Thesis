@@ -31,6 +31,7 @@ SCRIPTS = [
     "18_crosssection.py",
     "19_robustness.py",
     "20_results_table.py",
+    "21_summary_stats_table.py",
 ]
 
 for name in SCRIPTS:
